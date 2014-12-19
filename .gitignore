@@ -1,0 +1,8 @@
+yardoc
+coverage
+pkg
+Gemfile.lock
+
+lib/libll.*
+
+tmp

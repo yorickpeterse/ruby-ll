@@ -1,0 +1,12 @@
+root = true
+
+[*]
+end_of_line = lf
+indent_style = spaces
+trim_trailing_whitespace = true
+
+[*.{rb,rl}]
+indent_size = 2
+
+[*.{h,c,java,cpp,hpp}]
+indent_size = 4
