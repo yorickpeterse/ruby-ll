@@ -17,14 +17,10 @@
 ID id_tokens_ivar;
 ID id_pop;
 ID id_send;
-ID id_tokens_const;
-ID id_rules_const;
-ID id_table_const;
-ID id_actions_const;
 
 ID id_tokens_hash;
 ID id_rules_table;
-ID id_table_table;
+ID id_state_table;
 ID id_actions_table;
 
 ID id_missing_rule_error;
@@ -84,16 +80,16 @@ VALUE ll_driver_parse(VALUE self)
     VALUE value   = 0;
     long position = 0;
 
-    /* TOKENS in Ruby */
+    /* @tokens_hash in Ruby */
     VALUE tokens_hash = rb_ivar_get(self, id_tokens_hash);
 
-    /* RULES in Ruby */
+    /* @rules_table in Ruby */
     VALUE rules_array = rb_ivar_get(self, id_rules_table);
 
-    /* TABLE in Ruby */
-    VALUE table_array = rb_ivar_get(self, id_table_table);
+    /* @state_table in Ruby */
+    VALUE table_array = rb_ivar_get(self, id_state_table);
 
-    /* ACTIONS in Ruby */
+    /* @actions_table in Ruby */
     VALUE actions_array = rb_ivar_get(self, id_actions_table);
 
     VALUE method;
@@ -109,16 +105,11 @@ VALUE ll_driver_parse(VALUE self)
     long stack_type;
     long stack_value;
 
-    /* RULES array in Ruby */
     long rules[RARRAY_LEN(rules_array)][ll_driver_max_columns(rules_array)];
-
-    /* Contains the column count per RULES row */
     long rule_lengths[RARRAY_LEN(rules_array)];
 
-    /* TABLE array in Ruby */
     long table[RARRAY_LEN(table_array)][ll_driver_max_columns(table_array)];
 
-    /* ACTIONS array in Ruby */
     ID action_names[RARRAY_LEN(actions_array)];
     VALUE action_arg_amounts[RARRAY_LEN(actions_array)];
 
@@ -271,19 +262,15 @@ void Init_ll_driver()
 
     rb_define_method(cDriver, "parse", ll_driver_parse, 0);
 
-    id_tokens_ivar   = rb_intern("@tokens");
-    id_pop           = rb_intern("pop");
-    id_send          = rb_intern("send");
-    id_tokens_const  = rb_intern("TOKENS");
-    id_rules_const   = rb_intern("RULES");
-    id_table_const   = rb_intern("TABLE");
-    id_actions_const = rb_intern("ACTIONS");
+    id_tokens_ivar = rb_intern("@tokens");
+    id_pop         = rb_intern("pop");
+    id_send        = rb_intern("send");
 
     id_missing_rule_error     = rb_intern("missing_rule_error");
     id_invalid_terminal_error = rb_intern("invalid_terminal_error");
 
     id_tokens_hash   = rb_intern("@tokens_hash");
     id_rules_table   = rb_intern("@rules_table");
-    id_table_table   = rb_intern("@table_table");
+    id_state_table   = rb_intern("@state_table");
     id_actions_table = rb_intern("@actions_table");
 }
