@@ -11,6 +11,33 @@ describe LL::Lexer do
       ]
     end
 
+    example 'lex the %name directive preceded by spaces' do
+      input = '  %name Foo'
+
+      lex(input).should == [
+        [:T_NAME, '%name', source_line(input, 1, 3)],
+        [:T_IDENT, 'Foo', source_line(input, 1, 9)]
+      ]
+    end
+
+    example 'lex the %name directive preceded by a newline' do
+      input = "\n%name Foo"
+
+      lex(input).should == [
+        [:T_NAME, '%name', source_line(input, 2)],
+        [:T_IDENT, 'Foo', source_line(input, 2, 7)]
+      ]
+    end
+
+    example 'lex the %name directive preceded by a newline and spaces' do
+      input = "\n  %name Foo"
+
+      lex(input).should == [
+        [:T_NAME, '%name', source_line(input, 2, 3)],
+        [:T_IDENT, 'Foo', source_line(input, 2, 9)]
+      ]
+    end
+
     example 'lex the %tokens directive' do
       input = '%tokens A B C'
 
