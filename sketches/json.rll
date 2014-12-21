@@ -1,14 +1,14 @@
 # The name of the parser class
-name = JsonParser
+%name JsonParser
 
 # Definition of all the terminals. Unrecognized terminals trigger a
 # compilation error.
-tokens = T_LCURLY T_RCURLY T_COMMA T_STRING T_INT T_COLON
+%tokens T_LCURLY T_RCURLY T_COMMA T_STRING T_INT T_COLON
 
-precedence do
-  left A B C # These all have the same precedence
-  left X Y Z # Same here, but they're lower than A, B and C
-end
+# Terminal precedence, order matters (whatever is specified first has a higher
+# precedence).
+%left A B C # These all have the same precedence
+%left X Y Z # Same here, but they're lower than A, B and C
 
 # The start of all the rules. The rule declared first will be the entry rule
 # of the parser.
@@ -48,61 +48,59 @@ end
 # Is basically:
 #
 #     numbers = number | ...
-rules do
-  json
-    : T_LCURLY values T_RCURLY { val[1] }
+json
+  : T_LCURLY values T_RCURLY { val[1] }
 
-  values
-    : pair more_values
-      {
-        new_hash = val[0]
+values
+  : pair more_values
+    {
+      new_hash = val[0]
 
-        if val[1]
-          val[1].each do |key, value|
-            new_hash[key] = value
-          end
+      if val[1]
+        val[1].each do |key, value|
+          new_hash[key] = value
         end
+      end
 
-        new_hash
-      }
+      new_hash
+    }
 
-  # Alternatively the above could be this:
-  #
-  # values = pair pair*
-  #
-  # Or (with pairs being optional):
-  #
-  # values = pair*
-  #
-  # Which is basically the same as this:
-  #
-  # value = pair | pair value | ...
-  #
+# Alternatively the above could be this:
+#
+# values = pair pair*
+#
+# Or (with pairs being optional):
+#
+# values = pair*
+#
+# Which is basically the same as this:
+#
+# value = pair | pair value | ...
+#
 
-  more_values
-    : T_COMMA values { val[1] }
-    | ...            { {} }
+more_values
+  : T_COMMA values { val[1] }
+  | ...            { {} }
 
-  pair
-    : T_STRING T_COLON value { {val[0] => val[2]} }
+pair
+  : T_STRING T_COLON value { {val[0] => val[2]} }
 
-  # Named captures are also available:
-  pair
-    : T_STRING:key T_COLON value:value { {key => value} }
+# Named captures are also available:
+pair
+  : T_STRING:key T_COLON value:value { {key => value} }
 
-  array
-    : value*
-    | value (T_COMMA value)*
+array
+  : value*
+  | value (T_COMMA value)*
 
-  value
-    : T_STRING { val[0] }
-    | T_INT    { val[0].to_i }
-end
+value
+  : T_STRING { val[0] }
+  | T_INT    { val[0].to_i }
 
 # Everything in this block will be injected into the generated class' body,
 # just after all the parsing boilerplate. This is similar to Racc's
 # ---- inner directive.
-inner do
+%inner {
   def initialize(input)
     @tokens = Lexer.new(input).lex
   end
@@ -112,6 +110,12 @@ inner do
   def each_token
 
   end
-end
+}
+
+# This will be placed just before the class definition, allowing one to inject
+# comments and the likes.
+%header {
+# A simple JSON parser.
+}
 
 # vim: set ft=ruby:

@@ -14,4 +14,4 @@ rule '.rb' => '.rl' do |task|
 end
 
 desc 'Generates the lexers'
-multitask :lexer => []
+multitask :lexer => ['lib/ll/lexer.rb']

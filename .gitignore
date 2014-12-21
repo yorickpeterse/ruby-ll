@@ -3,6 +3,7 @@ coverage
 pkg
 Gemfile.lock
 
+lib/ll/lexer.rb
 lib/libll.*
 
 tmp
