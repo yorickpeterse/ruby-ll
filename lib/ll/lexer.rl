@@ -219,6 +219,7 @@ module LL
         identifier  => emit_identifier;
 
         '='   => { emit(:T_EQUALS, ts, te) };
+        ':'   => { emit(:T_COLON, ts, te) };
         '|'   => { emit(:T_PIPE, ts, te) };
         '*'   => { emit(:T_STAR, ts, te) };
         '+'   => { emit(:T_PLUS, ts, te) };

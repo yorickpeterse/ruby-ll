@@ -52,5 +52,17 @@ b = x
         [:T_IDENT, 'x', source_line(input, 2, 5)],
       ]
     end
+
+    example 'lex a rule containing a named capture' do
+      input = 'x = y:foo'
+
+      lex(input).should == [
+        [:T_IDENT, 'x', source_line(input)],
+        [:T_EQUALS, '=', source_line(input, 1, 3)],
+        [:T_IDENT, 'y', source_line(input, 1, 5)],
+        [:T_COLON, ':', source_line(input, 1, 6)],
+        [:T_IDENT, 'foo', source_line(input, 1, 7)]
+      ]
+    end
   end
 end
