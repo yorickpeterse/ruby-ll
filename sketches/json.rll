@@ -49,10 +49,10 @@
 #
 #     numbers = number | ...
 json
-  : T_LCURLY values T_RCURLY { val[1] }
+  = T_LCURLY values T_RCURLY { val[1] }
 
 values
-  : pair more_values
+  = pair more_values
     {
       new_hash = val[0]
 
@@ -79,22 +79,22 @@ values
 #
 
 more_values
-  : T_COMMA values { val[1] }
+  = T_COMMA values { val[1] }
   | ...            { {} }
 
 pair
-  : T_STRING T_COLON value { {val[0] => val[2]} }
+  = T_STRING T_COLON value { {val[0] => val[2]} }
 
 # Named captures are also available:
 pair
-  : T_STRING:key T_COLON value:value { {key => value} }
+  = T_STRING:key T_COLON value:value { {key => value} }
 
 array
-  : value*
+  = value*
   | value (T_COMMA value)*
 
 value
-  : T_STRING { val[0] }
+  = T_STRING { val[0] }
   | T_INT    { val[0].to_i }
 
 # Everything in this block will be injected into the generated class' body,
