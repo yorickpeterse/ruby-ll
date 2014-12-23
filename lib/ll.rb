@@ -1,3 +1,6 @@
+require 'ast'
+require 'ansi/code'
+
 require_relative 'll/version'
 require_relative 'll/driver'
 
@@ -11,3 +14,6 @@ end
 
 require_relative 'll/lexer'
 require_relative 'll/source_line'
+require_relative 'll/parser_error'
+require_relative 'll/ast/node'
+require_relative 'll/bootstrap/parser'

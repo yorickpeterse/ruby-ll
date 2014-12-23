@@ -24,7 +24,7 @@ ID id_state_table;
 ID id_actions_table;
 
 ID id_missing_rule_error;
-ID id_invalid_terminal_error;
+ID id_invalid_token_error;
 
 /**
  * Returns the maximum amount of columns in a table.
@@ -224,7 +224,7 @@ VALUE ll_driver_parse(VALUE self)
             {
                 rb_funcall(
                     self,
-                    id_invalid_terminal_error,
+                    id_invalid_token_error,
                     2,
                     INT2NUM(token_id),
                     INT2NUM(stack_value)
@@ -266,8 +266,8 @@ void Init_ll_driver()
     id_pop         = rb_intern("pop");
     id_send        = rb_intern("send");
 
-    id_missing_rule_error     = rb_intern("missing_rule_error");
-    id_invalid_terminal_error = rb_intern("invalid_terminal_error");
+    id_missing_rule_error  = rb_intern("missing_rule_error");
+    id_invalid_token_error = rb_intern("invalid_token_error");
 
     id_tokens_hash   = rb_intern("@tokens_hash");
     id_rules_table   = rb_intern("@rules_table");
