@@ -1,25 +1,30 @@
-# Grammar file for ruby-ll itself. This grammar doesn't use the various
-# repetition operators (+, *, etc) to make it a tad easier to grok when working
-# on the hand-written parser (which uses this grammar as a reference). It also
-# doesn't use any grouping for the same reason.
-
 %name LL::Parser
 
 %tokens T_RUBY T_NAME T_TOKENS T_LEFT T_RIGHT T_INNER T_HEADER T_IDENT T_EQUALS
 %tokens T_COLON T_PIPE T_STAR T_PLUS T_QUESTION T_LPAREN T_RPAREN T_EPSILON
+
+grammar = elements*
+
+element
+  = directive
+  | rule
+
+directive
+  = name
+  | tokens
+  | left
+  | right
+  | inner
+  | header
 
 # %name directives
 #
 # This handles the parsing of %name directives, which can either contain a
 # single name (e.g. "Foo") or a Ruby namespace (e.g. "Foo::Bar").
 
-name = T_NAME T_IDENT namespace_follow
+name = T_NAME T_IDENT name_ns*
 
-namespace_follow
-  = namespace_part namespace_follow
-  | ...
-
-namespace_part = T_COLON T_COLON T_IDENT
+name_ns = T_COLON T_COLON T_IDENT
 
 # Generic Directives
 #
@@ -37,37 +42,75 @@ right  = T_RIGHT idents
 inner  = T_INNER T_RUBY
 header = T_HEADER T_RUBY
 
-# Rules
+# Generic identifiers
 
-rule = T_IDENT T_EQUALS rule_arms
+idents = ident+
+ident  = T_IDENT
 
-rule_arms
-  = rule_arm
-  | rule_arm T_PIPE rule_arms
-
-# Matches:
-#
-# foo
-# foo bar { ruby code }
-# ...
-# ... { ruby code }
-#
-rule_arm
-  = idents_or_epsilon
-  | idents_or_epsilon T_RUBY
-
-# Identifiers
-
-idents        = T_IDENT idents_follow
-idents_follow = idents | ...
+# Identifiers with/without named captures and/or operators.
 
 idents_or_epsilon
   = idents_or_captures
   | T_EPSILON
 
 idents_or_captures
-  = T_IDENT idents_or_captures_follow
+  = ident_or_capture+
+  | T_LPAREN ident_or_capture+ T_RPAREN operator?
 
-idents_or_captures_follow
-  = idents_or_captures
-  | T_COLON T_IDENT idents_or_capture
+ident_or_capture = ident ident_or_capture_follow
+
+ident_or_capture_follow = T_COLON ident operator?
+
+# Rules
+
+branch = idents_or_epsilon T_RUBY?
+
+branches = branch branches_follow*
+
+branches_follow = T_PIPE branches
+
+rule = ident T_EQUALS branches
+
+# Operators
+
+operator
+  = T_STAR
+  | T_PLUS
+  | T_QUESTION
+
+%inner
+{
+  ##
+  # @param [String] input
+  #
+  def initialize(input)
+    super()
+
+    @lexer = Lexer.new(input)
+  end
+
+  ##
+  # @yieldparam [Symbol] type
+  # @yieldparam [String] value
+  #
+  def each_token
+    @lexer.advance do |type, value, source_line|
+      @source_line = source_line
+
+      yield [type, value]
+    end
+
+    yield [-1, -1]
+  ensure
+    @source_line = nil
+  end
+
+  ##
+  # @param [Symbol] type
+  # @param [Array] children
+  # @return [LL::AST::Node]
+  #
+  def s(type, *children)
+    return AST::Node.new(type, children, :source_line => @source_line)
+  end
+}
