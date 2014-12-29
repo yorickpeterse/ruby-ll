@@ -34,8 +34,8 @@ rule
   # %name directives
 
   name
-    : T_NAME T_IDENT
-    | T_NAME T_IDENT name_ns
+    : T_NAME T_IDENT T_SEMICOLON
+    | T_NAME T_IDENT name_ns T_SEMICOLON
     ;
 
   name_ns
@@ -46,7 +46,7 @@ rule
   # %tokens directive
 
   tokens
-    : T_TOKENS idents
+    : T_TOKENS idents T_SEMICOLON
     ;
 
   # Code directives
@@ -109,7 +109,7 @@ rule
     ;
 
   rule
-    : ident T_EQUALS branches
+    : ident T_EQUALS branches T_SEMICOLON
     ;
 
   # Operators
