@@ -108,18 +108,6 @@ b = x
       ]
     end
 
-    example 'lex a rule containing a terminal grouped using parenthesis' do
-      input = 'x = (y)'
-
-      lex(input).should == [
-        [:T_IDENT, 'x', source_line(input)],
-        [:T_EQUALS, '=', source_line(input, 1, 3)],
-        [:T_LPAREN, '(', source_line(input, 1, 5)],
-        [:T_IDENT, 'y', source_line(input, 1, 6)],
-        [:T_RPAREN, ')', source_line(input, 1, 7)]
-      ]
-    end
-
     example 'lex a rule followed by a block of Ruby code' do
       input = 'x = y { 10 }'
 
