@@ -1,2 +1,2 @@
 desc 'Generates auto-generated files'
-task :generate => [:lexer, :compile]
+task :generate => [:lexer, :parser, :compile]
