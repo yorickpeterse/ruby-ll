@@ -1,65 +1,71 @@
 %name LL::Parser
 
 %tokens T_RUBY T_NAME T_TOKENS T_INNER T_HEADER T_IDENT T_EQUALS T_COLON T_PIPE
-%tokens T_STAR T_PLUS T_QUESTION T_EPSILON
+%tokens T_STAR T_PLUS T_QUESTION T_EPSILON T_SEMICOLON
 
-grammar = elements*
+grammar = elements*;
 
 element
   = directive
   | rule
+  ;
 
 directive
   = name
   | tokens
   | inner
   | header
+  ;
 
 # %name directives
 #
 # This handles the parsing of %name directives, which can either contain a
 # single name (e.g. "Foo") or a Ruby namespace (e.g. "Foo::Bar").
 
-name = T_NAME T_IDENT name_ns*
+name = T_NAME T_IDENT name_ns*;
 
-name_ns = T_COLON T_COLON T_IDENT
+name_ns = T_COLON T_COLON T_IDENT;
 
 # Generic Directives
 
-tokens = T_TOKENS idents
+tokens = T_TOKENS idents;
 
 # Code Directives
 #
 # These are directives that can be used to specify inline Ruby code (e.g. %inner
 # and %header).
 
-inner  = T_INNER T_RUBY
-header = T_HEADER T_RUBY
+inner  = T_INNER T_RUBY;
+header = T_HEADER T_RUBY;
 
 # Generic identifiers
 
-idents = ident+
-ident  = T_IDENT
+idents = ident+;
+ident  = T_IDENT;
 
 # Identifiers with/without named captures and/or operators.
 
 idents_or_epsilon
   = ident_or_capture+
   | T_EPSILON
+  ;
 
-ident_or_capture = ident ident_or_capture_follow
+ident_or_capture = ident ident_or_capture_follow;
 
-ident_or_capture_follow = T_COLON ident operator?
+ident_or_capture_follow
+  = T_COLON ident operator?
+  | operator?
+  ;
 
 # Rules
 
-branch = idents_or_epsilon T_RUBY?
+branch = idents_or_epsilon T_RUBY?;
 
-branches = branch branches_follow*
+branches = branch branches_follow*;
 
-branches_follow = T_PIPE branches
+branches_follow = T_PIPE branches;
 
-rule = ident T_EQUALS branches
+rule = ident T_EQUALS branches;
 
 # Operators
 
@@ -67,16 +73,17 @@ operator
   = T_STAR
   | T_PLUS
   | T_QUESTION
+  ;
 
 %inner
 {
   ##
   # @param [String] input
   #
-  def initialize(input)
-    super()
+  def initialize(*args)
+    @lexer = Lexer.new(*args)
 
-    @lexer = Lexer.new(input)
+    setup
   end
 
   ##

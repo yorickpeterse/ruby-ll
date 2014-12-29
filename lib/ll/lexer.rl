@@ -142,6 +142,14 @@ module LL
       @block.call(type, value, source_line)
     end
 
+    def advance_line
+      @line += 1
+    end
+
+    def advance_column
+      @column += 1
+    end
+
     %%{
       getkey (data.getbyte(p) || 0);
 
@@ -149,12 +157,13 @@ module LL
       whitespace = [\t ];
 
       action increment_line {
-        @line  += 1
+        advance_line
+
         @column = 1
       }
 
       action increment_column {
-        @column += 1
+        advance_column
       }
 
       # Identifiers
@@ -195,6 +204,8 @@ module LL
             brace_count = 0
             start_line  = 0
 
+            advance_column
+
             fnext main;
           else
             brace_count -= 1
@@ -218,6 +229,7 @@ module LL
 
         '='   => { emit(:T_EQUALS, ts, te) };
         ':'   => { emit(:T_COLON, ts, te) };
+        ';'   => { emit(:T_SEMICOLON, ts, te) };
         '|'   => { emit(:T_PIPE, ts, te) };
         '*'   => { emit(:T_STAR, ts, te) };
         '+'   => { emit(:T_PLUS, ts, te) };
@@ -228,6 +240,8 @@ module LL
           mark        = ts + 1
           brace_count = 1
           start_line  = @line
+
+          advance_column
 
           fnext ruby_body;
         };

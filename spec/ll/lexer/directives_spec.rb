@@ -3,49 +3,54 @@ require 'spec_helper'
 describe LL::Lexer do
   context 'directives' do
     example 'lex the %name directive' do
-      input = '%name Foo'
+      input = '%name Foo;'
 
       lex(input).should == [
         [:T_NAME, '%name', source_line(input)],
-        [:T_IDENT, 'Foo', source_line(input, 1, 7)]
+        [:T_IDENT, 'Foo', source_line(input, 1, 7)],
+        [:T_SEMICOLON, ';', source_line(input, 1, 10)]
       ]
     end
 
     example 'lex the %name directive preceded by spaces' do
-      input = '  %name Foo'
+      input = '  %name Foo;'
 
       lex(input).should == [
         [:T_NAME, '%name', source_line(input, 1, 3)],
-        [:T_IDENT, 'Foo', source_line(input, 1, 9)]
+        [:T_IDENT, 'Foo', source_line(input, 1, 9)],
+        [:T_SEMICOLON, ';', source_line(input, 1, 12)]
       ]
     end
 
     example 'lex the %name directive preceded by a newline' do
-      input = "\n%name Foo"
+      input = "\n%name Foo;"
 
       lex(input).should == [
         [:T_NAME, '%name', source_line(input, 2)],
-        [:T_IDENT, 'Foo', source_line(input, 2, 7)]
+        [:T_IDENT, 'Foo', source_line(input, 2, 7)],
+        [:T_SEMICOLON, ';', source_line(input, 2, 10)]
       ]
     end
 
     example 'lex the %name directive preceded by a newline and spaces' do
-      input = "\n  %name Foo"
+      input = "\n  %name Foo;"
 
       lex(input).should == [
         [:T_NAME, '%name', source_line(input, 2, 3)],
-        [:T_IDENT, 'Foo', source_line(input, 2, 9)]
+        [:T_IDENT, 'Foo', source_line(input, 2, 9)],
+        [:T_SEMICOLON, ';', source_line(input, 2, 12)]
       ]
     end
 
     example 'lex the %tokens directive' do
-      input = '%tokens A B C'
+      input = '%tokens A B C;'
 
       lex(input).should == [
         [:T_TOKENS, '%tokens', source_line(input)],
         [:T_IDENT, 'A', source_line(input, 1, 9)],
         [:T_IDENT, 'B', source_line(input, 1, 11)],
         [:T_IDENT, 'C', source_line(input, 1, 13)],
+        [:T_SEMICOLON, ';', source_line(input, 1, 14)]
       ]
     end
 
