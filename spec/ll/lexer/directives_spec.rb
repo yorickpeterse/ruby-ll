@@ -49,28 +49,6 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex the %left directive' do
-      input = '%left A B C'
-
-      lex(input).should == [
-        [:T_LEFT, '%left', source_line(input)],
-        [:T_IDENT, 'A', source_line(input, 1, 7)],
-        [:T_IDENT, 'B', source_line(input, 1, 9)],
-        [:T_IDENT, 'C', source_line(input, 1, 11)],
-      ]
-    end
-
-    example 'lex the %right directive' do
-      input = '%right A B C'
-
-      lex(input).should == [
-        [:T_RIGHT, '%right', source_line(input)],
-        [:T_IDENT, 'A', source_line(input, 1, 8)],
-        [:T_IDENT, 'B', source_line(input, 1, 10)],
-        [:T_IDENT, 'C', source_line(input, 1, 12)],
-      ]
-    end
-
     example 'lex the %inner directive' do
       input = <<-EOF.strip
 %inner {

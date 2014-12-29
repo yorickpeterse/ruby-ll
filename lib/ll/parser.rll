@@ -1,7 +1,7 @@
 %name LL::Parser
 
-%tokens T_RUBY T_NAME T_TOKENS T_LEFT T_RIGHT T_INNER T_HEADER T_IDENT T_EQUALS
-%tokens T_COLON T_PIPE T_STAR T_PLUS T_QUESTION T_LPAREN T_RPAREN T_EPSILON
+%tokens T_RUBY T_NAME T_TOKENS T_INNER T_HEADER T_IDENT T_EQUALS T_COLON T_PIPE
+%tokens T_STAR T_PLUS T_QUESTION T_LPAREN T_RPAREN T_EPSILON
 
 grammar = elements*
 
@@ -12,8 +12,6 @@ element
 directive
   = name
   | tokens
-  | left
-  | right
   | inner
   | header
 
@@ -27,12 +25,8 @@ name = T_NAME T_IDENT name_ns*
 name_ns = T_COLON T_COLON T_IDENT
 
 # Generic Directives
-#
-# This handles directives such as %left, %right, %tokens, etc.
 
 tokens = T_TOKENS idents
-left   = T_LEFT idents
-right  = T_RIGHT idents
 
 # Code Directives
 #

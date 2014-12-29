@@ -212,8 +212,6 @@ module LL
 
         '%name'     => { emit(:T_NAME, ts, te) };
         '%tokens'   => { emit(:T_TOKENS, ts, te) };
-        '%left'     => { emit(:T_LEFT, ts, te) };
-        '%right'    => { emit(:T_RIGHT, ts, te) };
         '%inner'    => { emit(:T_INNER, ts, te) };
         '%header'   => { emit(:T_HEADER, ts, te) };
         identifier  => emit_identifier;
