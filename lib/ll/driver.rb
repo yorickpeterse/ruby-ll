@@ -6,7 +6,7 @@ module LL
     ##
     # Sets up the initial state of the parser.
     #
-    def initialize
+    def setup
       # Since every driver needs these variables we'll set these up ourselves.
       # Since these constants are not defined in the Driver class itself we have
       # to use `self.class::XXX` here.
