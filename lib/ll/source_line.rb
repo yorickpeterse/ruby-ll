@@ -3,20 +3,6 @@ module LL
   # Class containing data of a lexer token's source line source as the raw data,
   # column, line number, etc.
   #
-  # @!attribute [r] name
-  #  The name of the input file.
-  #  @return [String]
-  #
-  # @!attribute [r] data
-  #  The raw input data.
-  #  @return [String]
-  #
-  # @!attribute [r] line
-  #  @return [Fixnum]
-  #
-  # @!attribute [r] column
-  #  @return [Fixnum]
-  #
   class SourceLine
     attr_reader :name, :data, :line, :column
 
@@ -44,7 +30,7 @@ module LL
     # @return [TrueClass|FalseClass]
     #
     def ==(other)
-      return false unless other.is_a?(self.class)
+      return false unless other.class == self.class
 
       return name == other.name &&
         data == other.data &&

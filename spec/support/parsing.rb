@@ -15,5 +15,13 @@ module LL
     def source_line(*args)
       return LL::SourceLine.new(*args)
     end
+
+    ##
+    # @see [LL::Token#initialize]
+    # @return [LL::Token]
+    #
+    def token(*args)
+      return LL::Token.new(*args)
+    end
   end # ParsingHelpers
 end # LL

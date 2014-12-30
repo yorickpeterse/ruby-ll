@@ -29,8 +29,8 @@ module LL
     def lex
       tokens = []
 
-      advance do |type, value, source_line|
-        tokens << [type, value, source_line]
+      advance do |token|
+        tokens << token
       end
 
       return tokens
@@ -48,15 +48,6 @@ module LL
     ##
     # Advances through the input and generates the corresponding tokens. Each
     # token is yielded to the supplied block.
-    #
-    # Each token is an Array in the following format:
-    #
-    #     [TYPE, VALUE]
-    #
-    # The type is a symbol, the value is either nil or a String.
-    #
-    # This method stores the supplied block in `@block` and resets it after
-    # the lexer loop has finished.
     #
     # @see [#add_token]
     #
@@ -131,15 +122,13 @@ module LL
     # @param [String] value The token value.
     # @param [Fixnum] line
     #
-    # @yieldparam [Symbol] type
-    # @yieldparam [String|NilClass] value
-    # @yieldparam [LL::SourceLine] source_line
+    # @yieldparam [LL::Token] token
     #
     def add_token(type, value, line = @line)
       source_line = SourceLine.new(@data, line, @column, @file)
       @column    += value.length
 
-      @block.call(type, value, source_line)
+      @block.call(Token.new(type, value, source_line))
     end
 
     def advance_line

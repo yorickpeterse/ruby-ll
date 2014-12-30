@@ -6,9 +6,9 @@ describe LL::Lexer do
       input = '%name Foo;'
 
       lex(input).should == [
-        [:T_NAME, '%name', source_line(input)],
-        [:T_IDENT, 'Foo', source_line(input, 1, 7)],
-        [:T_SEMICOLON, ';', source_line(input, 1, 10)]
+        token(:T_NAME, '%name', source_line(input)),
+        token(:T_IDENT, 'Foo', source_line(input, 1, 7)),
+        token(:T_SEMICOLON, ';', source_line(input, 1, 10))
       ]
     end
 
@@ -16,9 +16,9 @@ describe LL::Lexer do
       input = '  %name Foo;'
 
       lex(input).should == [
-        [:T_NAME, '%name', source_line(input, 1, 3)],
-        [:T_IDENT, 'Foo', source_line(input, 1, 9)],
-        [:T_SEMICOLON, ';', source_line(input, 1, 12)]
+        token(:T_NAME, '%name', source_line(input, 1, 3)),
+        token(:T_IDENT, 'Foo', source_line(input, 1, 9)),
+        token(:T_SEMICOLON, ';', source_line(input, 1, 12))
       ]
     end
 
@@ -26,9 +26,9 @@ describe LL::Lexer do
       input = "\n%name Foo;"
 
       lex(input).should == [
-        [:T_NAME, '%name', source_line(input, 2)],
-        [:T_IDENT, 'Foo', source_line(input, 2, 7)],
-        [:T_SEMICOLON, ';', source_line(input, 2, 10)]
+        token(:T_NAME, '%name', source_line(input, 2)),
+        token(:T_IDENT, 'Foo', source_line(input, 2, 7)),
+        token(:T_SEMICOLON, ';', source_line(input, 2, 10))
       ]
     end
 
@@ -36,9 +36,9 @@ describe LL::Lexer do
       input = "\n  %name Foo;"
 
       lex(input).should == [
-        [:T_NAME, '%name', source_line(input, 2, 3)],
-        [:T_IDENT, 'Foo', source_line(input, 2, 9)],
-        [:T_SEMICOLON, ';', source_line(input, 2, 12)]
+        token(:T_NAME, '%name', source_line(input, 2, 3)),
+        token(:T_IDENT, 'Foo', source_line(input, 2, 9)),
+        token(:T_SEMICOLON, ';', source_line(input, 2, 12))
       ]
     end
 
@@ -46,11 +46,11 @@ describe LL::Lexer do
       input = '%tokens A B C;'
 
       lex(input).should == [
-        [:T_TOKENS, '%tokens', source_line(input)],
-        [:T_IDENT, 'A', source_line(input, 1, 9)],
-        [:T_IDENT, 'B', source_line(input, 1, 11)],
-        [:T_IDENT, 'C', source_line(input, 1, 13)],
-        [:T_SEMICOLON, ';', source_line(input, 1, 14)]
+        token(:T_TOKENS, '%tokens', source_line(input)),
+        token(:T_IDENT, 'A', source_line(input, 1, 9)),
+        token(:T_IDENT, 'B', source_line(input, 1, 11)),
+        token(:T_IDENT, 'C', source_line(input, 1, 13)),
+        token(:T_SEMICOLON, ';', source_line(input, 1, 14))
       ]
     end
 
@@ -63,8 +63,8 @@ describe LL::Lexer do
       EOF
 
       lex(input).should == [
-        [:T_INNER, '%inner', source_line(input)],
-        [:T_RUBY, "\n  foo\n  bar\n", source_line(input, 1)]
+        token(:T_INNER, '%inner', source_line(input)),
+        token(:T_RUBY, "\n  foo\n  bar\n", source_line(input, 1))
       ]
     end
 
@@ -77,8 +77,8 @@ describe LL::Lexer do
       EOF
 
       lex(input).should == [
-        [:T_HEADER, '%header', source_line(input)],
-        [:T_RUBY, "\n  foo\n  bar\n", source_line(input, 1)]
+        token(:T_HEADER, '%header', source_line(input)),
+        token(:T_RUBY, "\n  foo\n  bar\n", source_line(input, 1))
       ]
     end
   end
