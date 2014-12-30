@@ -22,7 +22,7 @@ module LL
     ##
     # @return [String]
     #
-    def source_line
+    def source
       return data.lines[line - 1][(column - 1)..-1]
     end
 
