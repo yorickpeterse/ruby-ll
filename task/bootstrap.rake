@@ -14,7 +14,7 @@ task :bootstrap => [:racc] do
   grammar   = File.read(path)
   parser    = LL::Bootstrap::Parser.new(grammar, path)
   compiler  = LL::Compiler.new
-  generator = LL::Generator.new
+  generator = LL::CodeGenerator.new
   ast       = parser.parse
 
   compiled    = compiler.compile(ast)
