@@ -214,16 +214,15 @@ module LL
         '%tokens'   => { emit(:T_TOKENS, ts, te) };
         '%inner'    => { emit(:T_INNER, ts, te) };
         '%header'   => { emit(:T_HEADER, ts, te) };
-        identifier  => emit_identifier;
 
-        '='   => { emit(:T_EQUALS, ts, te) };
-        ':'   => { emit(:T_COLON, ts, te) };
-        ';'   => { emit(:T_SEMICOLON, ts, te) };
-        '|'   => { emit(:T_PIPE, ts, te) };
-        '*'   => { emit(:T_STAR, ts, te) };
-        '+'   => { emit(:T_PLUS, ts, te) };
-        '?'   => { emit(:T_QUESTION, ts, te) };
-        '...' => { emit(:T_EPSILON, ts, te) };
+        '=' => { emit(:T_EQUALS, ts, te) };
+        ':' => { emit(:T_COLON, ts, te) };
+        ';' => { emit(:T_SEMICOLON, ts, te) };
+        '|' => { emit(:T_PIPE, ts, te) };
+        '*' => { emit(:T_STAR, ts, te) };
+        '+' => { emit(:T_PLUS, ts, te) };
+        '?' => { emit(:T_QUESTION, ts, te) };
+        '_' => { emit(:T_EPSILON, ts, te) };
 
         '{' => {
           mark        = ts + 1
@@ -234,6 +233,8 @@ module LL
 
           fnext ruby_body;
         };
+
+        identifier => emit_identifier;
       *|;
     }%%
   end # Lexer
