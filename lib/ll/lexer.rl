@@ -210,10 +210,10 @@ module LL
 
         comment;
 
-        '%name'     => { emit(:T_NAME, ts, te) };
-        '%tokens'   => { emit(:T_TOKENS, ts, te) };
-        '%inner'    => { emit(:T_INNER, ts, te) };
-        '%header'   => { emit(:T_HEADER, ts, te) };
+        '%name'      => { emit(:T_NAME, ts, te) };
+        '%terminals' => { emit(:T_TERMINALS, ts, te) };
+        '%inner'     => { emit(:T_INNER, ts, te) };
+        '%header'    => { emit(:T_HEADER, ts, te) };
 
         '=' => { emit(:T_EQUALS, ts, te) };
         ':' => { emit(:T_COLON, ts, te) };

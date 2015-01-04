@@ -3,7 +3,7 @@
 #
 class LL::Bootstrap::Parser
 
-token T_RUBY T_NAME T_TOKENS T_INNER T_HEADER T_IDENT T_EQUALS T_COLON T_PIPE
+token T_RUBY T_NAME T_TERMINALS T_INNER T_HEADER T_IDENT T_EQUALS T_COLON T_PIPE
 token T_STAR T_PLUS T_QUESTION T_EPSILON T_SEMICOLON
 
 options no_result_var
@@ -26,7 +26,7 @@ rule
 
   directive
     : name
-    | tokens
+    | terminals
     | inner
     | header
     ;
@@ -49,10 +49,10 @@ rule
     | T_COLON T_COLON ident name_ns { [val[2]] + val[3] }
     ;
 
-  # %tokens directive
+  # %terminals directive
 
-  tokens
-    : T_TOKENS idents T_SEMICOLON
+  terminals
+    : T_TERMINALS idents T_SEMICOLON
       {
         s(:tokens, val[1], :source_line => val[0].source_line)
       }

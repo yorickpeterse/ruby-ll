@@ -42,15 +42,15 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex the %tokens directive' do
-      input = '%tokens A B C;'
+    example 'lex the %terminals directive' do
+      input = '%terminals A B C;'
 
       lex(input).should == [
-        token(:T_TOKENS, '%tokens', source_line(input)),
-        token(:T_IDENT, 'A', source_line(input, 1, 9)),
-        token(:T_IDENT, 'B', source_line(input, 1, 11)),
-        token(:T_IDENT, 'C', source_line(input, 1, 13)),
-        token(:T_SEMICOLON, ';', source_line(input, 1, 14))
+        token(:T_TERMINALS, '%terminals', source_line(input)),
+        token(:T_IDENT, 'A', source_line(input, 1, 12)),
+        token(:T_IDENT, 'B', source_line(input, 1, 14)),
+        token(:T_IDENT, 'C', source_line(input, 1, 16)),
+        token(:T_SEMICOLON, ';', source_line(input, 1, 17))
       ]
     end
 
