@@ -49,7 +49,7 @@ module LL
     def on_name(node, compiled_parser)
       if compiled_parser.name
         compiled_parser.add_warning(
-          "Overwriting existing parser name #{compiled_parser.name}",
+          "Overwriting existing parser name #{compiled_parser.name.inspect}",
           node.source_line
         )
       end

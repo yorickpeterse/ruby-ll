@@ -59,5 +59,23 @@ module LL
     def valid?
       return @errors.empty?
     end
+
+    ##
+    # Displays all warnings and errors.
+    #
+    def display_messages
+      [:errors, :warnings].each do |type|
+        send(type).each do |msg|
+          output.puts(msg.to_s)
+        end
+      end
+    end
+
+    ##
+    # @return [IO]
+    #
+    def output
+      return STDERR
+    end
   end # CompiledParser
 end # LL

@@ -1,3 +1,5 @@
+require 'pathname'
+
 require 'ast'
 require 'ansi/code'
 

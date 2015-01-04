@@ -4,16 +4,16 @@ module LL
   # column, line number, etc.
   #
   class SourceLine
-    attr_reader :name, :data, :line, :column
+    attr_reader :file, :data, :line, :column
 
     ##
     # @param [String] data
     # @param [Fixnum] line
     # @param [Fixnum] column
-    # @param [String] name
+    # @param [String] file
     #
-    def initialize(data, line = 1, column = 1, name = '(ruby)')
-      @name   = name
+    def initialize(data, line = 1, column = 1, file = '(ruby)')
+      @file   = file
       @data   = data
       @line   = line
       @column = column
@@ -23,7 +23,7 @@ module LL
     # @return [String]
     #
     def source
-      return data.lines[line - 1]
+      return data.lines[line - 1].chomp
     end
 
     ##
@@ -32,7 +32,7 @@ module LL
     def ==(other)
       return false unless other.class == self.class
 
-      return name == other.name &&
+      return file == other.file &&
         data == other.data &&
         line == other.line &&
         column == other.column
