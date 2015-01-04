@@ -54,7 +54,7 @@ rule
   terminals
     : T_TERMINALS idents T_SEMICOLON
       {
-        s(:tokens, val[1], :source_line => val[0].source_line)
+        s(:terminals, val[1], :source_line => val[0].source_line)
       }
     ;
 
