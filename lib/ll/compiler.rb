@@ -80,7 +80,7 @@ module LL
 
         if compiled_parser.has_terminal?(name)
           compiled_parser.add_error(
-            "Attempt to redefine existing terminal #{name.inspect}",
+            "The terminal #{name.inspect} has already been defined",
             child.source_line
           )
         else
@@ -113,6 +113,67 @@ module LL
     # @see [#process]
     #
     def on_rule(node, compiled_parser)
+      name = process(node.children[0], compiled_parser)
+
+      if compiled_parser.has_rule?(name)
+        compiled_parser.add_error(
+          "The rule #{name} has already been defined",
+          node.source_line
+        )
+
+        return
+      end
+
+      branches = node.children[1..-1].map do |child|
+        process(child, compiled_parser)
+      end
+    end
+
+    ##
+    # Processes a single rule branch.
+    #
+    # @see [#process]
+    # @return [LL::Branch]
+    #
+    def on_branch(node, compiled_parser)
+      steps = process(node.children[0], compiled_parser)
+
+      if node.children[1]
+        code = process(node.children[1], compiled_parser)
+      else
+        code = nil
+      end
+
+      return Branch.new(steps, code)
+    end
+
+    ##
+    # Processes the steps of a branch.
+    #
+    # @see [#process]
+    # @return [LL::Branch]
+    #
+    def on_steps(node, compiled_parser)
+      node.children.each do |step|
+        retval = process(step, compiled_parser)
+
+        if retval.is_a?(String)
+
+        else
+
+        end
+      end
+    end
+
+    ##
+    # Processes the kleene star operator. This method expands the operator into
+    # a set of anonymous rules and returns the start rule.
+    #
+    # @see [#process]
+    # @return [LL::Rule]
+    #
+    def on_star(node, compiled_parser)
+      receiver = process(node.children[0], compiled_parser)
 
     end
   end # Compiler

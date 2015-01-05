@@ -45,12 +45,32 @@ module LL
       @terminals[name] = Terminal.new(name, source_line)
     end
 
+    ##
+    # Returns true if a rule for the given name has already been assigned.
+    #
+    # Since the input grammar can contain rule references before they are
+    # assigned this method _only_ treats a rule as existing when:
+    #
+    # 1. The rule exists
+    # 2. The rule has 1 or more branches
+    #
+    # This allows for grammars such as the following:
+    #
+    #     x = y
+    #     y = T_SOMETHING
+    #
+    # @param [String] name
+    # @return [TrueClass|FalseClass]
+    #
     def has_rule?(name)
-
+      return @rules.key?(name) && !@rules[name].branches.empty?
     end
 
-    def add_rule(name, branches, source_line)
-
+    ##
+    # @param [LL::Rule] rule
+    #
+    def add_rule(rule)
+      @rules[rule.name] = rule
     end
 
     ##

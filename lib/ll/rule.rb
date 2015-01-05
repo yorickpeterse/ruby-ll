@@ -7,12 +7,11 @@ module LL
 
     ##
     # @param [String] name
-    # @param [Array] branches
     # @param [LL::SourceLine] source_line
     #
-    def initialize(name, branches, source_line)
+    def initialize(name, source_line)
       @name        = name
-      @branches    = branches
+      @branches    = []
       @source_line = source_line
     end
   end # Rule
