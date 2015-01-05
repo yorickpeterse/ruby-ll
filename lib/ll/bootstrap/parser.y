@@ -103,7 +103,7 @@ rule
 
   ident_or_capture
     : ident_or_capture_          { val[0] }
-    | ident_or_capture_ operator { s(val[1], val[0]) }
+    | ident_or_capture_ operator { s(val[1], [val[0]]) }
     ;
 
   ident_or_capture_
