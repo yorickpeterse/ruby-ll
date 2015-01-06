@@ -14,5 +14,11 @@ module LL
       @steps     = steps
       @ruby_code = ruby_code
     end
+
+    def inspect
+      code = @ruby_code ? '...' : nil
+
+      return "Branch(steps: #{@steps.inspect}, ruby_code: #{code.inspect})"
+    end
   end # Branch
 end # LL

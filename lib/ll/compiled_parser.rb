@@ -4,13 +4,17 @@ module LL
   # name, the parsing tables, etc.
   #
   class CompiledParser
-    attr_accessor :name, :warnings, :errors, :terminals
+    attr_accessor :name, :inner, :header
+
+    attr_reader :warnings, :errors
 
     def initialize
       @warnings  = []
       @errors    = []
       @terminals = {}
       @rules     = {}
+      @inner     = nil
+      @header    = nil
     end
 
     ##
@@ -48,22 +52,21 @@ module LL
     ##
     # Returns true if a rule for the given name has already been assigned.
     #
-    # Since the input grammar can contain rule references before they are
-    # assigned this method _only_ treats a rule as existing when:
-    #
-    # 1. The rule exists
-    # 2. The rule has 1 or more branches
-    #
-    # This allows for grammars such as the following:
-    #
-    #     x = y
-    #     y = T_SOMETHING
-    #
     # @param [String] name
     # @return [TrueClass|FalseClass]
     #
     def has_rule?(name)
-      return @rules.key?(name) && !@rules[name].branches.empty?
+      return @rules.key?(name)
+    end
+
+    ##
+    # Returns true if a rule already exists for a given name _and_ has at least
+    # 1 branch.
+    #
+    # @see [#has_rule?]
+    #
+    def has_rule_with_branches?(name)
+      return has_rule?(name) && !@rules[name].branches.empty?
     end
 
     ##
@@ -71,6 +74,49 @@ module LL
     #
     def add_rule(rule)
       @rules[rule.name] = rule
+    end
+
+    ##
+    # @param [String] name
+    # @return [LL::Rule]
+    #
+    def lookup_rule(name)
+      return @rules[name]
+    end
+
+    ##
+    # Looks up an identifier from the list of terminals and/or rules. Rules take
+    # precedence over terminals.
+    #
+    # If no rule/terminal could be found nil is returned instead.
+    #
+    # @param [String] name
+    # @return [LL::Rule|LL::Terminal|NilClass]
+    #
+    def lookup_identifier(name)
+      if has_rule?(name)
+        ident = lookup_rule(name)
+      elsif has_terminal?(name)
+        ident = @terminals[name]
+      else
+        ident = nil
+      end
+
+      return ident
+    end
+
+    ##
+    # @return [Array]
+    #
+    def rules
+      return @rules.values
+    end
+
+    ##
+    # @return [Array]
+    #
+    def terminals
+      return @terminals.values
     end
 
     ##

@@ -103,7 +103,13 @@ rule
 
   ident_or_capture
     : ident_or_capture_          { val[0] }
-    | ident_or_capture_ operator { s(val[1], [val[0]]) }
+    | ident_or_capture_ operator
+      {
+        op_name = val[1][0]
+        op_line = val[1][1]
+
+        s(op_name, [val[0]], :source_line => op_line)
+      }
     ;
 
   ident_or_capture_
@@ -146,9 +152,9 @@ rule
   # Operators
 
   operator
-    : T_STAR     { :star }
-    | T_PLUS     { :plus }
-    | T_QUESTION { :question }
+    : T_STAR     { [:star, val[0].source_line] }
+    | T_PLUS     { [:plus, val[0].source_line] }
+    | T_QUESTION { [:question, val[0].source_line] }
     ;
 
   # Ruby code blocks

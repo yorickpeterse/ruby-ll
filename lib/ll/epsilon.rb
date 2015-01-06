@@ -4,6 +4,17 @@ module LL
   # primarily used to break out of recursion.
   #
   class Epsilon
+    attr_reader :source_line
 
+    ##
+    # @param [LL::SourceLine] source_line
+    #
+    def initialize(source_line)
+      @source_line = source_line
+    end
+
+    def inspect
+      return 'Epsilon()'
+    end
   end # Epsilon
 end # LL
