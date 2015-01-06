@@ -22,13 +22,13 @@ directive
 # This handles the parsing of %name directives, which can either contain a
 # single name (e.g. "Foo") or a Ruby namespace (e.g. "Foo::Bar").
 
-name = T_NAME T_IDENT name_ns*;
+name = T_NAME T_IDENT name_ns* T_SEMICOLON;
 
 name_ns = T_COLON T_COLON T_IDENT;
 
 # Generic Directives
 
-terminals = T_TERMINALS idents;
+terminals = T_TERMINALS idents T_SEMICOLON;
 
 # Code Directives
 #
@@ -65,7 +65,7 @@ branches = branch branches_follow*;
 
 branches_follow = T_PIPE branches;
 
-rule = ident T_EQUALS branches;
+rule = ident T_EQUALS branches T_SEMICOLON;
 
 # Operators
 
