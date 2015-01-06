@@ -3,7 +3,7 @@
 %terminals T_RUBY T_NAME T_TERMINALS T_INNER T_HEADER T_IDENT T_EQUALS T_COLON;
 %terminals T_PIPE T_STAR T_PLUS T_QUESTION T_EPSILON T_SEMICOLON;
 
-grammar = elements*;
+grammar = element*;
 
 element
   = directive
@@ -12,7 +12,7 @@ element
 
 directive
   = name
-  | tokens
+  | terminals
   | inner
   | header
   ;
@@ -28,7 +28,7 @@ name_ns = T_COLON T_COLON T_IDENT;
 
 # Generic Directives
 
-tokens = T_TOKENS idents;
+terminals = T_TERMINALS idents;
 
 # Code Directives
 #
