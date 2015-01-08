@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe LL::Lexer do
   context 'rules' do
-    example 'lex a rule containing only a single identifier' do
+    it 'lexes a rule containing only a single identifier' do
       input = 'x = y;'
 
       lex(input).should == [
@@ -13,7 +13,7 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex a rule containing a single identifier with an underscore' do
+    it 'lexes a rule containing a single identifier with an underscore' do
       input = 'x = y_z;'
 
       lex(input).should == [
@@ -24,7 +24,7 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex a rule containing two identifiers' do
+    it 'lexes a rule containing two identifiers' do
       input = 'x = y z;'
 
       lex(input).should == [
@@ -36,7 +36,7 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex a rule conaining two identifiers separated by a pipe' do
+    it 'lexes a rule conaining two identifiers separated by a pipe' do
       input = 'x = y | z;'
 
       lex(input).should == [
@@ -49,7 +49,7 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex two rules containing a single identifier' do
+    it 'lexes two rules containing a single identifier' do
       input = <<-EOF.strip
 a = b | c;
 b = x;
@@ -69,7 +69,7 @@ b = x;
       ]
     end
 
-    example 'lex a rule containing a named capture' do
+    it 'lexes a rule containing a named capture' do
       input = 'x = y:foo;'
 
       lex(input).should == [
@@ -82,7 +82,7 @@ b = x;
       ]
     end
 
-    example 'lex a rule containing the maybe sign' do
+    it 'lexes a rule containing the maybe sign' do
       input = 'x = y?;'
 
       lex(input).should == [
@@ -94,7 +94,7 @@ b = x;
       ]
     end
 
-    example 'lex a rule containing the many sign' do
+    it 'lexes a rule containing the many sign' do
       input = 'x = y+;'
 
       lex(input).should == [
@@ -106,7 +106,7 @@ b = x;
       ]
     end
 
-    example 'lex a rule containing the kleene sign' do
+    it 'lexes a rule containing the kleene sign' do
       input = 'x = y*;'
 
       lex(input).should == [
@@ -118,7 +118,7 @@ b = x;
       ]
     end
 
-    example 'lex a rule containing an epsilon' do
+    it 'lexes a rule containing an epsilon' do
       input = 'x = _;'
 
       lex(input).should == [
@@ -129,7 +129,7 @@ b = x;
       ]
     end
 
-    example 'lex a rule followed by a block of Ruby code' do
+    it 'lexes a rule followed by a block of Ruby code' do
       input = 'x = y { 10 };'
 
       lex(input).should == [

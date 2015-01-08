@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe LL::Lexer do
   context 'directives' do
-    example 'lex the %name directive' do
+    it 'lexes the %name directive' do
       input = '%name Foo;'
 
       lex(input).should == [
@@ -12,7 +12,7 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex the %name directive preceded by spaces' do
+    it 'lexes the %name directive preceded by spaces' do
       input = '  %name Foo;'
 
       lex(input).should == [
@@ -22,7 +22,7 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex the %name directive preceded by a newline' do
+    it 'lexes the %name directive preceded by a newline' do
       input = "\n%name Foo;"
 
       lex(input).should == [
@@ -32,7 +32,7 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex the %name directive preceded by a newline and spaces' do
+    it 'lexes the %name directive preceded by a newline and spaces' do
       input = "\n  %name Foo;"
 
       lex(input).should == [
@@ -42,7 +42,7 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex the %terminals directive' do
+    it 'lexes the %terminals directive' do
       input = '%terminals A B C;'
 
       lex(input).should == [
@@ -54,7 +54,7 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex the %inner directive' do
+    it 'lexes the %inner directive' do
       input = <<-EOF.strip
 %inner {
   foo
@@ -68,7 +68,7 @@ describe LL::Lexer do
       ]
     end
 
-    example 'lex the %header directive' do
+    it 'lexes the %header directive' do
       input = <<-EOF.strip
 %header {
   foo
