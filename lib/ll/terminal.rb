@@ -19,8 +19,11 @@ module LL
       @references += 1
     end
 
+    ##
+    # @return [String]
+    #
     def inspect
-      return "Terminal(name: #{@name.inspect})"
+      return "Terminal(name: #{name.inspect})"
     end
   end # Terminal
 end # LL
