@@ -15,10 +15,11 @@ module LL
       @ruby_code = ruby_code
     end
 
+    ##
+    # @return [String]
+    #
     def inspect
-      code = @ruby_code ? '...' : nil
-
-      return "Branch(steps: #{@steps.inspect}, ruby_code: #{code.inspect})"
+      return "Branch(steps: #{@steps.inspect}, ruby_code: #{@ruby_code.inspect})"
     end
   end # Branch
 end # LL
