@@ -10,6 +10,12 @@ describe LL::SourceLine do
 
       line.source.should == '  bar'
     end
+
+    it 'removes trailing whitespace' do
+      line = described_class.new("foo\n")
+
+      line.source.should == 'foo'
+    end
   end
 
   describe '#==' do
