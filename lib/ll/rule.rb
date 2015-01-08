@@ -16,6 +16,9 @@ module LL
       @references  = 0
     end
 
+    ##
+    # @see [LL::Branch#initialize]
+    #
     def add_branch(steps, ruby_code = nil)
       branches << Branch.new(steps, ruby_code)
     end
@@ -24,8 +27,11 @@ module LL
       @references += 1
     end
 
+    ##
+    # @return [String]
+    #
     def inspect
-      return "Rule(name: #{@name.inspect}, branches: #{@branches.inspect})"
+      return "Rule(name: #{name.inspect}, branches: #{branches.inspect})"
     end
   end # Rule
 end # LL
