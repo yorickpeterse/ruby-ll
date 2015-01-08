@@ -14,6 +14,9 @@ module LL
 
       process(ast, compiled)
 
+      warn_for_unused_terminals(compiled)
+      warn_for_unused_rules(compiled)
+
       return compiled
     end
 
@@ -46,24 +49,38 @@ module LL
       node.children.each do |child|
         process(child, compiled_parser)
       end
+    end
 
+    ##
+    # Adds warnings for any unused rules. The first defined rule is skipped
+    # since it's the root rule.
+    #
+    # @param [LL::CompiledParser] compiled_parser
+    #
+    def warn_for_unused_rules(compiled_parser)
       compiled_parser.rules.each_with_index do |rule, index|
-        # The first rule is the root rule, so it will always be used.
-        if rule.references == 0 and index != 0
-          compiled_parser.add_warning(
-            "Unused rule #{rule.name.inspect}",
-            rule.source_line
-          )
-        end
-      end
+        next if index == 0 || rule.references > 0
 
+        compiled_parser.add_warning(
+          "Unused rule #{rule.name.inspect}",
+          rule.source_line
+        )
+      end
+    end
+
+    ##
+    # Adds warnings for any unused terminals.
+    #
+    # @param [LL::CompiledParser] compiled_parser
+    #
+    def warn_for_unused_terminals(compiled_parser)
       compiled_parser.terminals.each do |terminal|
-        if terminal.references == 0
-          compiled_parser.add_warning(
-            "Unused terminal #{terminal.name.inspect}",
-            terminal.source_line
-          )
-        end
+        next if terminal.references > 0
+
+        compiled_parser.add_warning(
+          "Unused terminal #{terminal.name.inspect}",
+          terminal.source_line
+        )
       end
     end
 
