@@ -27,16 +27,16 @@ module LL
     end
 
     ##
+    # Returns a String containing details of the message, complete with ANSI
+    # colour sequences.
+    #
     # @return [String]
     #
     def to_s
-      padding = ' ' * (column - 1)
-      marker  = padding + ANSI.bold(ANSI.magenta('^'))
+      location = ANSI.ansi("#{relative_path}:#{line}:#{column}", :white, :bold)
 
-      location   = ANSI.bold(ANSI.white("#{relative_path}:#{line}:#{column}"))
-      type_label = ANSI.bold(ANSI.send(COLORS[type], type.to_s))
-
-      msg_line = "#{location}:#{type_label}: #{message}"
+      type_label = ANSI.ansi(type.to_s, COLORS[type], :bold)
+      msg_line   = "#{location}:#{type_label}: #{message}"
 
       return "#{msg_line}\n#{source_line.source}\n#{marker}"
     end
@@ -44,7 +44,21 @@ module LL
     ##
     # @return [String]
     #
+    def inspect
+      return "Message(type: #{type.inspect}, message: #{message.inspect}, " \
+        "file: #{relative_path.inspect}, line: #{line}, column: #{column})"
+    end
+
+    ##
+    # Returns the path of the message relative to the current working directory.
+    #
+    # @return [String]
+    #
     def relative_path
+      if source_line.file == SourceLine::DEFAULT_FILE
+        return source_line.file
+      end
+
       from = Pathname.new(source_line.file)
       to   = Pathname.new(Dir.pwd)
 
@@ -63,6 +77,17 @@ module LL
     #
     def column
       return source_line.column
+    end
+
+    private
+
+    ##
+    # @return [String]
+    #
+    def marker
+      padding = ' ' * (column - 1)
+
+      return padding + ANSI.ansi('^', :magenta, :bold)
     end
   end # Message
 end # LL

@@ -7,12 +7,17 @@ module LL
     attr_reader :file, :data, :line, :column
 
     ##
+    # @return [String]
+    #
+    DEFAULT_FILE = '(ruby)'
+
+    ##
     # @param [String] data
     # @param [Fixnum] line
     # @param [Fixnum] column
     # @param [String] file
     #
-    def initialize(data, line = 1, column = 1, file = '(ruby)')
+    def initialize(data, line = 1, column = 1, file = DEFAULT_FILE)
       @file   = file
       @data   = data
       @line   = line

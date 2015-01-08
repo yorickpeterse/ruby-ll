@@ -13,7 +13,7 @@ module LL
     # @param [String] data The data to lex.
     # @param [String] file The name of the input file.
     #
-    def initialize(data, file = '(ruby)')
+    def initialize(data, file = SourceLine::DEFAULT_FILE)
       @data = data
       @file = file
 

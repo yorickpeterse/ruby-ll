@@ -14,8 +14,8 @@ if RUBY_PLATFORM == 'java'
 end
 #:nocov:
 
-require_relative 'll/lexer'
 require_relative 'll/source_line'
+require_relative 'll/lexer'
 require_relative 'll/token'
 require_relative 'll/parser_error'
 require_relative 'll/compiler'
