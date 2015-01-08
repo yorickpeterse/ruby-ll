@@ -19,7 +19,7 @@ module LL
     # @return [String]
     #
     def inspect
-      return "Branch(steps: #{@steps.inspect}, ruby_code: #{@ruby_code.inspect})"
+      return "Branch(steps: #{steps.inspect}, ruby_code: #{ruby_code.inspect})"
     end
   end # Branch
 end # LL
