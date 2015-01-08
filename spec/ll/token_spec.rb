@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe LL::Token do
-  context '#==' do
+  describe '#==' do
     before do
       @line  = source_line('foo')
       @token = described_class.new(:T_IDENT, 'foo', @line)

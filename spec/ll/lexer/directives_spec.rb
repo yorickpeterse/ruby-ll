@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe LL::Lexer do
-  context 'directives' do
+  describe 'using directives' do
     it 'lexes the %name directive' do
       input = '%name Foo;'
 

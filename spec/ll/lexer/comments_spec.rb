@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe LL::Lexer do
-  context 'comments' do
+  describe 'using comments' do
     it 'lexes a single comment' do
       lex('# foo').should == []
     end

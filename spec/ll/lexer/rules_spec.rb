@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe LL::Lexer do
-  context 'rules' do
+  describe 'using rules' do
     it 'lexes a rule containing only a single identifier' do
       input = 'x = y;'
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe LL::SourceLine do
-  context '#source' do
+  describe '#source' do
     it 'returns the source code of the line' do
       line = described_class.new(<<-EOF.strip, 2, 3)
 # Foo
@@ -12,7 +12,7 @@ describe LL::SourceLine do
     end
   end
 
-  context '#==' do
+  describe '#==' do
     before do
       @line = described_class.new('foo', 1, 1)
     end
