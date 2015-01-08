@@ -13,6 +13,9 @@ module LL
       @source_line = source_line
     end
 
+    ##
+    # @return [String]
+    #
     def inspect
       return 'Epsilon()'
     end
