@@ -1,6 +1,25 @@
 require 'spec_helper'
 
 describe LL::Token do
+  describe '#initialize' do
+    before do
+      @line  = source_line('foo')
+      @token = described_class.new(:T_IDENT, 'foo', @line)
+    end
+
+    it 'sets the type' do
+      @token.type.should == :T_IDENT
+    end
+
+    it 'sets the value' do
+      @token.value.should == 'foo'
+    end
+
+    it 'sets the source line' do
+      @token.source_line.should == @line
+    end
+  end
+
   describe '#==' do
     before do
       @line  = source_line('foo')
