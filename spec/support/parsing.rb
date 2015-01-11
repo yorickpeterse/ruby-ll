@@ -23,5 +23,14 @@ module LL
     def token(*args)
       return LL::Token.new(*args)
     end
+
+    ##
+    # @see [LL::AST::Node]
+    # @param [Symbol] type
+    # @param [Array] children
+    #
+    def s(type, *children)
+      return LL::AST::Node.new(type, children)
+    end
   end # ParsingHelpers
 end # LL
