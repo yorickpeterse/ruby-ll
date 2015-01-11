@@ -1,3 +1,4 @@
+require 'stringio'
 require 'rspec'
 
 if ENV['COVERAGE']

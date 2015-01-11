@@ -44,9 +44,10 @@ module LL
     ##
     # @param [String] name
     # @param [LL::SourceLine] source_line
+    # @return [LL::Terminal]
     #
     def add_terminal(name, source_line)
-      @terminals[name] = Terminal.new(name, source_line)
+      return @terminals[name] = Terminal.new(name, source_line)
     end
 
     ##
@@ -71,9 +72,10 @@ module LL
 
     ##
     # @param [LL::Rule] rule
+    # @return [LL::Rule]
     #
     def add_rule(rule)
-      @rules[rule.name] = rule
+      return @rules[rule.name] = rule
     end
 
     ##
