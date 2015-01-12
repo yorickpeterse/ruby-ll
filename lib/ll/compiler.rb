@@ -106,7 +106,7 @@ module LL
     ##
     # Processes the assignment of terminals.
     #
-    # @see [#process]
+    # @see #process
     #
     def on_terminals(node, compiled_parser)
       node.children.each do |child|
@@ -126,7 +126,7 @@ module LL
     ##
     # Processes an %inner directive.
     #
-    # @see [#process]
+    # @see #process
     #
     def on_inner(node, compiled_parser)
       compiled_parser.inner = process(node.children[0], compiled_parser)
@@ -135,7 +135,7 @@ module LL
     ##
     # Processes a %header directive.
     #
-    # @see [#process]
+    # @see #process
     #
     def on_header(node, compiled_parser)
       compiled_parser.header = process(node.children[0], compiled_parser)
@@ -144,7 +144,7 @@ module LL
     ##
     # Processes a node containing Ruby source code.
     #
-    # @see [#process]
+    # @see #process
     # @return [String]
     #
     def on_ruby(node, compiled_parser)
@@ -154,7 +154,7 @@ module LL
     ##
     # Extracts the name from an identifier.
     #
-    # @see [#process]
+    # @see #process
     # @return [String]
     #
     def on_ident(node, compiled_parser)
@@ -164,7 +164,7 @@ module LL
     ##
     # Processes an epsilon.
     #
-    # @see [#process]
+    # @see #process
     # @return [LL::Epsilon]
     #
     def on_epsilon(node, compiled_parser)
@@ -174,7 +174,7 @@ module LL
     ##
     # Processes the assignment of a rule.
     #
-    # @see [#process]
+    # @see #process
     #
     def on_rule(node, compiled_parser)
       name = process(node.children[0], compiled_parser)
@@ -200,7 +200,7 @@ module LL
     ##
     # Creates a basic prototype for a rule.
     #
-    # @see [#process]
+    # @see #process
     #
     def on_rule_prototype(node, compiled_parser)
       name = process(node.children[0], compiled_parser)
@@ -215,7 +215,7 @@ module LL
     ##
     # Processes a single rule branch.
     #
-    # @see [#process]
+    # @see #process
     # @return [LL::Branch]
     #
     def on_branch(node, compiled_parser)
@@ -233,7 +233,7 @@ module LL
     ##
     # Processes the steps of a branch.
     #
-    # @see [#process]
+    # @see #process
     # @return [Array]
     #
     def on_steps(node, compiled_parser)
@@ -278,7 +278,7 @@ module LL
     #     y1 = y2 | _;
     #     y2 = y y1;
     #
-    # @see [#process]
+    # @see #process
     # @return [LL::Rule]
     #
     def on_star(node, compiled_parser)
@@ -313,7 +313,7 @@ module LL
     #     y1 = y y2;
     #     y2 = y1 | _;
     #
-    # @see [#process]
+    # @see #process
     # @return [LL::Rule]
     #
     def on_plus(node, compiled_parser)
@@ -345,7 +345,7 @@ module LL
     #     x  = y1;
     #     y1 = y | _;
     #
-    # @see [#process]
+    # @see #process
     # @return [LL::Rule]
     #
     def on_question(node, compiled_parser)
