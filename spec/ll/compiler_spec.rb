@@ -125,4 +125,55 @@ describe LL::Compiler do
       retval.source_line.should == @source_line
     end
   end
+
+  describe '#on_rule' do
+    before do
+      @node = s(
+        :rule,
+        s(:ident, 'foo'),
+        s(:branch, s(:steps, s(:ident, 'A')), s(:ruby, 'foo'))
+      )
+
+      @rule = LL::Rule.new('foo', source_line(''))
+
+      @compiled.add_rule(@rule)
+      @compiled.add_terminal('A', source_line(''))
+    end
+
+    it 'sets the rule branches' do
+      @compiler.on_rule(@node, @compiled)
+
+      @rule.branches.length.should == 1
+    end
+
+    it 'sets the steps of the branch' do
+      @compiler.on_rule(@node, @compiled)
+
+      @rule.branches[0].steps.length.should == 1
+    end
+
+    it 'sets the Ruby code of the branch' do
+      @compiler.on_rule(@node, @compiled)
+
+      @rule.branches[0].ruby_code.should == 'foo'
+    end
+
+    describe 'with an existing rule' do
+      it 'adds an error message' do
+        @compiler.on_rule(@node, @compiled)
+        @compiler.on_rule(@node, @compiled)
+
+        @compiled.errors[0].message.should ==
+          'The rule "foo" has already been defined'
+      end
+
+      it 'does not overwrite the existing rule' do
+        @compiler.on_rule(@node, @compiled)
+
+        @rule.branches.should_not receive(:concat)
+
+        @compiler.on_rule(@node, @compiled)
+      end
+    end
+  end
 end

@@ -181,7 +181,7 @@ module LL
 
       if compiled_parser.has_rule_with_branches?(name)
         compiled_parser.add_error(
-          "The rule #{name} has already been defined",
+          "The rule #{name.inspect} has already been defined",
           node.source_line
         )
 
@@ -255,7 +255,8 @@ module LL
         # In case of an undefined terminal/rule (either on its own or inside an
         # operator).
         if step
-          step.increment_references
+          step.increment_references if step.respond_to?(:increment_references)
+
           steps << step
         end
       end
