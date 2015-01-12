@@ -89,4 +89,12 @@ describe LL::Compiler do
       @compiled.header.should == 'foo'
     end
   end
+
+  describe '#on_ruby' do
+    it 'returns the Ruby code as a String' do
+      node = s(:ruby, 'foo')
+
+      @compiler.on_ruby(node, @compiled).should == 'foo'
+    end
+  end
 end
