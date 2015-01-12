@@ -194,4 +194,30 @@ describe LL::Compiler do
       @compiled.has_rule?('foo').should == true
     end
   end
+
+  describe '#on_branch' do
+    before do
+      @node = s(:branch, s(:steps, s(:ident, 'A')), s(:ruby, 'foo'))
+
+      @compiled.add_terminal('A', source_line('A'))
+    end
+
+    it 'returns a Branch' do
+      branch = @compiler.on_branch(@node, @compiled)
+
+      branch.is_a?(LL::Branch).should == true
+    end
+
+    it 'sets the steps of the branch' do
+      branch = @compiler.on_branch(@node, @compiled)
+
+      branch.steps.length.should == 1
+    end
+
+    it 'sets the Ruby code of the branch' do
+      branch = @compiler.on_branch(@node, @compiled)
+
+      branch.ruby_code.should == 'foo'
+    end
+  end
 end
