@@ -176,4 +176,22 @@ describe LL::Compiler do
       end
     end
   end
+
+  describe '#on_rule_prototype' do
+    before do
+      @source_line = source_line('foo')
+
+      @node = LL::AST::Node.new(
+        :rule,
+        [s(:ident, 'foo')],
+        :source_line => @source_line
+      )
+    end
+
+    it 'defines the prototype of a rule' do
+      @compiler.on_rule_prototype(@node, @compiled)
+
+      @compiled.has_rule?('foo').should == true
+    end
+  end
 end
