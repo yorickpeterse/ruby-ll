@@ -34,4 +34,35 @@ describe LL::Compiler do
       end
     end
   end
+
+  describe '#on_terminals' do
+    before do
+      @node = s(:terminals, s(:ident, 'A'))
+    end
+
+    it 'defines a new terminal' do
+      @compiler.on_terminals(@node, @compiled)
+
+      @compiled.has_terminal?('A').should == true
+    end
+
+    describe 'with an existing terminal' do
+      before do
+        @compiler.on_terminals(@node, @compiled)
+      end
+
+      it 'does not overwrite the existing terminal' do
+        @compiled.should_not receive(:add_terminal)
+
+        @compiler.on_terminals(@node, @compiled)
+      end
+
+      it 'adds an error message' do
+        @compiler.on_terminals(@node, @compiled)
+
+        @compiled.errors[0].message.should ==
+          'The terminal "A" has already been defined'
+      end
+    end
+  end
 end
