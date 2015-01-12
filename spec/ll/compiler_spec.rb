@@ -220,4 +220,44 @@ describe LL::Compiler do
       branch.ruby_code.should == 'foo'
     end
   end
+
+  describe '#on_steps' do
+    describe 'when using identifiers' do
+      before do
+        @node = s(:steps, s(:ident, 'A'))
+      end
+
+      it 'returns the steps as an Array' do
+        @terminal = @compiled.add_terminal('A', source_line('A'))
+
+        @compiler.on_steps(@node, @compiled).should == [@terminal]
+      end
+
+      it 'increments the reference count of the terminal' do
+        @terminal = @compiled.add_terminal('A', source_line('A'))
+
+        @compiler.on_steps(@node, @compiled)
+
+        @terminal.references.should == 1
+      end
+
+      it 'adds an error for an undefined identifier' do
+        @compiler.on_steps(@node, @compiled)
+
+        @compiled.errors[0].message.should == 'Undefined terminal or rule "A"'
+      end
+    end
+
+    describe 'when using non identifiers' do
+      before do
+        @node = s(:steps, s(:epsilon))
+      end
+
+      it 'returns the steps as an Array' do
+        steps = @compiler.on_steps(@node, @compiled)
+
+        steps[0].is_a?(LL::Epsilon).should == true
+      end
+    end
+  end
 end
