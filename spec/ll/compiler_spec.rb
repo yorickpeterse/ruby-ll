@@ -97,4 +97,12 @@ describe LL::Compiler do
       @compiler.on_ruby(node, @compiled).should == 'foo'
     end
   end
+
+  describe '#on_ident' do
+    it 'returns the identifier name as a String' do
+      node = s(:ident, 'foo')
+
+      @compiler.on_ident(node, @compiled).should == 'foo'
+    end
+  end
 end
