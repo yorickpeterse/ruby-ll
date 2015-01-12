@@ -105,4 +105,24 @@ describe LL::Compiler do
       @compiler.on_ident(node, @compiled).should == 'foo'
     end
   end
+
+  describe '#on_epsilon' do
+    before do
+      @source_line = source_line('foo')
+
+      @node = LL::AST::Node.new(:epsilon, [], :source_line => @source_line)
+    end
+
+    it 'returns an Epsilon' do
+      retval = @compiler.on_epsilon(@node, @compiled)
+
+      retval.is_a?(LL::Epsilon).should == true
+    end
+
+    it 'sets the source line of the Epsilon' do
+      retval = @compiler.on_epsilon(@node, @compiled)
+
+      retval.source_line.should == @source_line
+    end
+  end
 end
