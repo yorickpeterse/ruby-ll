@@ -65,4 +65,28 @@ describe LL::Compiler do
       end
     end
   end
+
+  describe '#on_inner' do
+    before do
+      @node = s(:inner, s(:ruby, 'foo'))
+    end
+
+    it 'sets the inner block' do
+      @compiler.on_inner(@node, @compiled)
+
+      @compiled.inner.should == 'foo'
+    end
+  end
+
+  describe '#on_header' do
+    before do
+      @node = s(:header, s(:ruby, 'foo'))
+    end
+
+    it 'sets the header block' do
+      @compiler.on_header(@node, @compiled)
+
+      @compiled.header.should == 'foo'
+    end
+  end
 end
