@@ -260,4 +260,64 @@ describe LL::Compiler do
       end
     end
   end
+
+  describe '#on_star' do
+    before do
+      @node     = s(:star, s(:ident, 'A'))
+      @terminal = @compiled.add_terminal('A', source_line('A'))
+    end
+
+    it 'returns a Rule' do
+      @compiler.on_star(@node, @compiled).is_a?(LL::Rule).should == true
+    end
+
+    it 'sets the name of the first rule' do
+      @compiler.on_star(@node, @compiled).name.should == '_A1'
+    end
+
+    it 'adds two branches to the first rule' do
+      rule = @compiler.on_star(@node, @compiled)
+
+      rule.branches.length.should == 2
+    end
+
+    it 'sets the steps of the first branch of the first rule' do
+      branch = @compiler.on_star(@node, @compiled).branches[0]
+
+      branch.steps.length.should             == 1
+      branch.steps[0].is_a?(LL::Rule).should == true
+    end
+
+    it 'sets the steps of the second branch of the first rule' do
+      branch = @compiler.on_star(@node, @compiled).branches[1]
+
+      branch.steps.length.should                == 1
+      branch.steps[0].is_a?(LL::Epsilon).should == true
+    end
+
+    it 'sets the name of the second rule' do
+      rule1 = @compiler.on_star(@node, @compiled)
+      rule2 = rule1.branches[0].steps[0]
+
+      rule2.name.should == '_A2'
+    end
+
+    it 'adds a single branch to the second rule' do
+      rule1 = @compiler.on_star(@node, @compiled)
+      rule2 = rule1.branches[0].steps[0]
+
+      rule2.branches.length.should == 1
+    end
+
+    it 'sets the steps of the first branch of the second rule' do
+      rule1  = @compiler.on_star(@node, @compiled)
+      rule2  = rule1.branches[0].steps[0]
+      branch = rule2.branches[0]
+
+      branch.steps.length.should == 2
+
+      branch.steps[0].should == @terminal
+      branch.steps[1].should == rule1
+    end
+  end
 end
