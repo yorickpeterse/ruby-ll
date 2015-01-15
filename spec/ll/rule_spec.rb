@@ -31,7 +31,7 @@ describe LL::Rule do
 
       rule.add_branch([LL::Epsilon.new(line)], 'foo')
 
-      rule.branches[0].is_a?(LL::Branch).should == true
+      rule.branches[0].should be_an_instance_of(LL::Branch)
     end
   end
 

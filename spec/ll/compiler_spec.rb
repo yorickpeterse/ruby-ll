@@ -116,7 +116,7 @@ describe LL::Compiler do
     it 'returns an Epsilon' do
       retval = @compiler.on_epsilon(@node, @compiled)
 
-      retval.is_a?(LL::Epsilon).should == true
+      retval.should be_an_instance_of(LL::Epsilon)
     end
 
     it 'sets the source line of the Epsilon' do
@@ -205,7 +205,7 @@ describe LL::Compiler do
     it 'returns a Branch' do
       branch = @compiler.on_branch(@node, @compiled)
 
-      branch.is_a?(LL::Branch).should == true
+      branch.should be_an_instance_of(LL::Branch)
     end
 
     it 'sets the steps of the branch' do
@@ -256,7 +256,7 @@ describe LL::Compiler do
       it 'returns the steps as an Array' do
         steps = @compiler.on_steps(@node, @compiled)
 
-        steps[0].is_a?(LL::Epsilon).should == true
+        steps[0].should be_an_instance_of(LL::Epsilon)
       end
     end
   end
@@ -268,7 +268,9 @@ describe LL::Compiler do
     end
 
     it 'returns a Rule' do
-      @compiler.on_star(@node, @compiled).is_a?(LL::Rule).should == true
+      rule = @compiler.on_star(@node, @compiled)
+
+      rule.should be_an_instance_of(LL::Rule)
     end
 
     it 'sets the name of the first rule' do
@@ -284,15 +286,17 @@ describe LL::Compiler do
     it 'sets the steps of the first branch of the first rule' do
       branch = @compiler.on_star(@node, @compiled).branches[0]
 
-      branch.steps.length.should             == 1
-      branch.steps[0].is_a?(LL::Rule).should == true
+      branch.steps.length.should == 1
+
+      branch.steps[0].should be_an_instance_of(LL::Rule)
     end
 
     it 'sets the steps of the second branch of the first rule' do
       branch = @compiler.on_star(@node, @compiled).branches[1]
 
-      branch.steps.length.should                == 1
-      branch.steps[0].is_a?(LL::Epsilon).should == true
+      branch.steps.length.should == 1
+
+      branch.steps[0].should be_an_instance_of(LL::Epsilon)
     end
 
     it 'sets the name of the second rule' do
@@ -328,7 +332,9 @@ describe LL::Compiler do
     end
 
     it 'returns a Rule' do
-      @compiler.on_plus(@node, @compiled).is_a?(LL::Rule).should == true
+      rule = @compiler.on_plus(@node, @compiled)
+
+      rule.should be_an_instance_of(LL::Rule)
     end
 
     it 'sets the name of the first rule' do
@@ -346,8 +352,9 @@ describe LL::Compiler do
 
       branch.steps.length.should == 2
 
-      branch.steps[0].should                 == @terminal
-      branch.steps[1].is_a?(LL::Rule).should == true
+      branch.steps[0].should == @terminal
+
+      branch.steps[1].should be_an_instance_of(LL::Rule)
     end
 
     it 'sets the name of the second rule' do
@@ -371,8 +378,9 @@ describe LL::Compiler do
 
       branch.steps.length.should == 2
 
-      branch.steps[0].should                    == rule1
-      branch.steps[1].is_a?(LL::Epsilon).should == true
+      branch.steps[0].should == rule1
+
+      branch.steps[1].should be_an_instance_of(LL::Epsilon)
     end
   end
 end
