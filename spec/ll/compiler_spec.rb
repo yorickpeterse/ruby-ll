@@ -383,4 +383,44 @@ describe LL::Compiler do
       branch.steps[1].should be_an_instance_of(LL::Epsilon)
     end
   end
+
+  describe '#on_question' do
+    before do
+      @node     = s(:question, s(:ident, 'A'))
+      @terminal = @compiled.add_terminal('A', source_line('A'))
+    end
+
+    it 'returns a Rule' do
+      rule = @compiler.on_question(@node, @compiled)
+
+      rule.should be_an_instance_of(LL::Rule)
+    end
+
+    it 'sets the name of the first rule' do
+      rule = @compiler.on_question(@node, @compiled)
+
+      rule.name.should == '_A1'
+    end
+
+    it 'adds two branches to the first rule' do
+      rule = @compiler.on_question(@node, @compiled)
+
+      rule.branches.length.should == 2
+    end
+
+    it 'sets the steps of the first branch' do
+      branch = @compiler.on_question(@node, @compiled).branches[0]
+
+      branch.steps.length.should == 1
+      branch.steps[0].should     == @terminal
+    end
+
+    it 'sets the steps of the second branch' do
+      branch = @compiler.on_question(@node, @compiled).branches[1]
+
+      branch.steps.length.should == 1
+
+      branch.steps[0].should be_an_instance_of(LL::Epsilon)
+    end
+  end
 end
