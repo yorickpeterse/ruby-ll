@@ -267,6 +267,12 @@ describe LL::Compiler do
       @terminal = @compiled.add_terminal('A', source_line('A'))
     end
 
+    it 'increments the reference count of the receiver' do
+      @compiler.on_star(@node, @compiled)
+
+      @terminal.references.should == 1
+    end
+
     it 'returns a Rule' do
       rule = @compiler.on_star(@node, @compiled)
 
@@ -331,6 +337,12 @@ describe LL::Compiler do
       @terminal = @compiled.add_terminal('A', source_line('A'))
     end
 
+    it 'increments the reference count of the receiver' do
+      @compiler.on_plus(@node, @compiled)
+
+      @terminal.references.should == 1
+    end
+
     it 'returns a Rule' do
       rule = @compiler.on_plus(@node, @compiled)
 
@@ -388,6 +400,12 @@ describe LL::Compiler do
     before do
       @node     = s(:question, s(:ident, 'A'))
       @terminal = @compiled.add_terminal('A', source_line('A'))
+    end
+
+    it 'increments the reference count of the receiver' do
+      @compiler.on_question(@node, @compiled)
+
+      @terminal.references.should == 1
     end
 
     it 'returns a Rule' do
