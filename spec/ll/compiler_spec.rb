@@ -6,6 +6,83 @@ describe LL::Compiler do
     @compiled = LL::CompiledParser.new
   end
 
+  describe '#compile' do
+    before do
+      @node = s(
+        :grammar,
+        s(:terminals, s(:ident, 'A'), s(:ident, 'B')),
+        s(:rule, s(:ident, 'foo'), s(:branch, s(:steps, s(:ident, 'A')))),
+        s(:rule, s(:ident, 'bar'), s(:branch, s(:steps, s(:ident, 'A'))))
+      )
+    end
+
+    it 'processes the AST' do
+      @compiler.should_receive(:process)
+
+      @compiler.compile(@node)
+    end
+
+    it 'adds warnings for unused terminals' do
+      @compiler.should_receive(:warn_for_unused_terminals)
+
+      @compiler.compile(@node)
+    end
+
+    it 'adds warnings for unused rules' do
+      @compiler.should_receive(:warn_for_unused_rules)
+
+      @compiler.compile(@node)
+    end
+  end
+
+  describe '#on_grammar' do
+    before do
+      @node = s(
+        :grammar,
+        s(:rule, s(:ident, 'foo'), s(:branch, s(:steps, s(:ident, 'A'))))
+      )
+    end
+
+    it 'builds a rule prototype' do
+      @compiler.should_receive(:on_rule_prototype).and_call_original
+
+      @compiler.on_grammar(@node, @compiled)
+    end
+
+    it 'builds a rule' do
+      @compiler.should_receive(:on_rule).and_call_original
+
+      @compiler.on_grammar(@node, @compiled)
+    end
+  end
+
+  describe '#warn_for_unused_rules' do
+    before do
+      @compiled.add_rule(LL::Rule.new('foo', source_line('')))
+      @compiled.add_rule(LL::Rule.new('bar', source_line('')))
+    end
+
+    it 'adds warnings for unused rules except for the first rule' do
+      @compiler.warn_for_unused_rules(@compiled)
+
+      @compiled.warnings.length.should == 1
+      @compiled.warnings[0].should be_an_instance_of(LL::Message)
+    end
+  end
+
+  describe '#warn_for_unused_terminals' do
+    before do
+      @compiled.add_terminal('foo', source_line(''))
+    end
+
+    it 'adds warnings for unused terminals' do
+      @compiler.warn_for_unused_terminals(@compiled)
+
+      @compiled.warnings.length.should == 1
+      @compiled.warnings[0].should be_an_instance_of(LL::Message)
+    end
+  end
+
   describe '#on_name' do
     before do
       @node = s(:name, s(:ident, 'Foo'), s(:ident, 'Bar'))

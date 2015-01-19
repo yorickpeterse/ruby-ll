@@ -32,26 +32,6 @@ module LL
     end
 
     ##
-    # Processes the root node of a grammar.
-    #
-    # @param [LL::AST::Node] node
-    # @param [LL::CompiledParser] compiled_parser
-    #
-    def on_grammar(node, compiled_parser)
-      # Create the prototypes for all rules since rules can be referenced before
-      # they are defined.
-      node.children.each do |child|
-        if child.type == :rule
-          on_rule_prototype(child, compiled_parser)
-        end
-      end
-
-      node.children.each do |child|
-        process(child, compiled_parser)
-      end
-    end
-
-    ##
     # Adds warnings for any unused rules. The first defined rule is skipped
     # since it's the root rule.
     #
@@ -81,6 +61,26 @@ module LL
           "Unused terminal #{terminal.name.inspect}",
           terminal.source_line
         )
+      end
+    end
+
+    ##
+    # Processes the root node of a grammar.
+    #
+    # @param [LL::AST::Node] node
+    # @param [LL::CompiledParser] compiled_parser
+    #
+    def on_grammar(node, compiled_parser)
+      # Create the prototypes for all rules since rules can be referenced before
+      # they are defined.
+      node.children.each do |child|
+        if child.type == :rule
+          on_rule_prototype(child, compiled_parser)
+        end
+      end
+
+      node.children.each do |child|
+        process(child, compiled_parser)
       end
     end
 
