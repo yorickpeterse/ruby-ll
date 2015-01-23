@@ -5,6 +5,7 @@ require 'ansi/code'
 
 require_relative 'll/version'
 require_relative 'll/driver'
+require_relative 'll/driver_config'
 
 require_relative 'libll'
 
