@@ -15,20 +15,19 @@ ID id_invalid_token_error;
 
 void ll_driver_free(DriverState *state)
 {
-    vec_deinit(&state->stack);
-    vec_deinit(&state->value_stack);
+    kv_destroy(state->stack);
+    kv_destroy(state->value_stack);
 
     free(state);
 }
 
 void ll_driver_mark(DriverState *state)
 {
-    int index;
-    VALUE value;
+    size_t index;
 
-    vec_foreach(&state->value_stack, value, index)
+    FOR(index, kv_size(state->value_stack))
     {
-        rb_gc_mark(value);
+        rb_gc_mark(kv_A(state->value_stack, index));
     }
 }
 
@@ -40,8 +39,8 @@ VALUE ll_driver_allocate(VALUE klass)
         rb_const_get(klass, id_config_const)
     );
 
-    vec_init(&state->stack);
-    vec_init(&state->value_stack);
+    kv_init(state->stack);
+    kv_init(state->value_stack);
 
     return Data_Wrap_Struct(klass, ll_driver_mark, ll_driver_free, state);
 }
@@ -71,8 +70,8 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
 
     while ( 1 )
     {
-        stack_value    = vec_pop(&state->stack);
-        stack_type     = vec_pop(&state->stack);
+        stack_value    = kv_pop(state->stack);
+        stack_type     = kv_pop(state->stack);
         token_id_value = -1;
         token_id       = -1;
 
@@ -106,8 +105,9 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
 
             FOR(rule_i, state->config->rule_lengths[production_i])
             {
-                vec_push(
-                    &state->stack,
+                kv_push(
+                    long,
+                    state->stack,
                     state->config->rules[production_i][rule_i]
                 );
             }
@@ -117,7 +117,7 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
         {
             if ( stack_value == token_id )
             {
-                vec_push(&state->value_stack, value);
+                kv_push(VALUE, state->value_stack, value);
 
                 break;
             }
@@ -145,12 +145,13 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
                 rb_ary_store(
                     action_args,
                     args_i,
-                    vec_pop(&state->value_stack)
+                    kv_pop(state->value_stack)
                 );
             }
 
-            vec_push(
-                &state->value_stack,
+            kv_push(
+                VALUE,
+                state->value_stack,
                 rb_funcall(self, id_send, 2, method, action_args)
             );
         }
@@ -171,12 +172,12 @@ VALUE ll_driver_parse(VALUE self)
     Data_Get_Struct(self, DriverState, state);
 
     // EOF rule
-    vec_push(&state->stack, T_EOF);
-    vec_push(&state->stack, T_EOF);
+    kv_push(long, state->stack, T_EOF);
+    kv_push(long, state->stack, T_EOF);
 
     // Start rule
-    vec_push(&state->stack, T_RULE);
-    vec_push(&state->stack, T_RULE);
+    kv_push(long, state->stack, T_RULE);
+    kv_push(long, state->stack, T_RULE);
 
     rb_block_call(
         self,
@@ -187,7 +188,7 @@ VALUE ll_driver_parse(VALUE self)
         self
     );
 
-    return vec_pop(&state->value_stack);
+    return kv_pop(state->value_stack);
 }
 
 void Init_ll_driver()
