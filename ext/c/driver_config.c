@@ -20,19 +20,25 @@ void ll_driver_config_free(DriverConfig *config)
     free(config->action_names);
     free(config->action_arg_amounts);
 
+    kh_destroy(int64_map, config->tokens);
+
     free(config);
 }
 
 void ll_driver_config_mark(DriverConfig *config)
 {
     long index;
-
-    rb_gc_mark(config->tokens_hash);
+    khint64_t key;
 
     FOR(index, config->actions_count)
     {
         rb_gc_mark(config->action_names[index]);
         rb_gc_mark(config->action_arg_amounts[index]);
+    }
+
+    for ( key = kh_begin(config->tokens); key != kh_end(config->tokens); key++ )
+    {
+        rb_gc_mark(kh_key(config->tokens, key));
     }
 }
 
@@ -52,11 +58,26 @@ DriverConfig *ll_driver_config_get_struct(VALUE source)
     return config;
 }
 
-VALUE ll_driver_config_set_tokens(VALUE self, VALUE hash)
+VALUE ll_driver_config_set_tokens(VALUE self, VALUE array)
 {
+    long index;
+
+    int key_ret;
+    khint64_t key;
+    VALUE token;
+    long count = RARRAY_LEN(array);
+
     DriverConfig *config = ll_driver_config_get_struct(self);
 
-    config->tokens_hash = hash;
+    config->tokens = kh_init(int64_map);
+
+    FOR(index, count)
+    {
+        token = rb_ary_entry(array, index);
+        key   = kh_put(int64_map, config->tokens, token, &key_ret);
+
+        kh_value(config->tokens, key) = index;
+    }
 
     return Qnil;
 }

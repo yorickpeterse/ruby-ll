@@ -51,8 +51,9 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
     VALUE method;
     VALUE action_args;
     long num_args;
+    long args_i;
 
-    VALUE token_id_value;
+    long token_id_value;
     long token_id;
 
     long rule_i;
@@ -72,15 +73,25 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
     {
         stack_value    = vec_pop(&state->stack);
         stack_type     = vec_pop(&state->stack);
-        token_id_value = rb_hash_aref(state->config->tokens_hash, type);
+        token_id_value = -1;
+        token_id       = -1;
 
-        if ( NIL_P(token_id_value) )
+        {
+            khint64_t found = kh_get(int64_map, state->config->tokens, type);
+
+            if ( found != kh_end(state->config->tokens) )
+            {
+                token_id_value = kh_value(state->config->tokens, found);
+            }
+        }
+
+        if ( token_id_value == -1 )
         {
             token_id = T_EOF;
         }
         else
         {
-            token_id = NUM2INT(token_id_value);
+            token_id = token_id_value;
         }
 
         /* Rule */
@@ -127,18 +138,15 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
             method      = state->config->action_names[stack_value];
             num_args    = state->config->action_arg_amounts[stack_value];
             action_args = rb_ary_new2(num_args);
+            args_i      = num_args;
 
+            while ( args_i-- )
             {
-                long index = num_args;
-
-                while ( index-- )
-                {
-                    rb_ary_store(
-                        action_args,
-                        index,
-                        vec_pop(&state->value_stack)
-                    );
-                }
+                rb_ary_store(
+                    action_args,
+                    args_i,
+                    vec_pop(&state->value_stack)
+                );
             }
 
             vec_push(
