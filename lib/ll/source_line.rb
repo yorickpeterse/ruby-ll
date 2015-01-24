@@ -28,7 +28,7 @@ module LL
     # @return [String]
     #
     def source
-      return data.lines[line - 1].chomp
+      return data.lines.to_a[line - 1].chomp
     end
 
     ##
