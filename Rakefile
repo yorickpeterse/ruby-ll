@@ -22,6 +22,7 @@ CLEAN.include(
   'coverage',
   'yardoc',
   'lib/libll.*',
+  'lib/ll/lexer.rb',
   'tmp'
 )
 
