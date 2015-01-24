@@ -5,8 +5,8 @@ module LL
   class DriverConfig
     attr_reader :tokens, :rules, :table, :actions
 
-    def tokens=(hash)
-      self.tokens_native = @tokens = hash
+    def tokens=(array)
+      self.tokens_native = @tokens = array
     end
 
     def rules=(array)
