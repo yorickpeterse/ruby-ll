@@ -34,10 +34,9 @@ void ll_driver_mark(DriverState *state)
 VALUE ll_driver_allocate(VALUE klass)
 {
     DriverState *state = ALLOC(DriverState);
+    VALUE config       = rb_const_get(klass, id_config_const);
 
-    state->config = ll_driver_config_get_struct(
-        rb_const_get(klass, id_config_const)
-    );
+    Data_Get_Struct(config, DriverConfig, state->config);
 
     kv_init(state->stack);
     kv_init(state->value_stack);

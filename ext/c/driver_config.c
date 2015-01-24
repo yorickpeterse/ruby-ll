@@ -49,15 +49,6 @@ VALUE ll_driver_config_allocate(VALUE klass)
     return Data_Wrap_Struct(klass, ll_driver_config_mark, ll_driver_config_free, config);
 }
 
-DriverConfig *ll_driver_config_get_struct(VALUE source)
-{
-    DriverConfig *config;
-
-    Data_Get_Struct(source, DriverConfig, config);
-
-    return config;
-}
-
 VALUE ll_driver_config_set_tokens(VALUE self, VALUE array)
 {
     long index;
