@@ -13,6 +13,11 @@ ID id_send;
 ID id_missing_rule_error;
 ID id_invalid_token_error;
 
+/**
+ * Releases the memory of the driver's internal state and associated objects.
+ * This function is called automatically when a Driver instance is garbage
+ * collected.
+ */
 void ll_driver_free(DriverState *state)
 {
     kv_destroy(state->stack);
@@ -21,6 +26,10 @@ void ll_driver_free(DriverState *state)
     free(state);
 }
 
+/**
+ * Marks the objects stored in the driver's internal state, preventing them from
+ * being garbage collected until the next GC run.
+ */
 void ll_driver_mark(DriverState *state)
 {
     size_t index;
@@ -31,6 +40,9 @@ void ll_driver_mark(DriverState *state)
     }
 }
 
+/**
+ * Allocates a new instance of the Driver class and prepares its internal state.
+ */
 VALUE ll_driver_allocate(VALUE klass)
 {
     DriverState *state = ALLOC(DriverState);
@@ -44,6 +56,13 @@ VALUE ll_driver_allocate(VALUE klass)
     return Data_Wrap_Struct(klass, ll_driver_mark, ll_driver_free, state);
 }
 
+/**
+ * Callback function for iterating over every input token and actually parsing
+ * said input.
+ *
+ * @param token An Array containing the token type as a Symbol and its value.
+ * @param self The Driver instance currently in use.
+ */
 VALUE ll_driver_each_token(VALUE token, VALUE self)
 {
     VALUE method;
@@ -153,6 +172,11 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
     return Qnil;
 }
 
+/**
+ * Starts the parser.
+ *
+ * @param self The Driver instance the "parse" method was called on.
+ */
 VALUE ll_driver_parse(VALUE self)
 {
     DriverState *state;

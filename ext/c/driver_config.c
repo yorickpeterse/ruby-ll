@@ -1,5 +1,8 @@
 #include "driver_config.h"
 
+/**
+ * Releases memory of the DriverConfig struct and its members.
+ */
 void ll_driver_config_free(DriverConfig *config)
 {
     long rindex;
@@ -25,6 +28,10 @@ void ll_driver_config_free(DriverConfig *config)
     free(config);
 }
 
+/**
+ * Marks various members of the DriverConfig to ensure they are not garbage
+ * collected until at least the next GC run.
+ */
 void ll_driver_config_mark(DriverConfig *config)
 {
     long index;
@@ -36,19 +43,33 @@ void ll_driver_config_mark(DriverConfig *config)
         rb_gc_mark(config->action_arg_amounts[index]);
     }
 
+    /* Symbols can be GC'd since 2.2 */
     for ( key = kh_begin(config->tokens); key != kh_end(config->tokens); key++ )
     {
         rb_gc_mark(kh_key(config->tokens, key));
     }
 }
 
+/**
+ * Allocates a new DriverConfig.
+ */
 VALUE ll_driver_config_allocate(VALUE klass)
 {
     DriverConfig *config = ALLOC(DriverConfig);
 
-    return Data_Wrap_Struct(klass, ll_driver_config_mark, ll_driver_config_free, config);
+    return Data_Wrap_Struct(
+        klass,
+        ll_driver_config_mark,
+        ll_driver_config_free, config
+    );
 }
 
+/**
+ * Stores the tokens of the parser in the DriverConfig struct.
+ *
+ * @param self The current DriverConfig instance.
+ * @param array The tokens to store in the struct.
+ */
 VALUE ll_driver_config_set_tokens(VALUE self, VALUE array)
 {
     long index;
@@ -74,6 +95,12 @@ VALUE ll_driver_config_set_tokens(VALUE self, VALUE array)
     return Qnil;
 }
 
+/**
+ * Stores the rules in the DriverConfig struct.
+ *
+ * @param self The DriverConfig instance.
+ * @param array The rules to store.
+ */
 VALUE ll_driver_config_set_rules(VALUE self, VALUE array)
 {
     long rindex;
@@ -108,6 +135,12 @@ VALUE ll_driver_config_set_rules(VALUE self, VALUE array)
     return Qnil;
 }
 
+/**
+ * Stores the lookup table in the DriverConfig struct.
+ *
+ * @param self The DriverConfig instance.
+ * @param array The lookup table.
+ */
 VALUE ll_driver_config_set_table(VALUE self, VALUE array)
 {
     long rindex;
@@ -139,6 +172,12 @@ VALUE ll_driver_config_set_table(VALUE self, VALUE array)
     return Qnil;
 }
 
+/**
+ * Stores the callback actions in the DriverConfig struct.
+ *
+ * @param self The DriverConfig instance.
+ * @param array The callback actions and their arities.
+ */
 VALUE ll_driver_config_set_actions(VALUE self, VALUE array)
 {
     long rindex;
@@ -166,13 +205,13 @@ VALUE ll_driver_config_set_actions(VALUE self, VALUE array)
 
 void Init_ll_driver_config()
 {
-    VALUE mLL           = rb_const_get(rb_cObject, rb_intern("LL"));
-    VALUE cDriverConfig = rb_const_get(mLL, rb_intern("DriverConfig"));
+    VALUE mLL   = rb_const_get(rb_cObject, rb_intern("LL"));
+    VALUE klass = rb_const_get(mLL, rb_intern("DriverConfig"));
 
-    rb_define_alloc_func(cDriverConfig, ll_driver_config_allocate);
+    rb_define_alloc_func(klass, ll_driver_config_allocate);
 
-    rb_define_method(cDriverConfig, "tokens_native=", ll_driver_config_set_tokens, 1);
-    rb_define_method(cDriverConfig, "rules_native=", ll_driver_config_set_rules, 1);
-    rb_define_method(cDriverConfig, "table_native=", ll_driver_config_set_table, 1);
-    rb_define_method(cDriverConfig, "actions_native=", ll_driver_config_set_actions, 1);
+    rb_define_method(klass, "tokens_native=", ll_driver_config_set_tokens, 1);
+    rb_define_method(klass, "rules_native=", ll_driver_config_set_rules, 1);
+    rb_define_method(klass, "table_native=", ll_driver_config_set_table, 1);
+    rb_define_method(klass, "actions_native=", ll_driver_config_set_actions, 1);
 }
