@@ -51,7 +51,6 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
     long num_args;
     long args_i;
 
-    long token_id_value;
     long token_id;
 
     long rule_i;
@@ -69,27 +68,17 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
 
     while ( 1 )
     {
-        stack_value    = kv_pop(state->stack);
-        stack_type     = kv_pop(state->stack);
-        token_id_value = -1;
-        token_id       = -1;
+        stack_value = kv_pop(state->stack);
+        stack_type  = kv_pop(state->stack);
+        token_id    = T_EOF;
 
         {
             khint64_t found = kh_get(int64_map, state->config->tokens, type);
 
             if ( found != kh_end(state->config->tokens) )
             {
-                token_id_value = kh_value(state->config->tokens, found);
+                token_id = kh_value(state->config->tokens, found);
             }
-        }
-
-        if ( token_id_value == -1 )
-        {
-            token_id = T_EOF;
-        }
-        else
-        {
-            token_id = token_id_value;
         }
 
         /* Rule */

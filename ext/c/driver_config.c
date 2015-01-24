@@ -56,9 +56,10 @@ VALUE ll_driver_config_set_tokens(VALUE self, VALUE array)
     int key_ret;
     khint64_t key;
     VALUE token;
+    DriverConfig *config;
     long count = RARRAY_LEN(array);
 
-    DriverConfig *config = ll_driver_config_get_struct(self);
+    Data_Get_Struct(self, DriverConfig, config);
 
     config->tokens = kh_init(int64_map);
 
@@ -78,11 +79,11 @@ VALUE ll_driver_config_set_rules(VALUE self, VALUE array)
     long rindex;
     long cindex;
     long col_count;
+    DriverConfig *config;
     VALUE row;
-
-    DriverConfig *config = ll_driver_config_get_struct(self);
-
     long row_count = RARRAY_LEN(array);
+
+    Data_Get_Struct(self, DriverConfig, config);
 
     config->rules        = ALLOC_N(long*, row_count);
     config->rule_lengths = ALLOC_N(long, row_count);
@@ -113,10 +114,10 @@ VALUE ll_driver_config_set_table(VALUE self, VALUE array)
     long cindex;
     long col_count;
     VALUE row;
-
-    DriverConfig *config = ll_driver_config_get_struct(self);
-
+    DriverConfig *config;
     long row_count = RARRAY_LEN(array);
+
+    Data_Get_Struct(self, DriverConfig, config);
 
     config->table = ALLOC_N(long*, row_count);
 
@@ -142,10 +143,10 @@ VALUE ll_driver_config_set_actions(VALUE self, VALUE array)
 {
     long rindex;
     VALUE row;
-
-    DriverConfig *config = ll_driver_config_get_struct(self);
-
+    DriverConfig *config;
     long row_count = RARRAY_LEN(array);
+
+    Data_Get_Struct(self, DriverConfig, config);
 
     config->action_names       = ALLOC_N(ID, row_count);
     config->action_arg_amounts = ALLOC_N(long, row_count);

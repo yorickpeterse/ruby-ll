@@ -26,6 +26,5 @@ typedef struct
 } DriverConfig;
 
 extern void Init_ll_driver_config();
-extern DriverConfig *ll_driver_config_get_struct(VALUE config);
 
 #endif
