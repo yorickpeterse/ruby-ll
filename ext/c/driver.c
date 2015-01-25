@@ -200,7 +200,14 @@ VALUE ll_driver_parse(VALUE self)
         self
     );
 
-    return kv_pop(state->value_stack);
+    if ( kv_size(state->value_stack) == 0 )
+    {
+        return Qnil;
+    }
+    else
+    {
+        return kv_pop(state->value_stack);
+    }
 }
 
 void Init_ll_driver()
