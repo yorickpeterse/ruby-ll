@@ -109,14 +109,16 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
             {
                 rb_funcall(self, id_missing_rule_error, 1, INT2NUM(stack_value));
             }
-
-            FOR(rule_i, state->config->rule_lengths[production_i])
+            else
             {
-                kv_push(
-                    long,
-                    state->stack,
-                    state->config->rules[production_i][rule_i]
-                );
+                FOR(rule_i, state->config->rule_lengths[production_i])
+                {
+                    kv_push(
+                        long,
+                        state->stack,
+                        state->config->rules[production_i][rule_i]
+                    );
+                }
             }
         }
         /* Terminal */
