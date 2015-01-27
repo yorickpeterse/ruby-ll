@@ -33,27 +33,27 @@ public class DriverConfig extends RubyObject
     /**
      * Hash mapping Ruby Symbols with their indexes.
      */
-    private HashMap<RubySymbol, Long> tokens = new HashMap<RubySymbol, Long>();
+    public HashMap<RubySymbol, Long> tokens = new HashMap<RubySymbol, Long>();
 
     /**
      * 2-dimensional array containing the rules and their steps.
      */
-    private ArrayList<ArrayList<Long>> rules = new ArrayList<ArrayList<Long>>();
+    public ArrayList<ArrayList<Long>> rules = new ArrayList<ArrayList<Long>>();
 
     /**
      * 2-dimensional array used as the lookup table.
      */
-    private ArrayList<ArrayList<Long>> table = new ArrayList<ArrayList<Long>>();
+    public ArrayList<ArrayList<Long>> table = new ArrayList<ArrayList<Long>>();
 
     /**
      * Array containing the callback names.
      */
-    private ArrayList<RubySymbol> action_names = new ArrayList<RubySymbol>();
+    public ArrayList<RubySymbol> action_names = new ArrayList<RubySymbol>();
 
     /**
      * Array containing the arities of every callback.
      */
-    private ArrayList<Long> action_arg_amounts = new ArrayList<Long>();
+    public ArrayList<Integer> action_arg_amounts = new ArrayList<Integer>();
 
     /**
      * Sets up the class in the Ruby runtime.
@@ -79,6 +79,10 @@ public class DriverConfig extends RubyObject
         }
     };
 
+    /**
+     * @param runtime The current Ruby runtime.
+     * @param klass The DriverConfig class.
+     */
     public DriverConfig(Ruby runtime, RubyClass klass)
     {
         super(runtime, klass);
@@ -181,7 +185,7 @@ public class DriverConfig extends RubyObject
             RubyFixnum arity = (RubyFixnum) row.entry(1);
 
             this.action_names.add(name);
-            this.action_arg_amounts.add(arity.getLongValue());
+            this.action_arg_amounts.add((int) arity.getLongValue());
         }
 
         return context.nil;

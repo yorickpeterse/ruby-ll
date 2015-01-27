@@ -9,10 +9,19 @@ import org.jruby.Ruby;
 import org.jruby.RubyModule;
 import org.jruby.RubyClass;
 import org.jruby.RubyObject;
+import org.jruby.RubyArray;
+import org.jruby.RubySymbol;
+import org.jruby.RubyFixnum;
+
 import org.jruby.anno.JRubyClass;
 import org.jruby.anno.JRubyMethod;
+import org.jruby.runtime.Arity;
+import org.jruby.runtime.Helpers;
 import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.ObjectAllocator;
+import org.jruby.runtime.BlockCallback;
+import org.jruby.runtime.Block;
+import org.jruby.runtime.CallBlock19;
 import org.jruby.runtime.builtin.IRubyObject;
 
 @JRubyClass(name="LL::Driver", parent="Object")
@@ -33,16 +42,6 @@ public class Driver extends RubyObject
      * The driver configuration.
      */
     private DriverConfig config;
-
-    /**
-     * Stack for storing the rules/actions/etc to process.
-     */
-    private ArrayDeque<Long> stack = new ArrayDeque<Long>();
-
-    /**
-     * Stack for storing action return values.
-     */
-    private ArrayDeque<IRubyObject> value_stack = new ArrayDeque<IRubyObject>();
 
     /**
      * Sets up the class in the Ruby runtime.
@@ -68,6 +67,10 @@ public class Driver extends RubyObject
         }
     };
 
+    /**
+     * @param runtime The current Ruby runtime.
+     * @param klass The Driver class.
+     */
     public Driver(Ruby runtime, RubyClass klass)
     {
         super(runtime, klass);
@@ -77,26 +80,142 @@ public class Driver extends RubyObject
     }
 
     /**
-     * The main parsing loop of a driver.
+     * The main parsing loop of the driver.
      */
     @JRubyMethod
     public IRubyObject parse(ThreadContext context)
     {
+        final ArrayDeque<Long> stack = new ArrayDeque<Long>();
+        final ArrayDeque<IRubyObject> value_stack = new ArrayDeque<IRubyObject>();
+        final Driver self = this;
+
         // EOF
-        this.stack.add(this.T_EOF);
-        this.stack.add(this.T_EOF);
+        stack.push(this.T_EOF);
+        stack.push(this.T_EOF);
 
         // Start rule
-        this.stack.add(this.T_RULE);
-        this.stack.add(this.T_RULE);
+        stack.push(this.T_RULE);
+        stack.push(this.T_RULE);
 
-        if ( this.value_stack.isEmpty() )
+        BlockCallback callback = new BlockCallback()
+        {
+            public IRubyObject call(ThreadContext context, IRubyObject[] args, Block block)
+            {
+                RubyArray token   = (RubyArray) args[0];
+                IRubyObject type  = token.entry(0);
+                IRubyObject value = token.entry(1);
+
+                while ( true )
+                {
+                    Long stack_value = stack.pop();
+                    Long stack_type  = stack.pop();
+                    Long token_id    = self.T_EOF;
+
+                    if ( self.config.tokens.containsKey(type) )
+                    {
+                        token_id = self.config.tokens.get(type);
+                    }
+
+                    // Rule
+                    if ( stack_type == self.T_RULE )
+                    {
+                        Long production_i = self.config.table
+                            .get(stack_value.intValue())
+                            .get(token_id.intValue());
+
+                        if ( production_i == self.T_EOF )
+                        {
+                            self.callMethod(
+                                context,
+                                "missing_rule_error",
+                                RubyFixnum.newFixnum(self.runtime, stack_value)
+                            );
+                        }
+                        else
+                        {
+                            ArrayList<Long> row = self.config.rules
+                                .get(production_i.intValue());
+
+                            for ( int index = 0; index < row.size(); index++ )
+                            {
+                                stack.push(row.get(index));
+                            }
+                        }
+                    }
+                    // Terminal
+                    else if ( stack_type == self.T_TERMINAL )
+                    {
+                        if ( stack_value == token_id )
+                        {
+                            value_stack.push(value);
+
+                            break;
+                        }
+                        else
+                        {
+                            IRubyObject[] invalid_token_args = {
+                                RubyFixnum.newFixnum(self.runtime, token_id),
+                                RubyFixnum.newFixnum(self.runtime, stack_value)
+                            };
+
+                            self.callMethod(
+                                context,
+                                "invalid_token_error",
+                                invalid_token_args
+                            );
+                        }
+                    }
+                    // Action
+                    else if ( stack_type == self.T_ACTION )
+                    {
+                        String method = self.config.action_names
+                            .get(stack_value.intValue())
+                            .toString();
+
+                        long num_args = (long) self.config.action_arg_amounts
+                            .get(stack_value.intValue());
+
+                        RubyArray action_args = self.runtime.newArray();
+
+                        while ( (num_args--) > 0 )
+                        {
+                            action_args.store(num_args, value_stack.pop());
+                        }
+
+                        value_stack.push(
+                            self.callMethod(context, method, action_args)
+                        );
+                    }
+                    else if ( stack_type == self.T_EOF )
+                    {
+                        break;
+                    }
+                }
+
+                return context.nil;
+            }
+        };
+
+        Helpers.invoke(
+            context,
+            this,
+            "each_token",
+            CallBlock19.newCallClosure(
+                this,
+                this.metaClass,
+                Arity.NO_ARGUMENTS,
+                callback,
+                context
+            )
+        );
+
+        if ( value_stack.isEmpty() )
         {
             return context.nil;
         }
         else
         {
-            return this.value_stack.pop();
+            return value_stack.pop();
         }
     }
 }
