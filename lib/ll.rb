@@ -1,5 +1,6 @@
 require 'pathname'
 require 'erb'
+require 'set'
 
 require 'ast'
 require 'ansi/code'

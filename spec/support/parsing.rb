@@ -30,7 +30,7 @@ module LL
     # @param [Array] children
     #
     def s(type, *children)
-      return LL::AST::Node.new(type, children)
+      return LL::AST::Node.new(type, children, :source_line => source_line(''))
     end
   end # ParsingHelpers
 end # LL

@@ -17,6 +17,8 @@ module LL
       warn_for_unused_terminals(compiled)
       warn_for_unused_rules(compiled)
 
+      verify_first_first(compiled)
+
       return compiled
     end
 
@@ -61,6 +63,51 @@ module LL
           "Unused terminal #{terminal.name.inspect}",
           terminal.source_line
         )
+      end
+    end
+
+    ##
+    # Verifies all rules to see if they don't have any first/first conflicts.
+    # Errors are added for every rule where this _is_ the case.
+    #
+    # @param [LL::CompiledParser] compiled_parser
+    #
+    def verify_first_first(compiled_parser)
+      compiled_parser.rules.each do |rule|
+        conflicting = Set.new
+
+        rule.branches.each do |branch|
+          next if conflicting.include?(branch)
+
+          rule.branches.each do |other_branch|
+            next if branch == other_branch || conflicting.include?(other_branch)
+
+            overlapping = branch.first_set & other_branch.first_set
+
+            unless overlapping.empty?
+              conflicting << branch
+              conflicting << other_branch
+            end
+          end
+        end
+
+        unless conflicting.empty?
+          compiled_parser.add_error(
+            'first/first conflict, multiple branches start with the same terminals',
+            rule.source_line
+          )
+
+          conflicting.each do |branch|
+            labels = branch.first_set.map do |token|
+              token.is_a?(Epsilon) ? 'epsilon' : token.name
+            end
+
+            compiled_parser.add_error(
+              "branch starts with: #{labels.join(', ')}",
+              branch.source_line
+            )
+          end
+        end
       end
     end
 
@@ -227,7 +274,7 @@ module LL
         code = nil
       end
 
-      return Branch.new(steps, code)
+      return Branch.new(steps, node.source_line, code)
     end
 
     ##
@@ -292,10 +339,10 @@ module LL
       rule2 = Rule.new("_#{receiver.name}2", node.source_line)
       eps   = Epsilon.new(node.source_line)
 
-      rule1.add_branch([rule2])
-      rule1.add_branch([eps])
+      rule1.add_branch([rule2], node.source_line)
+      rule1.add_branch([eps], node.source_line)
 
-      rule2.add_branch([receiver, rule1])
+      rule2.add_branch([receiver, rule1], node.source_line)
 
       return rule1
     end
@@ -327,8 +374,8 @@ module LL
       rule2 = Rule.new("_#{receiver.name}2", node.source_line)
       eps   = Epsilon.new(node.source_line)
 
-      rule1.add_branch([receiver, rule2])
-      rule2.add_branch([rule1, eps])
+      rule1.add_branch([receiver, rule2], node.source_line)
+      rule2.add_branch([rule1, eps], node.source_line)
 
       return rule1
     end
@@ -358,8 +405,8 @@ module LL
       rule1 = Rule.new("_#{receiver.name}1", node.source_line)
       eps   = Epsilon.new(node.source_line)
 
-      rule1.add_branch([receiver])
-      rule1.add_branch([eps])
+      rule1.add_branch([receiver], node.source_line)
+      rule1.add_branch([eps], node.source_line)
 
       return rule1
     end

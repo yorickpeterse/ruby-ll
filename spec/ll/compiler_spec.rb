@@ -83,6 +83,72 @@ describe LL::Compiler do
     end
   end
 
+  describe '#verify_first_first' do
+    describe 'when there are no conflicts' do
+      before do
+        line = source_line('')
+        term = LL::Terminal.new('A', line)
+        rule = LL::Rule.new('A', line)
+
+        rule.add_branch([term], line)
+
+        @compiled.add_rule(rule)
+      end
+
+      it 'does not add any errors' do
+        @compiler.verify_first_first(@compiled)
+
+        @compiled.errors.should be_empty
+      end
+    end
+
+    describe 'when two branches conflict' do
+      before do
+        line  = source_line('')
+        term  = LL::Terminal.new('A', line)
+        rule1 = LL::Rule.new('A', line)
+        rule2 = LL::Rule.new('B', line)
+        eps   = LL::Epsilon.new(line)
+
+        rule1.add_branch([term], line)
+        rule1.add_branch([rule2], line)
+
+        rule2.add_branch([term], line)
+        rule2.add_branch([eps], line)
+
+        @compiled.add_rule(rule1)
+        @compiled.add_rule(rule2)
+      end
+
+      it 'adds 3 errors' do
+        @compiler.verify_first_first(@compiled)
+
+        @compiled.errors.length.should == 3
+      end
+
+      it 'adds an error for the entire rule' do
+        message = 'first/first conflict, multiple branches start with ' \
+          'the same terminals'
+
+        @compiler.verify_first_first(@compiled)
+
+        @compiled.errors[0].message.should == message
+      end
+
+      it 'adds an error for the first branch' do
+        @compiler.verify_first_first(@compiled)
+
+        @compiled.errors[1].message.should == 'branch starts with: A'
+      end
+
+      it 'adds an error for the second branch' do
+        @compiler.verify_first_first(@compiled)
+
+        @compiled.errors[2].message.should == 'branch starts with: A, epsilon'
+      end
+    end
+  end
+
   describe '#on_name' do
     before do
       @node = s(:name, s(:ident, 'Foo'), s(:ident, 'Bar'))

@@ -29,7 +29,7 @@ describe LL::Rule do
       line = source_line('')
       rule = described_class.new('foo', line)
 
-      rule.add_branch([LL::Epsilon.new(line)], 'foo')
+      rule.add_branch([LL::Epsilon.new(line)], line, 'foo')
 
       rule.branches[0].should be_an_instance_of(LL::Branch)
     end
@@ -42,6 +42,60 @@ describe LL::Rule do
       rule.increment_references
 
       rule.references.should == 1
+    end
+  end
+
+  describe '#first_set' do
+    before do
+      @source_line = source_line('')
+    end
+
+    describe 'when using a single branch' do
+      it 'returns the first set as an Array when using only terminals' do
+        rule = described_class.new('A', @source_line)
+        term = LL::Terminal.new('A', @source_line)
+
+        rule.add_branch([term], @source_line)
+
+        rule.first_set.should == [term]
+      end
+
+      it 'returns the first set as an Array when using terminals and rules' do
+        rule1 = described_class.new('A', @source_line)
+        rule2 = described_class.new('B', @source_line)
+        term  = LL::Terminal.new('A', @source_line)
+
+        rule1.add_branch([rule2], @source_line)
+        rule2.add_branch([term], @source_line)
+
+        rule1.first_set.should == [term]
+      end
+    end
+
+    describe 'when using multiple branches' do
+      it 'returns the first set as an Array when using only terminals' do
+        rule  = described_class.new('A', @source_line)
+        term1 = LL::Terminal.new('A', @source_line)
+        term2 = LL::Terminal.new('B', @source_line)
+
+        rule.add_branch([term1], @source_line)
+        rule.add_branch([term2], @source_line)
+
+        rule.first_set.should == [term1, term2]
+      end
+
+      it 'returns the first set as an Array when using terminals and rules' do
+        rule1 = described_class.new('A', @source_line)
+        rule2 = described_class.new('B', @source_line)
+        term1 = LL::Terminal.new('A', @source_line)
+        term2 = LL::Terminal.new('B', @source_line)
+
+        rule1.add_branch([rule2], @source_line)
+        rule2.add_branch([term1], @source_line)
+        rule2.add_branch([term2], @source_line)
+
+        rule1.first_set.should == [term1, term2]
+      end
     end
   end
 

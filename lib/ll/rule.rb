@@ -19,12 +19,28 @@ module LL
     ##
     # @see [LL::Branch#initialize]
     #
-    def add_branch(steps, ruby_code = nil)
-      branches << Branch.new(steps, ruby_code)
+    def add_branch(steps, source_line, ruby_code = nil)
+      branches << Branch.new(steps, source_line, ruby_code)
     end
 
     def increment_references
       @references += 1
+    end
+
+    ##
+    # Returns an Array containing the terminals that make up the FIRST() set of
+    # this rule.
+    #
+    # @return [Array<LL::Terminal>]
+    #
+    def first_set
+      terminals = []
+
+      branches.each do |branch|
+        terminals += branch.first_set
+      end
+
+      return terminals
     end
 
     ##

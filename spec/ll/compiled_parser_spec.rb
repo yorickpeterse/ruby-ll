@@ -100,7 +100,7 @@ describe LL::CompiledParser do
     it 'returns true for an existing rule with a single branch' do
       rule = LL::Rule.new('foo', @source_line)
 
-      rule.add_branch([LL::Epsilon.new(@source_line)])
+      rule.add_branch([LL::Epsilon.new(@source_line)], @source_line)
 
       @compiled.add_rule(rule)
 

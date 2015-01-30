@@ -4,15 +4,28 @@ module LL
   # steps and the associated callback code.
   #
   class Branch
-    attr_reader :steps, :ruby_code
+    attr_reader :steps, :source_line, :ruby_code
 
     ##
     # @param [Array] steps
+    # @param [LL::SourceLine] source_line
     # @param [String] ruby_code
     #
-    def initialize(steps, ruby_code = nil)
-      @steps     = steps
-      @ruby_code = ruby_code
+    def initialize(steps, source_line, ruby_code = nil)
+      @steps       = steps
+      @source_line = source_line
+      @ruby_code   = ruby_code
+    end
+
+    ##
+    # Returns the FIRST() set of this branch.
+    #
+    # @return [Array<LL::Terminal>]
+    #
+    def first_set
+      first = steps[0]
+
+      return first.is_a?(Rule) ? first.first_set : [first]
     end
 
     ##
