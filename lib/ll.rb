@@ -1,4 +1,5 @@
 require 'pathname'
+require 'erb'
 
 require 'ast'
 require 'ansi/code'
@@ -28,3 +29,4 @@ require_relative 'll/terminal'
 require_relative 'll/epsilon'
 require_relative 'll/message'
 require_relative 'll/ast/node'
+require_relative 'll/erb_context'
