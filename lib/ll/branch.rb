@@ -29,6 +29,25 @@ module LL
     end
 
     ##
+    # Returns the FOLLOW() set of this branch.
+    #
+    # @return [Array<LL::Terminal>]
+    #
+    def follow_set
+      follow = steps[1]
+
+      if follow.is_a?(Rule)
+        set = follow.first_set
+      elsif follow
+        set = [follow]
+      else
+        set = []
+      end
+
+      return set
+    end
+
+    ##
     # @return [String]
     #
     def inspect

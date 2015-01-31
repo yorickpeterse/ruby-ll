@@ -18,6 +18,7 @@ module LL
       warn_for_unused_rules(compiled)
 
       verify_first_first(compiled)
+      verify_first_follow(compiled)
 
       return compiled
     end
@@ -105,6 +106,32 @@ module LL
             compiled_parser.add_error(
               "branch starts with: #{labels.join(', ')}",
               branch.source_line
+            )
+          end
+        end
+      end
+    end
+
+    ##
+    # Adds errors for any rules containing first/follow conflicts.
+    #
+    # @param [LL::CompiledParser] compiled_parser
+    #
+    def verify_first_follow(compiled_parser)
+      compiled_parser.rules.each do |rule|
+        rule.branches.each do |branch|
+          has_epsilon = branch.first_set.find { |step| step.is_a?(Epsilon) }
+
+          if has_epsilon and !branch.follow_set.empty?
+            compiled_parser.add_error(
+              'first/follow conflict, branch can start with epsilon and is ' \
+                'followed by (non) terminals',
+              branch.source_line
+            )
+
+            compiled_parser.add_error(
+              'epsilon originates from here',
+              has_epsilon.source_line
             )
           end
         end

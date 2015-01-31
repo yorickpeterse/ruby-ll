@@ -127,12 +127,9 @@ describe LL::Compiler do
       end
 
       it 'adds an error for the entire rule' do
-        message = 'first/first conflict, multiple branches start with ' \
-          'the same terminals'
-
         @compiler.verify_first_first(@compiled)
 
-        @compiled.errors[0].message.should == message
+        @compiled.errors[0].message.should =~ %r{first/first conflict}
       end
 
       it 'adds an error for the first branch' do
@@ -145,6 +142,68 @@ describe LL::Compiler do
         @compiler.verify_first_first(@compiled)
 
         @compiled.errors[2].message.should == 'branch starts with: A, epsilon'
+      end
+    end
+  end
+
+  describe '#verify_first_follow' do
+    describe 'when no first/follow conflict is present' do
+      before do
+        line = source_line('')
+        rule = LL::Rule.new('rule1', line)
+
+        termA = @compiled.add_terminal('A', line)
+        termB = @compiled.add_terminal('B', line)
+        eps   = LL::Epsilon.new(line)
+
+        rule.add_branch([termA, termB, eps], line)
+
+        @compiled.add_rule(rule)
+      end
+
+      it 'adds no errors' do
+        @compiler.verify_first_follow(@compiled)
+
+        @compiled.errors.should be_empty
+      end
+    end
+
+    describe 'when a first/follow conflict is present' do
+      before do
+        # rule1 = rule2 A;
+        # rule2 = B | _;
+        line  = source_line('')
+        rule1 = LL::Rule.new('rule1', line)
+        rule2 = LL::Rule.new('rule2', line)
+
+        termA = @compiled.add_terminal('A', line)
+        termB = @compiled.add_terminal('B', line)
+        eps   = LL::Epsilon.new(line)
+
+        rule1.add_branch([rule2, termA], line)
+        rule2.add_branch([termB], line)
+        rule2.add_branch([eps], line)
+
+        @compiled.add_rule(rule1)
+        @compiled.add_rule(rule2)
+      end
+
+      it 'adds two errors' do
+        @compiler.verify_first_follow(@compiled)
+
+        @compiled.errors.length.should == 2
+      end
+
+      it 'adds an error for the conflicting branch' do
+        @compiler.verify_first_follow(@compiled)
+
+        @compiled.errors[0].message.should =~ %r{first/follow conflict}
+      end
+
+      it 'adds an error for the epsilon' do
+        @compiler.verify_first_follow(@compiled)
+
+        @compiled.errors[1].message.should == 'epsilon originates from here'
       end
     end
   end
