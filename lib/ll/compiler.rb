@@ -253,9 +253,16 @@ module LL
     def on_rule(node, compiled_parser)
       name = process(node.children[0], compiled_parser)
 
+      if compiled_parser.has_terminal?(name)
+        compiled_parser.add_error(
+          "the rule name #{name.inspect} is already used as a terminal name",
+          node.source_line
+        )
+      end
+
       if compiled_parser.has_rule_with_branches?(name)
         compiled_parser.add_error(
-          "The rule #{name.inspect} has already been defined",
+          "the rule #{name.inspect} has already been defined",
           node.source_line
         )
 

@@ -366,7 +366,7 @@ describe LL::Compiler do
         @compiler.on_rule(@node, @compiled)
 
         @compiled.errors[0].message.should ==
-          'The rule "foo" has already been defined'
+          'the rule "foo" has already been defined'
       end
 
       it 'does not overwrite the existing rule' do
@@ -375,6 +375,19 @@ describe LL::Compiler do
         @rule.branches.should_not receive(:concat)
 
         @compiler.on_rule(@node, @compiled)
+      end
+    end
+
+    describe 'when defining a rule with the same name as a terminal' do
+      before do
+        @compiled.add_terminal('foo', source_line(''))
+      end
+
+      it 'adds an error' do
+        @compiler.on_rule(@node, @compiled)
+
+        @compiled.errors[0].message.should ==
+          'the rule name "foo" is already used as a terminal name'
       end
     end
   end
