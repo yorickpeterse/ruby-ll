@@ -15,6 +15,12 @@ module LL
       @rules     = {}
       @inner     = nil
       @header    = nil
+
+      @rule_indices     = {}
+      @terminal_indices = {}
+
+      @rule_index     = 0
+      @terminal_index = 0
     end
 
     ##
@@ -47,7 +53,13 @@ module LL
     # @return [LL::Terminal]
     #
     def add_terminal(name, source_line)
-      return @terminals[name] = Terminal.new(name, source_line)
+      terminal = Terminal.new(name, source_line)
+
+      @terminal_indices[terminal] = @terminal_index
+
+      @terminal_index += 1
+
+      return @terminals[name] = terminal
     end
 
     ##
@@ -75,6 +87,10 @@ module LL
     # @return [LL::Rule]
     #
     def add_rule(rule)
+      @rule_indices[rule] = @rule_index
+
+      @rule_index += 1
+
       return @rules[rule.name] = rule
     end
 
@@ -119,6 +135,24 @@ module LL
     #
     def terminals
       return @terminals.values
+    end
+
+    ##
+    # Returns the index of the given Terminal.
+    #
+    # @param [LL::Terminal] terminal
+    #
+    def terminal_index(terminal)
+      return @terminal_indices[terminal]
+    end
+
+    ##
+    # Returns the index of the given Rule.
+    #
+    # @param [LL::Rule] rule
+    #
+    def rule_index(rule)
+      return @rule_indices[rule]
     end
 
     ##

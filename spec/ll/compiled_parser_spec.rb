@@ -168,6 +168,43 @@ describe LL::CompiledParser do
     end
   end
 
+  describe '#terminal_index' do
+    before do
+      line = source_line('')
+
+      @term1 = @compiled.add_terminal('A', line)
+      @term2 = @compiled.add_terminal('B', line)
+    end
+
+    it 'returns the index of the first terminal' do
+      @compiled.terminal_index(@term1).should == 0
+    end
+
+    it 'returns the index of the second terminal' do
+      @compiled.terminal_index(@term2).should == 1
+    end
+  end
+
+  describe '#rule_index' do
+    before do
+      line = source_line('')
+
+      @rule1 = LL::Rule.new('A', line)
+      @rule2 = LL::Rule.new('B', line)
+
+      @compiled.add_rule(@rule1)
+      @compiled.add_rule(@rule2)
+    end
+
+    it 'returns the index of the first rule' do
+      @compiled.rule_index(@rule1).should == 0
+    end
+
+    it 'returns the index of the second rule' do
+      @compiled.rule_index(@rule2).should == 1
+    end
+  end
+
   describe '#valid?' do
     it 'returns true when there are no errors' do
       @compiled.valid?.should == true
