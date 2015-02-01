@@ -92,11 +92,11 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
         token_id    = T_EOF;
 
         {
-            khint64_t found = kh_get(int64_map, state->config->tokens, type);
+            khint64_t found = kh_get(int64_map, state->config->terminals, type);
 
-            if ( found != kh_end(state->config->tokens) )
+            if ( found != kh_end(state->config->terminals) )
             {
-                token_id = kh_value(state->config->tokens, found);
+                token_id = kh_value(state->config->terminals, found);
             }
         }
 

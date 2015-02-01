@@ -3,10 +3,10 @@ module LL
   # Class containing C/Java data for a Driver class.
   #
   class DriverConfig
-    attr_reader :tokens, :rules, :table, :actions
+    attr_reader :terminals, :rules, :table, :actions
 
-    def tokens=(array)
-      self.tokens_native = @tokens = array
+    def terminals=(array)
+      self.terminals_native = @terminals = array
     end
 
     def rules=(array)

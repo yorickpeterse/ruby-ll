@@ -18,7 +18,7 @@ KHASH_MAP_INIT_INT64(int64_map, long)
 typedef struct
 {
     /* Hash mapping Symbol pointers with their indexes */
-    khash_t(int64_map) *tokens;
+    khash_t(int64_map) *terminals;
 
     /* Array of arrays, each containing all the rules to process */
     long **rules;
@@ -44,8 +44,8 @@ typedef struct
     /* The amount of actions */
     long actions_count;
 
-    /* The amount of tokens */
-    long tokens_count;
+    /* The amount of terminals */
+    long terminals_count;
 } DriverConfig;
 
 extern void Init_ll_driver_config();

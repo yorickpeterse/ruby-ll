@@ -9,7 +9,7 @@ module LL
     # @param [Fixnum] token_id The ID/index of the token/terminal.
     #
     def missing_rule_error(token_id)
-      token_name = self.class::CONFIG.tokens.invert[token_id]
+      token_name = self.class::CONFIG.terminals.invert[token_id]
 
       raise ParserError, "No rule was found for token #{token_name}"
     end
@@ -22,7 +22,7 @@ module LL
     # @param [Fixnum] expected_id The ID of the expected token.
     #
     def invalid_token_error(got_id, expected_id)
-      inverted = self.class::CONFIG.tokens.invert
+      inverted = self.class::CONFIG.terminals.invert
       expected = inverted[expected_id]
       got      = inverted[got_id]
 

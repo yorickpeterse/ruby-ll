@@ -23,7 +23,7 @@ void ll_driver_config_free(DriverConfig *config)
     free(config->action_names);
     free(config->action_arg_amounts);
 
-    kh_destroy(int64_map, config->tokens);
+    kh_destroy(int64_map, config->terminals);
 
     free(config);
 }
@@ -44,9 +44,9 @@ void ll_driver_config_mark(DriverConfig *config)
     }
 
     /* Symbols can be GC'd since 2.2 */
-    for ( key = kh_begin(config->tokens); key != kh_end(config->tokens); key++ )
+    for ( key = kh_begin(config->terminals); key != kh_end(config->terminals); key++ )
     {
-        rb_gc_mark(kh_key(config->tokens, key));
+        rb_gc_mark(kh_key(config->terminals, key));
     }
 }
 
@@ -65,12 +65,12 @@ VALUE ll_driver_config_allocate(VALUE klass)
 }
 
 /**
- * Stores the tokens of the parser in the DriverConfig struct.
+ * Stores the terminals of the parser in the DriverConfig struct.
  *
  * @param self The current DriverConfig instance.
- * @param array The tokens to store in the struct.
+ * @param array The terminals to store in the struct.
  */
-VALUE ll_driver_config_set_tokens(VALUE self, VALUE array)
+VALUE ll_driver_config_set_terminals(VALUE self, VALUE array)
 {
     long index;
 
@@ -82,14 +82,14 @@ VALUE ll_driver_config_set_tokens(VALUE self, VALUE array)
 
     Data_Get_Struct(self, DriverConfig, config);
 
-    config->tokens = kh_init(int64_map);
+    config->terminals = kh_init(int64_map);
 
     FOR(index, count)
     {
         token = rb_ary_entry(array, index);
-        key   = kh_put(int64_map, config->tokens, token, &key_ret);
+        key   = kh_put(int64_map, config->terminals, token, &key_ret);
 
-        kh_value(config->tokens, key) = index;
+        kh_value(config->terminals, key) = index;
     }
 
     return Qnil;
@@ -210,7 +210,7 @@ void Init_ll_driver_config()
 
     rb_define_alloc_func(klass, ll_driver_config_allocate);
 
-    rb_define_method(klass, "tokens_native=", ll_driver_config_set_tokens, 1);
+    rb_define_method(klass, "terminals_native=", ll_driver_config_set_terminals, 1);
     rb_define_method(klass, "rules_native=", ll_driver_config_set_rules, 1);
     rb_define_method(klass, "table_native=", ll_driver_config_set_table, 1);
     rb_define_method(klass, "actions_native=", ll_driver_config_set_actions, 1);

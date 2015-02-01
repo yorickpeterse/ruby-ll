@@ -33,7 +33,7 @@ public class DriverConfig extends RubyObject
     /**
      * Hash mapping Ruby Symbols with their indexes.
      */
-    public HashMap<RubySymbol, Long> tokens = new HashMap<RubySymbol, Long>();
+    public HashMap<RubySymbol, Long> terminals = new HashMap<RubySymbol, Long>();
 
     /**
      * 2-dimensional array containing the rules and their steps.
@@ -91,12 +91,12 @@ public class DriverConfig extends RubyObject
     }
 
     /**
-     * Stores the tokens of the parser in the current DriverConfig instance.
+     * Stores the terminals of the parser in the current DriverConfig instance.
      *
-     * @param arg Array of tokens to store.
+     * @param arg Array of terminals to store.
      */
-    @JRubyMethod(name="tokens_native=")
-    public IRubyObject set_tokens_native(ThreadContext context, IRubyObject arg)
+    @JRubyMethod(name="terminals_native=")
+    public IRubyObject set_terminals_native(ThreadContext context, IRubyObject arg)
     {
         RubyArray array = arg.convertToArray();
 
@@ -104,7 +104,7 @@ public class DriverConfig extends RubyObject
         {
             RubySymbol sym = (RubySymbol) array.entry(index);
 
-            this.tokens.put(sym, index);
+            this.terminals.put(sym, index);
         }
 
         return context.nil;

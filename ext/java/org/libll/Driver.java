@@ -111,9 +111,9 @@ public class Driver extends RubyObject
                     Long stack_type  = stack.pop();
                     Long token_id    = self.T_EOF;
 
-                    if ( self.config.tokens.containsKey(type) )
+                    if ( self.config.terminals.containsKey(type) )
                     {
-                        token_id = self.config.tokens.get(type);
+                        token_id = self.config.terminals.get(type);
                     }
 
                     // Rule
