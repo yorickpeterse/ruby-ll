@@ -494,6 +494,12 @@ describe LL::Compiler do
       rule.should be_an_instance_of(LL::Rule)
     end
 
+    it 'adds two rules to the compiled parser' do
+      @compiler.on_star(@node, @compiled)
+
+      @compiled.rules.length.should == 2
+    end
+
     it 'sets the name of the first rule' do
       @compiler.on_star(@node, @compiled).name.should == '_A1'
     end
@@ -564,6 +570,12 @@ describe LL::Compiler do
       rule.should be_an_instance_of(LL::Rule)
     end
 
+    it 'adds two rules to the compiled parser' do
+      @compiler.on_plus(@node, @compiled)
+
+      @compiled.rules.length.should == 2
+    end
+
     it 'sets the name of the first rule' do
       @compiler.on_plus(@node, @compiled).name.should == '_A1'
     end
@@ -627,6 +639,12 @@ describe LL::Compiler do
       rule = @compiler.on_question(@node, @compiled)
 
       rule.should be_an_instance_of(LL::Rule)
+    end
+
+    it 'adds one rule to the compiled parser' do
+      @compiler.on_question(@node, @compiled)
+
+      @compiled.rules.length.should == 1
     end
 
     it 'sets the name of the first rule' do

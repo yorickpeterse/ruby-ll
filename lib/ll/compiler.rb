@@ -378,6 +378,9 @@ module LL
 
       rule2.add_branch([receiver, rule1], node.source_line)
 
+      compiled_parser.add_rule(rule1)
+      compiled_parser.add_rule(rule2)
+
       return rule1
     end
 
@@ -411,6 +414,9 @@ module LL
       rule1.add_branch([receiver, rule2], node.source_line)
       rule2.add_branch([rule1, eps], node.source_line)
 
+      compiled_parser.add_rule(rule1)
+      compiled_parser.add_rule(rule2)
+
       return rule1
     end
 
@@ -441,6 +447,8 @@ module LL
 
       rule1.add_branch([receiver], node.source_line)
       rule1.add_branch([eps], node.source_line)
+
+      compiled_parser.add_rule(rule1)
 
       return rule1
     end
