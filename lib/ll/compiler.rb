@@ -381,6 +381,9 @@ module LL
       compiled_parser.add_rule(rule1)
       compiled_parser.add_rule(rule2)
 
+      rule1.increment_references
+      rule2.increment_references
+
       return rule1
     end
 
@@ -417,6 +420,9 @@ module LL
       compiled_parser.add_rule(rule1)
       compiled_parser.add_rule(rule2)
 
+      rule1.increment_references
+      rule2.increment_references
+
       return rule1
     end
 
@@ -449,6 +455,8 @@ module LL
       rule1.add_branch([eps], node.source_line)
 
       compiled_parser.add_rule(rule1)
+
+      rule1.increment_references
 
       return rule1
     end
