@@ -3,7 +3,7 @@ require 'spec_helper'
 describe LL::Compiler do
   before do
     @compiler = described_class.new
-    @compiled = LL::CompiledParser.new
+    @compiled = LL::CompiledGrammar.new
   end
 
   describe '#compile' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LL::CompiledParser do
+describe LL::CompiledGrammar do
   before do
     @source_line = source_line('foo')
     @compiled    = described_class.new

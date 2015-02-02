@@ -1,9 +1,9 @@
 module LL
   ##
-  # The CompiledParser class contains compilation results such as the parser
+  # The CompiledGrammar class contains compilation results such as the parser
   # name, the parsing tables, etc.
   #
-  class CompiledParser
+  class CompiledGrammar
     attr_accessor :name, :inner, :header
 
     attr_reader :warnings, :errors
@@ -145,5 +145,5 @@ module LL
     def output
       return STDERR
     end
-  end # CompiledParser
+  end # CompiledGrammar
 end # LL

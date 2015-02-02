@@ -1,16 +1,16 @@
 module LL
   ##
   # The Compiler class processes an AST (as parsed from an LL(1) grammar) and
-  # returns an {LL::CompiledParser} instance containing details such as the
+  # returns an {LL::CompiledGrammar} instance containing details such as the
   # parsing states, callback method names, etc.
   #
   class Compiler
     ##
     # @param [LL::AST::Node] ast
-    # @return [LL::CompiledParser]
+    # @return [LL::CompiledGrammar]
     #
     def compile(ast)
-      compiled = CompiledParser.new
+      compiled = CompiledGrammar.new
 
       process(ast, compiled)
 
@@ -25,26 +25,26 @@ module LL
 
     ##
     # @param [LL::AST::Node] node
-    # @param [LL::CompiledParser] compiled_parser
-    # @return [LL::CompiledParser]
+    # @param [LL::CompiledGrammar] compiled_grammar
+    # @return [LL::CompiledGrammar]
     #
-    def process(node, compiled_parser)
+    def process(node, compiled_grammar)
       handler = "on_#{node.type}"
 
-      return send(handler, node, compiled_parser)
+      return send(handler, node, compiled_grammar)
     end
 
     ##
     # Adds warnings for any unused rules. The first defined rule is skipped
     # since it's the root rule.
     #
-    # @param [LL::CompiledParser] compiled_parser
+    # @param [LL::CompiledGrammar] compiled_grammar
     #
-    def warn_for_unused_rules(compiled_parser)
-      compiled_parser.rules.each_with_index do |rule, index|
+    def warn_for_unused_rules(compiled_grammar)
+      compiled_grammar.rules.each_with_index do |rule, index|
         next if index == 0 || rule.references > 0
 
-        compiled_parser.add_warning(
+        compiled_grammar.add_warning(
           "Unused rule #{rule.name.inspect}",
           rule.source_line
         )
@@ -54,13 +54,13 @@ module LL
     ##
     # Adds warnings for any unused terminals.
     #
-    # @param [LL::CompiledParser] compiled_parser
+    # @param [LL::CompiledGrammar] compiled_grammar
     #
-    def warn_for_unused_terminals(compiled_parser)
-      compiled_parser.terminals.each do |terminal|
+    def warn_for_unused_terminals(compiled_grammar)
+      compiled_grammar.terminals.each do |terminal|
         next if terminal.references > 0
 
-        compiled_parser.add_warning(
+        compiled_grammar.add_warning(
           "Unused terminal #{terminal.name.inspect}",
           terminal.source_line
         )
@@ -71,10 +71,10 @@ module LL
     # Verifies all rules to see if they don't have any first/first conflicts.
     # Errors are added for every rule where this _is_ the case.
     #
-    # @param [LL::CompiledParser] compiled_parser
+    # @param [LL::CompiledGrammar] compiled_grammar
     #
-    def verify_first_first(compiled_parser)
-      compiled_parser.rules.each do |rule|
+    def verify_first_first(compiled_grammar)
+      compiled_grammar.rules.each do |rule|
         conflicting = Set.new
 
         rule.branches.each do |branch|
@@ -93,7 +93,7 @@ module LL
         end
 
         unless conflicting.empty?
-          compiled_parser.add_error(
+          compiled_grammar.add_error(
             'first/first conflict, multiple branches start with the same terminals',
             rule.source_line
           )
@@ -103,7 +103,7 @@ module LL
               token.is_a?(Epsilon) ? 'epsilon' : token.name
             end
 
-            compiled_parser.add_error(
+            compiled_grammar.add_error(
               "branch starts with: #{labels.join(', ')}",
               branch.source_line
             )
@@ -115,21 +115,21 @@ module LL
     ##
     # Adds errors for any rules containing first/follow conflicts.
     #
-    # @param [LL::CompiledParser] compiled_parser
+    # @param [LL::CompiledGrammar] compiled_grammar
     #
-    def verify_first_follow(compiled_parser)
-      compiled_parser.rules.each do |rule|
+    def verify_first_follow(compiled_grammar)
+      compiled_grammar.rules.each do |rule|
         rule.branches.each do |branch|
           has_epsilon = branch.first_set.find { |step| step.is_a?(Epsilon) }
 
           if has_epsilon and !branch.follow_set.empty?
-            compiled_parser.add_error(
+            compiled_grammar.add_error(
               'first/follow conflict, branch can start with epsilon and is ' \
                 'followed by (non) terminals',
               branch.source_line
             )
 
-            compiled_parser.add_error(
+            compiled_grammar.add_error(
               'epsilon originates from here',
               has_epsilon.source_line
             )
@@ -142,19 +142,19 @@ module LL
     # Processes the root node of a grammar.
     #
     # @param [LL::AST::Node] node
-    # @param [LL::CompiledParser] compiled_parser
+    # @param [LL::CompiledGrammar] compiled_grammar
     #
-    def on_grammar(node, compiled_parser)
+    def on_grammar(node, compiled_grammar)
       # Create the prototypes for all rules since rules can be referenced before
       # they are defined.
       node.children.each do |child|
         if child.type == :rule
-          on_rule_prototype(child, compiled_parser)
+          on_rule_prototype(child, compiled_grammar)
         end
       end
 
       node.children.each do |child|
-        process(child, compiled_parser)
+        process(child, compiled_grammar)
       end
     end
 
@@ -162,19 +162,19 @@ module LL
     # Sets the name of the parser.
     #
     # @param [LL::AST::Node] node
-    # @param [LL::CompiledParser] compiled_parser
+    # @param [LL::CompiledGrammar] compiled_grammar
     #
-    def on_name(node, compiled_parser)
-      if compiled_parser.name
-        compiled_parser.add_warning(
-          "Overwriting existing parser name #{compiled_parser.name.inspect}",
+    def on_name(node, compiled_grammar)
+      if compiled_grammar.name
+        compiled_grammar.add_warning(
+          "Overwriting existing parser name #{compiled_grammar.name.inspect}",
           node.source_line
         )
       end
 
-      parts = node.children.map { |child| process(child, compiled_parser) }
+      parts = node.children.map { |child| process(child, compiled_grammar) }
 
-      compiled_parser.name = parts.join('::')
+      compiled_grammar.name = parts.join('::')
     end
 
     ##
@@ -182,17 +182,17 @@ module LL
     #
     # @see #process
     #
-    def on_terminals(node, compiled_parser)
+    def on_terminals(node, compiled_grammar)
       node.children.each do |child|
-        name = process(child, compiled_parser)
+        name = process(child, compiled_grammar)
 
-        if compiled_parser.has_terminal?(name)
-          compiled_parser.add_error(
+        if compiled_grammar.has_terminal?(name)
+          compiled_grammar.add_error(
             "The terminal #{name.inspect} has already been defined",
             child.source_line
           )
         else
-          compiled_parser.add_terminal(name, child.source_line)
+          compiled_grammar.add_terminal(name, child.source_line)
         end
       end
     end
@@ -202,8 +202,8 @@ module LL
     #
     # @see #process
     #
-    def on_inner(node, compiled_parser)
-      compiled_parser.inner = process(node.children[0], compiled_parser)
+    def on_inner(node, compiled_grammar)
+      compiled_grammar.inner = process(node.children[0], compiled_grammar)
     end
 
     ##
@@ -211,8 +211,8 @@ module LL
     #
     # @see #process
     #
-    def on_header(node, compiled_parser)
-      compiled_parser.header = process(node.children[0], compiled_parser)
+    def on_header(node, compiled_grammar)
+      compiled_grammar.header = process(node.children[0], compiled_grammar)
     end
 
     ##
@@ -221,7 +221,7 @@ module LL
     # @see #process
     # @return [String]
     #
-    def on_ruby(node, compiled_parser)
+    def on_ruby(node, compiled_grammar)
       return node.children[0]
     end
 
@@ -231,7 +231,7 @@ module LL
     # @see #process
     # @return [String]
     #
-    def on_ident(node, compiled_parser)
+    def on_ident(node, compiled_grammar)
       return node.children[0]
     end
 
@@ -241,7 +241,7 @@ module LL
     # @see #process
     # @return [LL::Epsilon]
     #
-    def on_epsilon(node, compiled_parser)
+    def on_epsilon(node, compiled_grammar)
       return Epsilon.new(node.source_line)
     end
 
@@ -250,18 +250,18 @@ module LL
     #
     # @see #process
     #
-    def on_rule(node, compiled_parser)
-      name = process(node.children[0], compiled_parser)
+    def on_rule(node, compiled_grammar)
+      name = process(node.children[0], compiled_grammar)
 
-      if compiled_parser.has_terminal?(name)
-        compiled_parser.add_error(
+      if compiled_grammar.has_terminal?(name)
+        compiled_grammar.add_error(
           "the rule name #{name.inspect} is already used as a terminal name",
           node.source_line
         )
       end
 
-      if compiled_parser.has_rule_with_branches?(name)
-        compiled_parser.add_error(
+      if compiled_grammar.has_rule_with_branches?(name)
+        compiled_grammar.add_error(
           "the rule #{name.inspect} has already been defined",
           node.source_line
         )
@@ -270,10 +270,10 @@ module LL
       end
 
       branches = node.children[1..-1].map do |child|
-        process(child, compiled_parser)
+        process(child, compiled_grammar)
       end
 
-      rule = compiled_parser.lookup_rule(name)
+      rule = compiled_grammar.lookup_rule(name)
 
       rule.branches.concat(branches)
     end
@@ -283,14 +283,14 @@ module LL
     #
     # @see #process
     #
-    def on_rule_prototype(node, compiled_parser)
-      name = process(node.children[0], compiled_parser)
+    def on_rule_prototype(node, compiled_grammar)
+      name = process(node.children[0], compiled_grammar)
 
-      return if compiled_parser.has_rule?(name)
+      return if compiled_grammar.has_rule?(name)
 
       rule = Rule.new(name, node.source_line)
 
-      compiled_parser.add_rule(rule)
+      compiled_grammar.add_rule(rule)
     end
 
     ##
@@ -299,11 +299,11 @@ module LL
     # @see #process
     # @return [LL::Branch]
     #
-    def on_branch(node, compiled_parser)
-      steps = process(node.children[0], compiled_parser)
+    def on_branch(node, compiled_grammar)
+      steps = process(node.children[0], compiled_grammar)
 
       if node.children[1]
-        code = process(node.children[1], compiled_parser)
+        code = process(node.children[1], compiled_grammar)
       else
         code = nil
       end
@@ -317,17 +317,17 @@ module LL
     # @see #process
     # @return [Array]
     #
-    def on_steps(node, compiled_parser)
+    def on_steps(node, compiled_grammar)
       steps = []
 
       node.children.each do |step_node|
-        retval = process(step_node, compiled_parser)
+        retval = process(step_node, compiled_grammar)
 
         # Literal rule/terminal names.
         if retval.is_a?(String)
-          step = compiled_parser.lookup_identifier(retval)
+          step = compiled_grammar.lookup_identifier(retval)
 
-          undefined_identifier!(retval, step_node, compiled_parser) unless step
+          undefined_identifier!(retval, step_node, compiled_grammar) unless step
         # Operators/epsilon
         else
           step = retval
@@ -362,8 +362,8 @@ module LL
     # @see #process
     # @return [LL::Rule]
     #
-    def on_star(node, compiled_parser)
-      receiver = operator_receiver(node, compiled_parser)
+    def on_star(node, compiled_grammar)
+      receiver = operator_receiver(node, compiled_grammar)
 
       return unless receiver
 
@@ -378,8 +378,8 @@ module LL
 
       rule2.add_branch([receiver, rule1], node.source_line)
 
-      compiled_parser.add_rule(rule1)
-      compiled_parser.add_rule(rule2)
+      compiled_grammar.add_rule(rule1)
+      compiled_grammar.add_rule(rule2)
 
       rule1.increment_references
       rule2.increment_references
@@ -403,8 +403,8 @@ module LL
     # @see #process
     # @return [LL::Rule]
     #
-    def on_plus(node, compiled_parser)
-      receiver = operator_receiver(node, compiled_parser)
+    def on_plus(node, compiled_grammar)
+      receiver = operator_receiver(node, compiled_grammar)
 
       return unless receiver
 
@@ -417,8 +417,8 @@ module LL
       rule1.add_branch([receiver, rule2], node.source_line)
       rule2.add_branch([rule1, eps], node.source_line)
 
-      compiled_parser.add_rule(rule1)
-      compiled_parser.add_rule(rule2)
+      compiled_grammar.add_rule(rule1)
+      compiled_grammar.add_rule(rule2)
 
       rule1.increment_references
       rule2.increment_references
@@ -441,8 +441,8 @@ module LL
     # @see #process
     # @return [LL::Rule]
     #
-    def on_question(node, compiled_parser)
-      receiver = operator_receiver(node, compiled_parser)
+    def on_question(node, compiled_grammar)
+      receiver = operator_receiver(node, compiled_grammar)
 
       return unless receiver
 
@@ -454,7 +454,7 @@ module LL
       rule1.add_branch([receiver], node.source_line)
       rule1.add_branch([eps], node.source_line)
 
-      compiled_parser.add_rule(rule1)
+      compiled_grammar.add_rule(rule1)
 
       rule1.increment_references
 
@@ -466,10 +466,10 @@ module LL
     ##
     # @param [String] name
     # @param [LL::AST::Node] node
-    # @param [LL::CompiledParser] compiled_parser
+    # @param [LL::CompiledGrammar] compiled_grammar
     #
-    def undefined_identifier!(name, node, compiled_parser)
-      compiled_parser.add_error(
+    def undefined_identifier!(name, node, compiled_grammar)
+      compiled_grammar.add_error(
         "Undefined terminal or rule #{name.inspect}",
         node.source_line
       )
@@ -477,18 +477,18 @@ module LL
 
     ##
     # @param [LL::AST::Node] node
-    # @param [LL::CompiledParser] compiled_parser
+    # @param [LL::CompiledGrammar] compiled_grammar
     # @return [LL::Rule|LL::Terminal|NilClass]
     #
-    def operator_receiver(node, compiled_parser)
+    def operator_receiver(node, compiled_grammar)
       rec_node = node.children[0]
-      rec_name = process(rec_node, compiled_parser)
-      receiver = compiled_parser.lookup_identifier(rec_name)
+      rec_name = process(rec_node, compiled_grammar)
+      receiver = compiled_grammar.lookup_identifier(rec_name)
 
       if receiver
         return receiver
       else
-        undefined_identifier!(rec_name, rec_node, compiled_parser)
+        undefined_identifier!(rec_name, rec_node, compiled_grammar)
 
         return
       end
