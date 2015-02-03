@@ -115,10 +115,28 @@ module LL
     end
 
     ##
+    # @return [Hash]
+    #
+    def rule_indices
+      return rules.each_with_index.each_with_object({}) do |(rule, idx), h|
+        h[rule] = idx
+      end
+    end
+
+    ##
     # @return [Array]
     #
     def terminals
       return @terminals.values
+    end
+
+    ##
+    # @return [Hash]
+    #
+    def terminal_indices
+      return terminals.each_with_index.each_with_object({}) do |(term, idx), h|
+        h[term] = idx
+      end
     end
 
     ##

@@ -156,6 +156,22 @@ describe LL::CompiledGrammar do
     end
   end
 
+  describe '#rule_indices' do
+    it 'returns an empty Hash by default' do
+      @compiled.rule_indices.should == {}
+    end
+
+    it 'returns a Hash mapping rules to their indices' do
+      rule1 = LL::Rule.new('rule1', @source_line)
+      rule2 = LL::Rule.new('rule2', @source_line)
+
+      @compiled.add_rule(rule1)
+      @compiled.add_rule(rule2)
+
+      @compiled.rule_indices.should == {rule1 => 0, rule2 => 1}
+    end
+  end
+
   describe '#terminals' do
     it 'returns an empty Array by default' do
       @compiled.terminals.should == []
@@ -165,6 +181,19 @@ describe LL::CompiledGrammar do
       terminal = @compiled.add_terminal('foo', @source_line)
 
       @compiled.terminals.should == [terminal]
+    end
+  end
+
+  describe '#terminal_indices' do
+    it 'returns an empty Hash by default' do
+      @compiled.terminal_indices.should == {}
+    end
+
+    it 'returns a Hash mapping terminals to their indices' do
+      termA = @compiled.add_terminal('A', @source_line)
+      termB = @compiled.add_terminal('B', @source_line)
+
+      @compiled.terminal_indices.should == {termA => 0, termB => 1}
     end
   end
 
