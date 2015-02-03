@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe LL::ConfigurationCompiler do
   before do
-    @compiled = LL::CompiledGrammar.new
+    @grammar = LL::CompiledGrammar.new
 
     line = source_line('')
 
@@ -18,8 +18,8 @@ describe LL::ConfigurationCompiler do
     rule1 = LL::Rule.new('rule1', line)
     rule2 = LL::Rule.new('rule2', line)
 
-    termA = @compiled.add_terminal('A', line)
-    termB = @compiled.add_terminal('B', line)
+    termA = @grammar.add_terminal('A', line)
+    termB = @grammar.add_terminal('B', line)
     eps   = LL::Epsilon.new(line)
 
     rule1.add_branch([rule2], line)
@@ -28,27 +28,27 @@ describe LL::ConfigurationCompiler do
     rule2.add_branch([termA], line, " 'A' ")
     rule2.add_branch([termB], line, " 'B' ")
 
-    @compiled.add_rule(rule1)
-    @compiled.add_rule(rule2)
+    @grammar.add_rule(rule1)
+    @grammar.add_rule(rule2)
 
     @compiler = described_class.new
   end
 
   describe '#generate' do
     it 'returns a CompiledConfiguration instance' do
-      config = @compiler.generate(@compiled)
+      config = @compiler.generate(@grammar)
 
       config.should be_an_instance_of(LL::CompiledConfiguration)
     end
 
     it 'sets the list of terminals as Symbols' do
-      config = @compiler.generate(@compiled)
+      config = @compiler.generate(@grammar)
 
       config.terminals.should == [:A, :B]
     end
 
     it 'sets the rules table as an Array' do
-      config = @compiler.generate(@compiled)
+      config = @compiler.generate(@grammar)
 
       config.rules.should == [
         [0, 1],
@@ -59,7 +59,7 @@ describe LL::ConfigurationCompiler do
     end
 
     it 'sets the lookup table as an Array' do
-      config = @compiler.generate(@compiled)
+      config = @compiler.generate(@grammar)
 
       config.table.should == [
         [0, 0],
@@ -68,7 +68,7 @@ describe LL::ConfigurationCompiler do
     end
 
     it 'sets the actions table as an Array' do
-      config = @compiler.generate(@compiled)
+      config = @compiler.generate(@grammar)
 
       config.actions.should == [
         [:_rule_0, 1],
@@ -77,12 +77,56 @@ describe LL::ConfigurationCompiler do
     end
 
     it 'sets the action bodies as a Hash' do
-      config = @compiler.generate(@compiled)
+      config = @compiler.generate(@grammar)
 
       config.action_bodies.should == {
         :_rule_0 => " 'A' ",
         :_rule_1 => " 'B' "
       }
+    end
+  end
+
+  describe '#generate_terminals' do
+    it 'returns the terminals as an Array' do
+      @compiler.generate_terminals(@grammar).should == [:A, :B]
+    end
+  end
+
+  describe '#generate_actions' do
+    it 'returns the actions as an Array' do
+      @compiler.generate_actions(@grammar).should == [
+        [:_rule_0, 1],
+        [:_rule_1, 1]
+      ]
+    end
+  end
+
+  describe '#generate_action_bodies' do
+    it 'returns the action bodies as a Hash' do
+      @compiler.generate_action_bodies(@grammar).should == {
+        :_rule_0 => " 'A' ",
+        :_rule_1 => " 'B' "
+      }
+    end
+  end
+
+  describe '#generate_rules' do
+    it 'returns the rules as an Array' do
+      @compiler.generate_rules(@grammar).should == [
+        [0, 1],
+        [2, 0],
+        [3, 0, 1, 0],
+        [3, 1, 1, 1]
+      ]
+    end
+  end
+
+  describe '#generate_table' do
+    it 'returns the table as an Array' do
+      @compiler.generate_table(@grammar).should == [
+        [0, 0],
+        [2, 3]
+      ]
     end
   end
 end
