@@ -369,8 +369,8 @@ module LL
 
       receiver.increment_references
 
-      rule1 = Rule.new("_#{receiver.name}1", node.source_line)
-      rule2 = Rule.new("_#{receiver.name}2", node.source_line)
+      rule1 = Rule.anonymous(receiver.name, node.source_line)
+      rule2 = Rule.anonymous(receiver.name, node.source_line)
       eps   = Epsilon.new(node.source_line)
 
       rule1.add_branch([rule2], node.source_line)
@@ -410,8 +410,8 @@ module LL
 
       receiver.increment_references
 
-      rule1 = Rule.new("_#{receiver.name}1", node.source_line)
-      rule2 = Rule.new("_#{receiver.name}2", node.source_line)
+      rule1 = Rule.anonymous(receiver.name, node.source_line)
+      rule2 = Rule.anonymous(receiver.name, node.source_line)
       eps   = Epsilon.new(node.source_line)
 
       rule1.add_branch([receiver, rule2], node.source_line)
@@ -448,7 +448,7 @@ module LL
 
       receiver.increment_references
 
-      rule1 = Rule.new("_#{receiver.name}1", node.source_line)
+      rule1 = Rule.anonymous(receiver.name, node.source_line)
       eps   = Epsilon.new(node.source_line)
 
       rule1.add_branch([receiver], node.source_line)

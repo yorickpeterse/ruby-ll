@@ -509,7 +509,7 @@ describe LL::Compiler do
     end
 
     it 'sets the name of the first rule' do
-      @compiler.on_star(@node, @compiled).name.should == '_A1'
+      @compiler.on_star(@node, @compiled).name.should =~ /_A\w+/
     end
 
     it 'adds two branches to the first rule' do
@@ -538,7 +538,7 @@ describe LL::Compiler do
       rule1 = @compiler.on_star(@node, @compiled)
       rule2 = rule1.branches[0].steps[0]
 
-      rule2.name.should == '_A2'
+      rule2.name.should =~ /_A\w+/
     end
 
     it 'adds a single branch to the second rule' do
@@ -593,7 +593,7 @@ describe LL::Compiler do
     end
 
     it 'sets the name of the first rule' do
-      @compiler.on_plus(@node, @compiled).name.should == '_A1'
+      @compiler.on_plus(@node, @compiled).name.should =~ /_A\w+/
     end
 
     it 'adds a single branch to the first rule' do
@@ -616,7 +616,7 @@ describe LL::Compiler do
       rule1 = @compiler.on_plus(@node, @compiled)
       rule2 = rule1.branches[0].steps[1]
 
-      rule2.name.should == '_A2'
+      rule2.name.should =~ /_A\w+/
     end
 
     it 'adds a single branch to the second rule' do
@@ -674,7 +674,7 @@ describe LL::Compiler do
     it 'sets the name of the first rule' do
       rule = @compiler.on_question(@node, @compiled)
 
-      rule.name.should == '_A1'
+      rule.name.should =~ /_A\w+/
     end
 
     it 'adds two branches to the first rule' do

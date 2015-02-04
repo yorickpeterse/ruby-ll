@@ -6,6 +6,19 @@ module LL
     attr_reader :name, :branches, :source_line, :references
 
     ##
+    # Creates a new, anonymous rules. These rules have an automatically
+    # generated, somewhat unique rule name.
+    #
+    # @param [String] receiver
+    # @param [LL::SourceLine] source_line
+    #
+    def self.anonymous(receiver, source_line)
+      suffix = SecureRandom.hex(3)
+
+      return new("_#{receiver}#{suffix}", source_line)
+    end
+
+    ##
     # @param [String] name
     # @param [LL::SourceLine] source_line
     #

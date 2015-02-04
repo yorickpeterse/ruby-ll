@@ -1,6 +1,24 @@
 require 'spec_helper'
 
 describe LL::Rule do
+  describe 'anonymous' do
+    before do
+      @source_line = source_line('')
+    end
+
+    it 'returns a Rule' do
+      rule = described_class.anonymous('foo', @source_line)
+
+      rule.should be_an_instance_of(described_class)
+    end
+
+    it 'sets a semi random rule name' do
+      rule = described_class.anonymous('foo', @source_line)
+
+      rule.name.should =~ /foo\w+/
+    end
+  end
+
   describe '#intialize' do
     before do
       @source_line = source_line('')
