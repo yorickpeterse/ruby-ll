@@ -26,6 +26,10 @@ describe LL::CompiledConfiguration do
       it 'sets a default Hash for the action bodies' do
         @compiled.action_bodies.should == {}
       end
+
+      it 'sets a default Array for the namespace' do
+        @compiled.namespace.should == []
+      end
     end
 
     describe 'with custom values' do

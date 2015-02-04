@@ -31,6 +31,10 @@ describe LL::ConfigurationCompiler do
     @grammar.add_rule(rule1)
     @grammar.add_rule(rule2)
 
+    @grammar.name   = 'A::B::C'
+    @grammar.inner  = 'foo'
+    @grammar.header = 'bar'
+
     @compiler = described_class.new
   end
 
@@ -39,6 +43,22 @@ describe LL::ConfigurationCompiler do
       config = @compiler.generate(@grammar)
 
       config.should be_an_instance_of(LL::CompiledConfiguration)
+    end
+
+    it 'sets the name as a String' do
+      @compiler.generate(@grammar).name.should == 'C'
+    end
+
+    it 'sets the namespace as an Array' do
+      @compiler.generate(@grammar).namespace.should == %w{A B}
+    end
+
+    it 'sets the inner block as a String' do
+      @compiler.generate(@grammar).inner.should == @grammar.inner
+    end
+
+    it 'sets the header block as a String' do
+      @compiler.generate(@grammar).header.should == @grammar.header
     end
 
     it 'sets the list of terminals as Symbols' do
@@ -83,6 +103,18 @@ describe LL::ConfigurationCompiler do
         :_rule_0 => " 'A' ",
         :_rule_1 => " 'B' "
       }
+    end
+  end
+
+  describe '#name' do
+    it 'returns the name' do
+      @compiler.generate_name(@grammar).should == 'C'
+    end
+  end
+
+  describe '#namespace' do
+    it 'returns the namespace as an Array' do
+      @compiler.generate_namespace(@grammar).should == %w{A B}
     end
   end
 

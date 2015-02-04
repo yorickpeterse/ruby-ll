@@ -38,12 +38,34 @@ module LL
     #
     def generate(grammar)
       return CompiledConfiguration.new(
+        :name          => generate_name(grammar),
+        :namespace     => generate_namespace(grammar),
+        :inner         => grammar.inner,
+        :header        => grammar.header,
         :terminals     => generate_terminals(grammar),
         :actions       => generate_actions(grammar),
         :action_bodies => generate_action_bodies(grammar),
         :rules         => generate_rules(grammar),
         :table         => generate_table(grammar)
       )
+    end
+
+    ##
+    # @param [LL::CompiledGrammar] grammar
+    # @return [String]
+    #
+    def generate_name(grammar)
+      return grammar.name.split('::').last
+    end
+
+    ##
+    # @param [LL::CompiledGrammar] grammar
+    # @return [Array]
+    #
+    def generate_namespace(grammar)
+      parts = grammar.name.split('::')
+
+      return parts.length > 1 ? parts[0..-2] : []
     end
 
     ##
