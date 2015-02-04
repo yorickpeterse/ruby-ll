@@ -15,6 +15,11 @@ module LL
     }.freeze
 
     ##
+    # @return [String]
+    #
+    DEFAULT_RUBY_CODE = 'val'.freeze
+
+    ##
     # @param [LL::CompiledGrammar] grammar
     # @return [LL::CompiledConfiguration]
     #
@@ -68,8 +73,6 @@ module LL
 
       grammar.rules.each do |rule|
         rule.branches.each do |branch|
-          next unless branch.ruby_code
-
           actions << [:"_rule_#{index}", branch.steps.length]
 
           index += 1
@@ -89,9 +92,7 @@ module LL
 
       grammar.rules.each do |rule|
         rule.branches.each do |branch|
-          next unless branch.ruby_code
-
-          bodies[:"_rule_#{index}"] = branch.ruby_code
+          bodies[:"_rule_#{index}"] = branch.ruby_code || DEFAULT_RUBY_CODE
 
           index += 1
         end
