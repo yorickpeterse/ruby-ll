@@ -127,7 +127,8 @@ public class Driver extends RubyObject
                         {
                             self.callMethod(
                                 context,
-                                "missing_rule_error",
+                                "stack_input_error",
+                                RubyFixnum.newFixnum(self.runtime, stack_type),
                                 RubyFixnum.newFixnum(self.runtime, stack_value)
                             );
                         }

@@ -10,7 +10,7 @@ ID id_config_const;
 ID id_each_token;
 ID id_send;
 
-ID id_missing_rule_error;
+ID id_stack_input_error;
 ID id_invalid_token_error;
 
 /**
@@ -107,7 +107,13 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
 
             if ( production_i == T_EOF )
             {
-                rb_funcall(self, id_missing_rule_error, 1, INT2NUM(stack_value));
+                rb_funcall(
+                    self,
+                    id_stack_input_error,
+                    2,
+                    INT2NUM(stack_type),
+                    INT2NUM(stack_value)
+                );
             }
             else
             {
@@ -224,6 +230,6 @@ void Init_ll_driver()
     id_send                = rb_intern("send");
     id_config_const        = rb_intern("CONFIG");
     id_each_token          = rb_intern("each_token");
-    id_missing_rule_error  = rb_intern("missing_rule_error");
+    id_stack_input_error   = rb_intern("stack_input_error");
     id_invalid_token_error = rb_intern("invalid_token_error");
 }

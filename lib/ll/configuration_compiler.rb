@@ -5,32 +5,14 @@ module LL
   #
   class ConfigurationCompiler
     ##
-    # Number to indicate the start of a rule.
+    # @return [Hash]
     #
-    # @return [Fixnum]
-    #
-    RULE = 0
-
-    ##
-    # Number to indicate the start of a terminal.
-    #
-    # @return [Fixnum]
-    #
-    TERMINAL = 1
-
-    ##
-    # Number to indicate the start of an epsilon.
-    #
-    # @return [Fixnum]
-    #
-    EPSILON = 2
-
-    ##
-    # Number to indicate the start of an action.
-    #
-    # @return [Fixnum]
-    #
-    ACTION = 3
+    TYPES = {
+      :rule     => 0,
+      :terminal => 1,
+      :epsilon  => 2,
+      :action   => 3
+    }.freeze
 
     ##
     # @param [LL::CompiledGrammar] grammar
@@ -135,7 +117,7 @@ module LL
           row = []
 
           if branch.ruby_code
-            row << ACTION
+            row << TYPES[:action]
             row << action_index
 
             action_index += 1
@@ -143,15 +125,15 @@ module LL
 
           branch.steps.reverse_each do |step|
             if step.is_a?(LL::Terminal)
-              row << TERMINAL
+              row << TYPES[:terminal]
               row << term_indices[step]
 
             elsif step.is_a?(LL::Rule)
-              row << RULE
+              row << TYPES[:rule]
               row << rule_indices[step]
 
             elsif step.is_a?(LL::Epsilon)
-              row << EPSILON
+              row << TYPES[:epsilon]
               row << 0
             end
           end

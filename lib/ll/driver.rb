@@ -4,14 +4,22 @@ module LL
   #
   class Driver
     ##
-    # Error method that is called when no rule was found for a given terminal.
+    # Error method that is called when no rule was found for a table index.
     #
-    # @param [Fixnum] token_id The ID/index of the token/terminal.
+    # @param [Fixnum] type
+    # @param [Fixnum] value
     #
-    def missing_rule_error(token_id)
-      token_name = self.class::CONFIG.terminals.invert[token_id]
+    def stack_input_error(type, value)
+      label = ConfigurationCompiler::TYPES.invert[type]
 
-      raise ParserError, "No rule was found for token #{token_name}"
+      if label
+        raise ParserError, "Unexpected #{label} #{value.inspect} on the stack"
+      else
+        raise(
+          ParserError,
+          "Unknown stack input type #{type.inspect} with value #{value.inspect}"
+        )
+      end
     end
 
     ##
@@ -22,9 +30,9 @@ module LL
     # @param [Fixnum] expected_id The ID of the expected token.
     #
     def invalid_token_error(got_id, expected_id)
-      inverted = self.class::CONFIG.terminals.invert
-      expected = inverted[expected_id]
-      got      = inverted[got_id]
+      terminals = self.class::CONFIG.terminals
+      expected  = terminals[expected_id]
+      got       = terminals[got_id]
 
       raise ParserError, "Invalid input token #{got}, expected #{expected}"
     end
