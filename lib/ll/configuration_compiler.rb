@@ -115,14 +115,9 @@ module LL
 
       grammar.rules.each_with_index do |rule, rule_index|
         rule.branches.each do |branch|
-          row = []
+          row = [TYPES[:action], action_index]
 
-          if branch.ruby_code
-            row << TYPES[:action]
-            row << action_index
-
-            action_index += 1
-          end
+          action_index += 1
 
           branch.steps.reverse_each do |step|
             if step.is_a?(LL::Terminal)
