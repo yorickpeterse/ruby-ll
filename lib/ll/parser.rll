@@ -85,6 +85,20 @@ operator
   end
 
   ##
+  # @see [LL::Driver#stack_input_error]
+  #
+  def stack_input_error(stack_value, token)
+    type = token[0].inspect
+    sl   = token[1].source_line
+
+    raise(
+      ParserError,
+      "Unexpected rule #{stack_value} for #{type} on line #{sl.line}, " \
+        "column #{sl.column}"
+    )
+  end
+
+  ##
   # @yieldparam [Symbol] type
   # @yieldparam [String] value
   #
