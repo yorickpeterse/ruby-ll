@@ -111,8 +111,8 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
                     self,
                     id_stack_input_error,
                     2,
-                    INT2NUM(stack_type),
-                    INT2NUM(stack_value)
+                    INT2NUM(stack_value),
+                    INT2NUM(token_id)
                 );
             }
             else

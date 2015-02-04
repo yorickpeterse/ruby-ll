@@ -6,20 +6,13 @@ module LL
     ##
     # Error method that is called when no rule was found for a table index.
     #
-    # @param [Fixnum] type
-    # @param [Fixnum] value
+    # @param [Fixnum] stack_value
+    # @param [Fixnum] token_id
     #
-    def stack_input_error(type, value)
-      label = ConfigurationCompiler::TYPES.invert[type]
+    def stack_input_error(stack_value, token_id)
+      token = self.class::CONFIG.terminals[token_id]
 
-      if label
-        raise ParserError, "Unexpected #{label} #{value.inspect} on the stack"
-      else
-        raise(
-          ParserError,
-          "Unknown stack input type #{type.inspect} with value #{value.inspect}"
-        )
-      end
+      raise ParserError, "Unexpected rule #{stack_value} for token #{token}"
     end
 
     ##

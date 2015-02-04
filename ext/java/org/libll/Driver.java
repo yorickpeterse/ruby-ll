@@ -125,11 +125,15 @@ public class Driver extends RubyObject
 
                         if ( production_i == self.T_EOF )
                         {
+                            IRubyObject[] stack_input_error_args = {
+                                RubyFixnum.newFixnum(self.runtime, stack_value),
+                                RubyFixnum.newFixnum(self.runtime, token_id)
+                            };
+
                             self.callMethod(
                                 context,
                                 "stack_input_error",
-                                RubyFixnum.newFixnum(self.runtime, stack_type),
-                                RubyFixnum.newFixnum(self.runtime, stack_value)
+                                stack_input_error_args
                             );
                         }
                         else
