@@ -92,7 +92,7 @@ describe LL::ConfigurationCompiler do
 
       config.actions.should == [
         [:_rule_0, 1],
-        [:_rule_1, 1],
+        [:_rule_1, 0],
         [:_rule_2, 1],
         [:_rule_3, 1]
       ]
@@ -132,7 +132,7 @@ describe LL::ConfigurationCompiler do
     it 'returns the actions as an Array' do
       @compiler.generate_actions(@grammar).should == [
         [:_rule_0, 1],
-        [:_rule_1, 1],
+        [:_rule_1, 0],
         [:_rule_2, 1],
         [:_rule_3, 1]
       ]

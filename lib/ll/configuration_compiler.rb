@@ -73,7 +73,9 @@ module LL
 
       grammar.rules.each do |rule|
         rule.branches.each do |branch|
-          actions << [:"_rule_#{index}", branch.steps.length]
+          args = branch.steps.reject { |step| step.is_a?(Epsilon) }.length
+
+          actions << [:"_rule_#{index}", args]
 
           index += 1
         end
@@ -156,11 +158,19 @@ module LL
       grammar.rules.each_with_index do |rule, rule_index|
         rule.branches.each do |branch|
           branch.first_set.each do |step|
-            next unless step.is_a?(LL::Terminal)
+            # For terminals we'll base the column index on the terminal index.
+            if step.is_a?(Terminal)
+              terminal_index = term_indices[step]
 
-            terminal_index = term_indices[step]
+              table[rule_index][terminal_index] = branch_index
 
-            table[rule_index][terminal_index] = branch_index
+            # For the rest (= epsilon) we'll update all columns that haven't
+            # been updated yet.
+            else
+              table[rule_index].each_with_index do |col, col_index|
+                table[rule_index][col_index] = branch_index if col == -1
+              end
+            end
           end
 
           branch_index += 1
