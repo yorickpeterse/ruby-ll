@@ -127,7 +127,7 @@ public class Driver extends RubyObject
                         {
                             IRubyObject[] stack_input_error_args = {
                                 RubyFixnum.newFixnum(self.runtime, stack_value),
-                                RubyFixnum.newFixnum(self.runtime, token_id)
+                                token
                             };
 
                             self.callMethod(
@@ -160,7 +160,8 @@ public class Driver extends RubyObject
                         {
                             IRubyObject[] invalid_token_args = {
                                 RubyFixnum.newFixnum(self.runtime, token_id),
-                                RubyFixnum.newFixnum(self.runtime, stack_value)
+                                RubyFixnum.newFixnum(self.runtime, stack_value),
+                                token
                             };
 
                             self.callMethod(

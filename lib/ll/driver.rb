@@ -7,12 +7,12 @@ module LL
     # Error method that is called when no rule was found for a table index.
     #
     # @param [Fixnum] stack_value
-    # @param [Fixnum] token_id
+    # @param [Array] token
     #
-    def stack_input_error(stack_value, token_id)
-      token = self.class::CONFIG.terminals[token_id]
+    def stack_input_error(stack_value, token)
+      type = token[0].inspect
 
-      raise ParserError, "Unexpected rule #{stack_value} for token #{token}"
+      raise ParserError, "Unexpected rule #{stack_value} for #{type}"
     end
 
     ##
