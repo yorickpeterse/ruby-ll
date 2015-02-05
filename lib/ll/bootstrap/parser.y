@@ -79,10 +79,10 @@ rule
     : T_IDENT { s(:ident, [val[0].value], :source_line => val[0].source_line) }
     ;
 
-  # Identifiers with/without named captures and/or operators.
+  # Identifiers, optionally with an operator.
 
   idents_or_epsilon
-    : idents_or_captures
+    : idents_with_ops
       {
         s(:steps, val[0], :source_line => val[0][0].source_line)
       }
@@ -96,31 +96,22 @@ rule
     : T_EPSILON { s(:epsilon, [], :source_line => val[0].source_line) }
     ;
 
-  idents_or_captures
-    : ident_or_capture                    { val }
-    | idents_or_captures ident_or_capture { val[0] << val[1] }
+  idents_with_ops
+    : ident_with_op                 { val }
+    | idents_with_ops ident_with_op { val[0] << val[1] }
     ;
 
-  ident_or_capture
-    : ident_or_capture_          { val[0] }
-    | ident_or_capture_ operator
+  ident_with_op
+    : ident
+      {
+        val[0]
+      }
+    | ident operator
       {
         op_name = val[1][0]
         op_line = val[1][1]
 
         s(op_name, [val[0]], :source_line => op_line)
-      }
-    ;
-
-  ident_or_capture_
-    : ident
-    | capture
-    ;
-
-  capture
-    : ident T_COLON ident
-      {
-        s(:capture, [val[0], val[2]], :source_line => val[0].source_line)
       }
     ;
 

@@ -43,18 +43,15 @@ header = T_HEADER T_RUBY;
 idents = ident+;
 ident  = T_IDENT;
 
-# Identifiers with/without named captures and/or operators.
+# Identifiers, optionally with an operator.
 
 idents_or_epsilon
-  = ident_or_capture+
+  = idents_with_op+
   | T_EPSILON
   ;
 
-ident_or_capture = ident ident_or_capture_follow;
-
-ident_or_capture_follow
-  = T_COLON ident operator?
-  | operator?
+idents_with_op
+  = ident operator?
   ;
 
 # Rules
