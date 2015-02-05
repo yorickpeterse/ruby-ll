@@ -16,14 +16,19 @@ task :bootstrap => [:racc] do
   compiler  = LL::Compiler.new
   generator = LL::CodeGenerator.new
   ast       = parser.parse
+  compiled  = compiler.compile(ast)
 
-  compiled    = compiler.compile(ast)
-  output      = generator.generate(compiled)
-  output_path = File.expand_path('../../lib/ll/parser.rb', __FILE__)
+  compiled.display_messages
 
-  File.open(output_path, 'w') do |file|
-    file.write(output)
+  if compiled.valid?
+    config      = LL::ConfigurationCompiler.new.generate(compiled)
+    output      = generator.generate(config)
+    output_path = File.expand_path('../../lib/ll/parser.rb', __FILE__)
+
+    File.open(output_path, 'w') do |file|
+      file.write(output)
+    end
+
+    puts "Bootstrap parser written to #{output_path}"
   end
-
-  puts "Bootstrap parser written to #{output_path}"
 end
