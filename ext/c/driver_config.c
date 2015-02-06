@@ -35,18 +35,11 @@ void ll_driver_config_free(DriverConfig *config)
 void ll_driver_config_mark(DriverConfig *config)
 {
     long index;
-    khint64_t key;
 
     FOR(index, config->actions_count)
     {
         rb_gc_mark(config->action_names[index]);
         rb_gc_mark(config->action_arg_amounts[index]);
-    }
-
-    /* Symbols can be GC'd since 2.2 */
-    for ( key = kh_begin(config->terminals); key != kh_end(config->terminals); key++ )
-    {
-        rb_gc_mark(kh_key(config->terminals, key));
     }
 }
 
