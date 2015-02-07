@@ -119,6 +119,11 @@ public class Driver extends RubyObject
                     // Rule
                     if ( stack_type == self.T_RULE )
                     {
+                        if ( token_id == self.T_EOF )
+                        {
+                            continue;
+                        }
+
                         Long production_i = self.config.table
                             .get(stack_value.intValue())
                             .get(token_id.intValue());

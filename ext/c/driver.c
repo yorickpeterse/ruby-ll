@@ -103,6 +103,11 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
         /* Rule */
         if ( stack_type == T_RULE )
         {
+            if ( token_id == T_EOF )
+            {
+                continue;
+            }
+
             production_i = state->config->table[stack_value][token_id];
 
             if ( production_i == T_EOF )
