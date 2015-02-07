@@ -67,6 +67,7 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
 {
     VALUE method;
     VALUE action_args;
+    VALUE action_retval;
     long num_args;
     long args_i;
 
@@ -139,6 +140,8 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
             {
                 kv_push(VALUE, state->value_stack, value);
 
+                RB_GC_GUARD(value);
+
                 break;
             }
             else
@@ -172,11 +175,11 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
                 }
             }
 
-            kv_push(
-                VALUE,
-                state->value_stack,
-                rb_funcall(self, id_send, 2, method, action_args)
-            );
+            action_retval = rb_funcall(self, id_send, 2, method, action_args);
+
+            kv_push(VALUE, state->value_stack, action_retval);
+
+            RB_GC_GUARD(action_retval);
         }
         /* EOF */
         else if ( stack_type == T_EOF )
