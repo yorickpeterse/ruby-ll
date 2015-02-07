@@ -5,7 +5,7 @@
 <%- @config.namespace.each do |part| -%>
 module <%= part %>
 <%- end -%>
-<%= @config.header -%>
+<%= @config.header.strip %>
 class <%= @config.name -%> < LL::Driver
   CONFIG = LL::DriverConfig.new
 
@@ -32,7 +32,7 @@ class <%= @config.name -%> < LL::Driver
     <%= row.inspect -%>, # <%= index %>
     <%- end -%>
   ].freeze
-<%= @config.inner -%>
+<%= @config.inner.strip %>
   <%- @config.action_bodies.each do |name, body| -%>
 
   def <%= name %>(val)
