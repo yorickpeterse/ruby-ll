@@ -82,42 +82,6 @@ b = x;
       ]
     end
 
-    it 'lexes a rule containing the maybe sign' do
-      input = 'x = y?;'
-
-      lex(input).should == [
-        token(:T_IDENT, 'x', source_line(input)),
-        token(:T_EQUALS, '=', source_line(input, 1, 3)),
-        token(:T_IDENT, 'y', source_line(input, 1, 5)),
-        token(:T_QUESTION, '?', source_line(input, 1, 6)),
-        token(:T_SEMICOLON, ';', source_line(input, 1, 7))
-      ]
-    end
-
-    it 'lexes a rule containing the many sign' do
-      input = 'x = y+;'
-
-      lex(input).should == [
-        token(:T_IDENT, 'x', source_line(input)),
-        token(:T_EQUALS, '=', source_line(input, 1, 3)),
-        token(:T_IDENT, 'y', source_line(input, 1, 5)),
-        token(:T_PLUS, '+', source_line(input, 1, 6)),
-        token(:T_SEMICOLON, ';', source_line(input, 1, 7))
-      ]
-    end
-
-    it 'lexes a rule containing the kleene sign' do
-      input = 'x = y*;'
-
-      lex(input).should == [
-        token(:T_IDENT, 'x', source_line(input)),
-        token(:T_EQUALS, '=', source_line(input, 1, 3)),
-        token(:T_IDENT, 'y', source_line(input, 1, 5)),
-        token(:T_STAR, '*', source_line(input, 1, 6)),
-        token(:T_SEMICOLON, ';', source_line(input, 1, 7))
-      ]
-    end
-
     it 'lexes a rule containing an epsilon' do
       input = 'x = _;'
 

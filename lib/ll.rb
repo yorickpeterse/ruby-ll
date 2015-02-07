@@ -1,7 +1,6 @@
 require 'pathname'
 require 'erb'
 require 'set'
-require 'securerandom'
 
 require 'ast'
 require 'ansi/code'

@@ -328,13 +328,11 @@ module LL
           step = compiled_grammar.lookup_identifier(retval)
 
           undefined_identifier!(retval, step_node, compiled_grammar) unless step
-        # Operators/epsilon
+        # Epsilon
         else
           step = retval
         end
 
-        # In case of an undefined terminal/rule (either on its own or inside an
-        # operator).
         if step
           step.increment_references if step.respond_to?(:increment_references)
 
@@ -343,122 +341,6 @@ module LL
       end
 
       return steps
-    end
-
-    ##
-    # Processes the kleene star operator. This method expands the operator into
-    # a set of anonymous rules and returns the start rule.
-    #
-    # This method turns this:
-    #
-    #     x = y*;
-    #
-    # Into this:
-    #
-    #     x  = y1;
-    #     y1 = y2 | _;
-    #     y2 = y y1;
-    #
-    # @see #process
-    # @return [LL::Rule]
-    #
-    def on_star(node, compiled_grammar)
-      receiver = operator_receiver(node, compiled_grammar)
-
-      return unless receiver
-
-      receiver.increment_references
-
-      rule1 = Rule.anonymous(receiver.name, node.source_line)
-      rule2 = Rule.anonymous(receiver.name, node.source_line)
-      eps   = Epsilon.new(node.source_line)
-
-      rule1.add_branch([rule2], node.source_line)
-      rule1.add_branch([eps], node.source_line)
-
-      rule2.add_branch([receiver, rule1], node.source_line)
-
-      compiled_grammar.add_rule(rule1)
-      compiled_grammar.add_rule(rule2)
-
-      rule1.increment_references
-      rule2.increment_references
-
-      return rule1
-    end
-
-    ##
-    # Processes the + operator.
-    #
-    # This turns this:
-    #
-    #     x = y+;
-    #
-    # Into this:
-    #
-    #     x  = y1;
-    #     y1 = y y2;
-    #     y2 = y1 | _;
-    #
-    # @see #process
-    # @return [LL::Rule]
-    #
-    def on_plus(node, compiled_grammar)
-      receiver = operator_receiver(node, compiled_grammar)
-
-      return unless receiver
-
-      receiver.increment_references
-
-      rule1 = Rule.anonymous(receiver.name, node.source_line)
-      rule2 = Rule.anonymous(receiver.name, node.source_line)
-      eps   = Epsilon.new(node.source_line)
-
-      rule1.add_branch([receiver, rule2], node.source_line)
-      rule2.add_branch([rule1, eps], node.source_line)
-
-      compiled_grammar.add_rule(rule1)
-      compiled_grammar.add_rule(rule2)
-
-      rule1.increment_references
-      rule2.increment_references
-
-      return rule1
-    end
-
-    ##
-    # Processes the ? operator.
-    #
-    # This turns this:
-    #
-    #     x = y?;
-    #
-    # Into this:
-    #
-    #     x  = y1;
-    #     y1 = y | _;
-    #
-    # @see #process
-    # @return [LL::Rule]
-    #
-    def on_question(node, compiled_grammar)
-      receiver = operator_receiver(node, compiled_grammar)
-
-      return unless receiver
-
-      receiver.increment_references
-
-      rule1 = Rule.anonymous(receiver.name, node.source_line)
-      eps   = Epsilon.new(node.source_line)
-
-      rule1.add_branch([receiver], node.source_line)
-      rule1.add_branch([eps], node.source_line)
-
-      compiled_grammar.add_rule(rule1)
-
-      rule1.increment_references
-
-      return rule1
     end
 
     private
@@ -473,25 +355,6 @@ module LL
         "Undefined terminal or rule #{name.inspect}",
         node.source_line
       )
-    end
-
-    ##
-    # @param [LL::AST::Node] node
-    # @param [LL::CompiledGrammar] compiled_grammar
-    # @return [LL::Rule|LL::Terminal|NilClass]
-    #
-    def operator_receiver(node, compiled_grammar)
-      rec_node = node.children[0]
-      rec_name = process(rec_node, compiled_grammar)
-      receiver = compiled_grammar.lookup_identifier(rec_name)
-
-      if receiver
-        return receiver
-      else
-        undefined_identifier!(rec_name, rec_node, compiled_grammar)
-
-        return
-      end
     end
   end # Compiler
 end # LL

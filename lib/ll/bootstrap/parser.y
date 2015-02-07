@@ -4,7 +4,7 @@
 class LL::Bootstrap::Parser
 
 token T_RUBY T_NAME T_TERMINALS T_INNER T_HEADER T_IDENT T_EQUALS T_COLON T_PIPE
-token T_STAR T_PLUS T_QUESTION T_EPSILON T_SEMICOLON
+token T_EPSILON T_SEMICOLON
 
 options no_result_var
 
@@ -79,10 +79,10 @@ rule
     : T_IDENT { s(:ident, [val[0].value], :source_line => val[0].source_line) }
     ;
 
-  # Identifiers, optionally with an operator.
+  # Identifiers
 
   idents_or_epsilon
-    : idents_with_ops
+    : idents
       {
         s(:steps, val[0], :source_line => val[0][0].source_line)
       }
@@ -94,25 +94,6 @@ rule
 
   epsilon
     : T_EPSILON { s(:epsilon, [], :source_line => val[0].source_line) }
-    ;
-
-  idents_with_ops
-    : ident_with_op                 { val }
-    | idents_with_ops ident_with_op { val[0] << val[1] }
-    ;
-
-  ident_with_op
-    : ident
-      {
-        val[0]
-      }
-    | ident operator
-      {
-        op_name = val[1][0]
-        op_line = val[1][1]
-
-        s(op_name, [val[0]], :source_line => op_line)
-      }
     ;
 
   # Rules
@@ -138,14 +119,6 @@ rule
       {
         s(:rule, [val[0], *val[2]], :source_line => val[0].source_line)
       }
-    ;
-
-  # Operators
-
-  operator
-    : T_STAR     { [:star, val[0].source_line] }
-    | T_PLUS     { [:plus, val[0].source_line] }
-    | T_QUESTION { [:question, val[0].source_line] }
     ;
 
   # Ruby code blocks

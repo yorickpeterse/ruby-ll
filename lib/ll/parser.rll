@@ -1,9 +1,15 @@
 %name LL::Parser;
 
 %terminals T_RUBY T_NAME T_TERMINALS T_INNER T_HEADER T_IDENT T_EQUALS T_COLON;
-%terminals T_PIPE T_STAR T_PLUS T_QUESTION T_EPSILON T_SEMICOLON;
+%terminals T_PIPE T_EPSILON T_SEMICOLON;
 
-grammar = element*;
+grammar
+  = elements
+  ;
+
+elements
+  = element elements
+  | _;
 
 element
   = directive
@@ -22,9 +28,14 @@ directive
 # This handles the parsing of %name directives, which can either contain a
 # single name (e.g. "Foo") or a Ruby namespace (e.g. "Foo::Bar").
 
-name = T_NAME T_IDENT name_ns* T_SEMICOLON;
+name = T_NAME T_IDENT namespace_parts T_SEMICOLON;
 
-name_ns = T_COLON T_COLON T_IDENT;
+namespace_parts
+  = namespace_part namespace_parts
+  | _
+  ;
+
+namespace_part = T_COLON T_COLON T_IDENT;
 
 # Generic Directives
 
@@ -40,37 +51,39 @@ header = T_HEADER T_RUBY;
 
 # Generic identifiers
 
-idents = ident+;
-ident  = T_IDENT;
+idents = ident idents_follow;
 
-# Identifiers, optionally with an operator.
-
-idents_or_epsilon
-  = idents_with_op+
-  | T_EPSILON
+idents_follow
+  = idents
+  | _
   ;
 
-idents_with_op
-  = ident operator?
+ident = T_IDENT;
+
+# Identifiers
+
+idents_or_epsilon
+  = idents
+  | T_EPSILON
   ;
 
 # Rules
 
-branch = idents_or_epsilon T_RUBY?;
+branch = idents_or_epsilon branch_ruby;
 
-branches = branch branches_follow*;
+branch_ruby
+  = T_RUBY
+  | _
+  ;
 
-branches_follow = T_PIPE branches;
+branches = branch branches_follow;
+
+branches_follow
+  = T_PIPE branches
+  | _
+  ;
 
 rule = ident T_EQUALS branches T_SEMICOLON;
-
-# Operators
-
-operator
-  = T_STAR
-  | T_PLUS
-  | T_QUESTION
-  ;
 
 %inner
 {

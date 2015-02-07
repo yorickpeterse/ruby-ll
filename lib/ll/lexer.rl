@@ -219,9 +219,6 @@ module LL
         ':' => { emit(:T_COLON, ts, te) };
         ';' => { emit(:T_SEMICOLON, ts, te) };
         '|' => { emit(:T_PIPE, ts, te) };
-        '*' => { emit(:T_STAR, ts, te) };
-        '+' => { emit(:T_PLUS, ts, te) };
-        '?' => { emit(:T_QUESTION, ts, te) };
         '_' => { emit(:T_EPSILON, ts, te) };
 
         '{' => {
