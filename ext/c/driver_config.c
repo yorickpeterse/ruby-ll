@@ -39,7 +39,6 @@ void ll_driver_config_mark(DriverConfig *config)
     FOR(index, config->actions_count)
     {
         rb_gc_mark(config->action_names[index]);
-        rb_gc_mark(config->action_arg_amounts[index]);
     }
 }
 
