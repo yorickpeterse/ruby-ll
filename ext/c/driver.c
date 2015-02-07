@@ -157,11 +157,14 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
 
             while ( args_i-- )
             {
-                rb_ary_store(
-                    action_args,
-                    args_i,
-                    kv_pop(state->value_stack)
-                );
+                if ( kv_size(state->value_stack) > 0 )
+                {
+                    rb_ary_store(
+                        action_args,
+                        args_i,
+                        kv_pop(state->value_stack)
+                    );
+                }
             }
 
             kv_push(

@@ -185,7 +185,10 @@ public class Driver extends RubyObject
 
                         while ( (num_args--) > 0 )
                         {
-                            action_args.store(num_args, value_stack.pop());
+                            if ( value_stack.size() > 0 )
+                            {
+                                action_args.store(num_args, value_stack.pop());
+                            }
                         }
 
                         value_stack.push(
