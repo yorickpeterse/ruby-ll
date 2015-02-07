@@ -24,6 +24,17 @@ describe LL::Lexer do
       ]
     end
 
+    it 'lexes a rule using non-ASCII characters as the rule name' do
+      input = '쿠키 = x;'
+
+      lex(input).should == [
+        token(:T_IDENT, '쿠키', source_line(input)),
+        token(:T_EQUALS, '=', source_line(input, 1, 4)),
+        token(:T_IDENT, 'x', source_line(input, 1, 6)),
+        token(:T_SEMICOLON, ';', source_line(input, 1, 7))
+      ]
+    end
+
     it 'lexes a rule containing two identifiers' do
       input = 'x = y z;'
 

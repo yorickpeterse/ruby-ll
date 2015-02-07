@@ -161,7 +161,9 @@ module LL
       # letter or underscore and can be followed by any letter, number or an
       # underscore
 
-      identifier = [a-zA-Z_]+ [a-zA-Z_0-9]*;
+      unicode    = any - ascii;
+      character  = unicode | [a-zA-Z_0-9];
+      identifier = character+;
 
       action emit_identifier {
         emit(:T_IDENT, ts, te)
