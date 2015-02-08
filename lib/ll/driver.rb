@@ -16,6 +16,19 @@ module LL
     end
 
     ##
+    # Error method that is called when the stack has been consumed but there's
+    # still input being sent to the parser.
+    #
+    # @param [Array] token
+    #
+    def unexpected_input_error(token)
+      raise(
+        ParserError,
+        "Received token #{token[0]} but there's nothing left to parse"
+      )
+    end
+
+    ##
     # Error method that is called when an invalid terminal was specified as the
     # input.
     #
@@ -31,7 +44,7 @@ module LL
       else
         got = terminals[got_id]
 
-        raise ParserError, "Invalid input token #{got}, expected #{expected}"
+        raise ParserError, "Invalid terminal #{got}, expected #{expected}"
       end
     end
   end # Driver

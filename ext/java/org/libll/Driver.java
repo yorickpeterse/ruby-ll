@@ -107,6 +107,15 @@ public class Driver extends RubyObject
 
                 while ( true )
                 {
+                    if ( stack.size() == 0 )
+                    {
+                        self.callMethod(
+                            context,
+                            "unexpected_input_error",
+                            token
+                        );
+                    }
+
                     Long stack_value = stack.pop();
                     Long stack_type  = stack.pop();
                     Long token_id    = self.T_EOF;

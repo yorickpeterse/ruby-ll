@@ -11,6 +11,7 @@ ID id_each_token;
 ID id_send;
 
 ID id_stack_input_error;
+ID id_unexpected_input_error;
 ID id_invalid_terminal_error;
 
 /**
@@ -88,10 +89,16 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
 
     while ( 1 )
     {
+        if ( kv_size(state->stack) == 0 )
+        {
+            rb_funcall(self, id_unexpected_input_error, 1, token);
+        }
+
         stack_value = kv_pop(state->stack);
         stack_type  = kv_pop(state->stack);
         token_id    = T_EOF;
 
+        if ( TYPE(type) == T_SYMBOL )
         {
             khint64_t found = kh_get(int64_map, state->config->terminals, type);
 
@@ -243,4 +250,5 @@ void Init_ll_driver()
     id_each_token             = rb_intern("each_token");
     id_stack_input_error      = rb_intern("stack_input_error");
     id_invalid_terminal_error = rb_intern("invalid_terminal_error");
+    id_unexpected_input_error = rb_intern("unexpected_input_error");
 }
