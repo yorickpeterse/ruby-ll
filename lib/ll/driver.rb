@@ -16,18 +16,23 @@ module LL
     end
 
     ##
-    # Error method that is called when an invalid token was specified as the
+    # Error method that is called when an invalid terminal was specified as the
     # input.
     #
-    # @param [Fixnum] got_id The ID of the received token.
-    # @param [Fixnum] expected_id The ID of the expected token.
+    # @param [Fixnum] got_id The ID of the received terminal.
+    # @param [Fixnum] expected_id The ID of the expected terminal.
     #
-    def invalid_token_error(got_id, expected_id)
+    def invalid_terminal_error(got_id, expected_id)
       terminals = self.class::CONFIG.terminals
       expected  = terminals[expected_id]
-      got       = terminals[got_id]
 
-      raise ParserError, "Invalid input token #{got}, expected #{expected}"
+      if got_id == -1
+        raise ParserError, "Reached EOF while expecting terminal #{expected}"
+      else
+        got = terminals[got_id]
+
+        raise ParserError, "Invalid input token #{got}, expected #{expected}"
+      end
     end
   end # Driver
 end # LL

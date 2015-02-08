@@ -163,7 +163,7 @@ public class Driver extends RubyObject
                         }
                         else
                         {
-                            IRubyObject[] invalid_token_args = {
+                            IRubyObject[] invalid_terminal_args = {
                                 RubyFixnum.newFixnum(self.runtime, token_id),
                                 RubyFixnum.newFixnum(self.runtime, stack_value),
                                 token
@@ -171,8 +171,8 @@ public class Driver extends RubyObject
 
                             self.callMethod(
                                 context,
-                                "invalid_token_error",
-                                invalid_token_args
+                                "invalid_terminal_error",
+                                invalid_terminal_args
                             );
                         }
                     }
