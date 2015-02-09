@@ -1,7 +1,7 @@
 module LL
   ##
   # The CompiledGrammar class contains compilation results such as the parser
-  # name, the parsing tables, etc.
+  # name, the rules of the grammar, the terminals, etc.
   #
   class CompiledGrammar
     attr_accessor :name, :inner, :header

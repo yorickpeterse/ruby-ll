@@ -1,6 +1,6 @@
 module LL
   ##
-  # Parser driver for generated (or hand written) parsers.
+  # Parser driver for generated parsers.
   #
   class Driver
     ##

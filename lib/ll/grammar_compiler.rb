@@ -1,8 +1,7 @@
 module LL
   ##
   # The GrammarCompiler class processes an AST (as parsed from an LL(1) grammar)
-  # and returns an {LL::CompiledGrammar} instance containing details such as the
-  # parsing states, callback method names, etc.
+  # and returns an {LL::CompiledGrammar} instance.
   #
   class GrammarCompiler
     ##
