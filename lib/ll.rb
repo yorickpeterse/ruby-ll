@@ -20,6 +20,7 @@ end
 require_relative 'll/source_line'
 require_relative 'll/lexer'
 require_relative 'll/token'
+require_relative 'll/parser'
 require_relative 'll/parser_error'
 require_relative 'll/grammar_compiler'
 require_relative 'll/code_generator'

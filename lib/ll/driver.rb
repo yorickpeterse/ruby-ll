@@ -24,7 +24,7 @@ module LL
     def unexpected_input_error(token)
       raise(
         ParserError,
-        "Received token #{token[0]} but there's nothing left to parse"
+        "Received token #{token[0].inspect} but there's nothing left to parse"
       )
     end
 
@@ -37,12 +37,12 @@ module LL
     #
     def invalid_terminal_error(got_id, expected_id)
       terminals = self.class::CONFIG.terminals
-      expected  = terminals[expected_id]
+      expected  = terminals[expected_id].inspect
 
       if got_id == -1
         raise ParserError, "Reached EOF while expecting terminal #{expected}"
       else
-        got = terminals[got_id]
+        got = terminals[got_id].inspect
 
         raise ParserError, "Invalid terminal #{got}, expected #{expected}"
       end
