@@ -2,7 +2,7 @@ require 'bundler/gem_tasks'
 require 'digest/sha2'
 require 'rake/clean'
 
-GEMSPEC = Gem::Specification.load('ll.gemspec')
+GEMSPEC = Gem::Specification.load('ruby-ll.gemspec')
 
 if RUBY_PLATFORM == 'java'
   require 'rake/javaextensiontask'

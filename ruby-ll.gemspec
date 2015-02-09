@@ -1,7 +1,7 @@
 require File.expand_path('../lib/ll/version', __FILE__)
 
 Gem::Specification.new do |s|
-  s.name        = 'll'
+  s.name        = 'ruby-ll'
   s.version     = LL::VERSION
   s.authors     = ['Yorick Peterse']
   s.email       = 'yorickpeterse@gmail.com'
