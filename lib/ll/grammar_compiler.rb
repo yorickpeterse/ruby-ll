@@ -1,10 +1,10 @@
 module LL
   ##
-  # The Compiler class processes an AST (as parsed from an LL(1) grammar) and
-  # returns an {LL::CompiledGrammar} instance containing details such as the
+  # The GrammarCompiler class processes an AST (as parsed from an LL(1) grammar)
+  # and returns an {LL::CompiledGrammar} instance containing details such as the
   # parsing states, callback method names, etc.
   #
-  class Compiler
+  class GrammarCompiler
     ##
     # @param [LL::AST::Node] ast
     # @return [LL::CompiledGrammar]

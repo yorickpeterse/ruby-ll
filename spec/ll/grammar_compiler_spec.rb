@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LL::Compiler do
+describe LL::GrammarCompiler do
   before do
     @compiler = described_class.new
     @compiled = LL::CompiledGrammar.new
