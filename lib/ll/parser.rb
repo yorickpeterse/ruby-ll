@@ -110,7 +110,7 @@ class Parser < LL::Driver
     [:_rule_29, 4], # 29
   ].freeze
 ##
-  # @param [String] input
+  # @see [LL::Lexer#initialize]
   #
   def initialize(*args)
     @lexer = Lexer.new(*args)
@@ -143,9 +143,7 @@ class Parser < LL::Driver
   end
 
   ##
-  # @param [Symbol] type
-  # @param [Array] children
-  # @return [LL::AST::Node]
+  # @see [LL::AST::Node#initialize]
   #
   def s(*args)
     return AST::Node.new(*args)
