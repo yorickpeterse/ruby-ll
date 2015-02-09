@@ -4,12 +4,15 @@
 %terminals T_PIPE T_EPSILON T_SEMICOLON;
 
 grammar
-  = elements
+  = elements { s(:grammar, val[0]) }
+  | _        { s(:grammar) }
   ;
 
 elements
-  = element elements
-  | _;
+  # FIXME: The recursion here is possibly bugged, val[0] must never return nil.
+  # The behaviour here suggests it's recursing first, then unwinding.
+  = element elements { val[0] ? val[0] + val[1] : val[1] }
+  ;
 
 element
   = directive
@@ -17,10 +20,10 @@ element
   ;
 
 directive
-  = name
-  | terminals
-  | inner
-  | header
+  = name      { val[0] }
+  | terminals { val[0] }
+  | inner     { val[0] }
+  | header    { val[0] }
   ;
 
 # %name directives
@@ -28,62 +31,112 @@ directive
 # This handles the parsing of %name directives, which can either contain a
 # single name (e.g. "Foo") or a Ruby namespace (e.g. "Foo::Bar").
 
-name = T_NAME T_IDENT namespace_parts T_SEMICOLON;
+name
+  = T_NAME ident namespace_parts T_SEMICOLON
+    {
+      s(:name, [val[1], *val[2]], :source_line => val[0].source_line)
+    }
+  ;
 
 namespace_parts
-  = namespace_part namespace_parts
+  = T_COLON T_COLON ident namespace_parts { [val[2]] + val[3] }
   | _
   ;
 
-namespace_part = T_COLON T_COLON T_IDENT;
-
 # Generic Directives
 
-terminals = T_TERMINALS idents T_SEMICOLON;
+terminals
+  = T_TERMINALS idents T_SEMICOLON
+    {
+      s(:terminals, val[1], :source_line => val[0].source_line)
+    }
+  ;
 
 # Code Directives
 #
 # These are directives that can be used to specify inline Ruby code (e.g. %inner
 # and %header).
 
-inner  = T_INNER T_RUBY;
-header = T_HEADER T_RUBY;
+inner
+  = T_INNER ruby
+    {
+      s(:inner, [val[1]], :source_line => val[0].source_line)
+    }
+  ;
+
+header
+  = T_HEADER ruby
+    {
+      s(:header, [val[1]], :source_line => val[0].source_line)
+    }
+  ;
 
 # Generic identifiers
 
-idents = ident idents_follow;
+idents = ident idents_follow { [val[0]] + val[1] };
 
 idents_follow
-  = idents
+  = idents { val[0] }
   | _
   ;
 
-ident = T_IDENT;
+ident
+  = T_IDENT
+    {
+      s(:ident, [val[0].value], :source_line => val[0].source_line)
+    }
+  ;
 
 # Identifiers
 
 idents_or_epsilon
   = idents
-  | T_EPSILON
+    {
+      s(:steps, val[0], :source_line => val[0][0].source_line)
+    }
+  | epsilon
+    {
+      s(:steps, [val[0]], :source_line => val[0].source_line)
+    }
   ;
+
+epsilon = T_EPSILON { s(:epsilon, [], :source_line => val[0].source_line) };
 
 # Rules
 
-branch = idents_or_epsilon branch_ruby;
+branch
+  = idents_or_epsilon optional_ruby
+    {
+      steps = [val[0]]
 
-branch_ruby
-  = T_RUBY
-  | _
+      steps << val[1] if val[1]
+
+      s(:branch, steps, :source_line => val[0].source_line)
+    }
   ;
 
-branches = branch branches_follow;
+optional_ruby
+  = ruby { val[0] }
+  | _    { nil }
+  ;
+
+ruby
+  = T_RUBY { s(:ruby, [val[0].value], :source_line => val[0].source_line) }
+  ;
+
+branches = branch branches_follow { [val[0]] + val[1] };
 
 branches_follow
-  = T_PIPE branches
+  = T_PIPE branches { val[1] }
   | _
   ;
 
-rule = ident T_EQUALS branches T_SEMICOLON;
+rule
+  = ident T_EQUALS branches T_SEMICOLON
+    {
+      s(:rule, [val[0], *val[2]], :source_line => val[0].source_line)
+    }
+  ;
 
 %inner
 {
