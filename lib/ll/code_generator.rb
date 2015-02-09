@@ -14,10 +14,15 @@ module LL
 
     ##
     # @param [LL::CompiledConfiguration] config
+    # @param [TrueClass|FalseClass] add_requires
     # @return [String]
     #
-    def generate(config)
-      context  = ERBContext.new(:config => config)
+    def generate(config, add_requires = true)
+      context = ERBContext.new(
+        :config       => config,
+        :add_requires => add_requires
+      )
+
       template = File.read(TEMPLATE)
       erb      = ERB.new(template, nil, '-').result(context.get_binding)
 

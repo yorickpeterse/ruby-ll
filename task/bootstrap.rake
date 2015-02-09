@@ -22,7 +22,7 @@ task :bootstrap => [:racc] do
 
   if compiled.valid?
     config      = LL::ConfigurationCompiler.new.generate(compiled)
-    output      = generator.generate(config)
+    output      = generator.generate(config, false)
     output_path = File.expand_path('../../lib/ll/parser.rb', __FILE__)
 
     File.open(output_path, 'w') do |file|
