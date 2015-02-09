@@ -214,8 +214,11 @@ VALUE ll_driver_parse(VALUE self)
     kv_push(long, state->stack, T_EOF);
 
     // Start rule
+    kv_push(long, state->stack, T_ACTION);
+    kv_push(long, state->stack, 0);
+
     kv_push(long, state->stack, T_RULE);
-    kv_push(long, state->stack, T_RULE);
+    kv_push(long, state->stack, 0);
 
     rb_block_call(
         self,

@@ -94,8 +94,11 @@ public class Driver extends RubyObject
         stack.push(this.T_EOF);
 
         // Start rule
+        stack.push(this.T_ACTION);
+        stack.push(0);
+
         stack.push(this.T_RULE);
-        stack.push(this.T_RULE);
+        stack.push(this.0);
 
         BlockCallback callback = new BlockCallback()
         {
