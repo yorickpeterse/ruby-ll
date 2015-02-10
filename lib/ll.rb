@@ -1,6 +1,7 @@
 require 'pathname'
 require 'erb'
 require 'set'
+require 'optparse'
 
 require 'ast'
 require 'ansi/code'
@@ -34,3 +35,4 @@ require_relative 'll/ast/node'
 require_relative 'll/erb_context'
 require_relative 'll/configuration_compiler'
 require_relative 'll/compiled_configuration'
+require_relative 'll/cli'
