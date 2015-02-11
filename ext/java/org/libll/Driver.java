@@ -121,7 +121,7 @@ public class Driver extends RubyObject
 
                     Long stack_value = stack.pop();
                     Long stack_type  = stack.pop();
-                    Long token_id    = 0;
+                    Long token_id    = (long) 0;
 
                     if ( self.config.terminals.containsKey(type) )
                     {
@@ -172,8 +172,7 @@ public class Driver extends RubyObject
                         {
                             IRubyObject[] invalid_terminal_args = {
                                 RubyFixnum.newFixnum(self.runtime, token_id),
-                                RubyFixnum.newFixnum(self.runtime, stack_value),
-                                token
+                                RubyFixnum.newFixnum(self.runtime, stack_value)
                             };
 
                             self.callMethod(
