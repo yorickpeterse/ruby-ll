@@ -9,9 +9,8 @@ grammar
   ;
 
 elements
-  # FIXME: The recursion here is possibly bugged, val[0] must never return nil.
-  # The behaviour here suggests it's recursing first, then unwinding.
-  = element elements { val[0] ? val[0] + val[1] : val[1] }
+  = element elements { val[0] + val[1] }
+  | _
   ;
 
 element
