@@ -14,15 +14,11 @@ elements
   ;
 
 element
-  = directive
-  | rule
-  ;
-
-directive
-  = name      { val[0] }
-  | terminals { val[0] }
-  | inner     { val[0] }
-  | header    { val[0] }
+  = rule
+  | name
+  | terminals
+  | inner
+  | header
   ;
 
 # %name directives
