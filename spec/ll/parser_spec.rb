@@ -29,15 +29,6 @@ describe LL::Parser do
     end
 
     describe 'parsing invalid input terminals' do
-      it 'raises a ParserError when reaching EOF' do
-        block = -> { described_class.new('%name Foo').parse }
-
-        block.should raise_error(
-          LL::ParserError,
-          'Reached EOF while expecting terminal :T_SEMICOLON'
-        )
-      end
-
       it 'raises a ParserError when reaching an unexpected terminal' do
         block = -> { described_class.new('%name Foo:Bar;').parse }
 
@@ -158,6 +149,22 @@ describe LL::Parser do
             s(:branch, s(:steps, s(:epsilon)))
           )
         )
+      end
+
+      it 'recurses correctly in the elements rule' do
+        parser = described_class.new('%inner {} %header {}')
+
+        parser.should_receive(:_rule_2)
+          .with([[s(:header, s(:ruby, ''))], []])
+          .ordered
+          .and_call_original
+
+        parser.should_receive(:_rule_2)
+          .with([[s(:inner, s(:ruby, ''))], [s(:header, s(:ruby, ''))]])
+          .ordered
+          .and_call_original
+
+        parser.parse
       end
     end
   end

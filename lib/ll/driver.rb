@@ -38,14 +38,9 @@ module LL
     def invalid_terminal_error(got_id, expected_id)
       terminals = self.class::CONFIG.terminals
       expected  = terminals[expected_id].inspect
+      got       = terminals[got_id].inspect
 
-      if got_id == -1
-        raise ParserError, "Reached EOF while expecting terminal #{expected}"
-      else
-        got = terminals[got_id].inspect
-
-        raise ParserError, "Invalid terminal #{got}, expected #{expected}"
-      end
+      raise ParserError, "Invalid terminal #{got}, expected #{expected}"
     end
   end # Driver
 end # LL

@@ -64,7 +64,7 @@ describe LL::ConfigurationCompiler do
     it 'sets the list of terminals as Symbols' do
       config = @compiler.generate(@grammar)
 
-      config.terminals.should == [:A, :B]
+      config.terminals.should == [:$EOF, :A, :B]
     end
 
     it 'sets the rules table as an Array' do
@@ -73,8 +73,8 @@ describe LL::ConfigurationCompiler do
       config.rules.should == [
         [3, 0, 0, 1],
         [3, 1, 2, 0],
-        [3, 2, 1, 0],
-        [3, 3, 1, 1]
+        [3, 2, 1, 1],
+        [3, 3, 1, 2]
       ]
     end
 
@@ -82,8 +82,8 @@ describe LL::ConfigurationCompiler do
       config = @compiler.generate(@grammar)
 
       config.table.should == [
-        [0, 0],
-        [2, 3]
+        [1, 0, 0],
+        [-1, 2, 3]
       ]
     end
 
@@ -124,7 +124,7 @@ describe LL::ConfigurationCompiler do
 
   describe '#generate_terminals' do
     it 'returns the terminals as an Array' do
-      @compiler.generate_terminals(@grammar).should == [:A, :B]
+      @compiler.generate_terminals(@grammar).should == [:$EOF, :A, :B]
     end
   end
 
@@ -155,8 +155,8 @@ describe LL::ConfigurationCompiler do
       @compiler.generate_rules(@grammar).should == [
         [3, 0, 0, 1],
         [3, 1, 2, 0],
-        [3, 2, 1, 0],
-        [3, 3, 1, 1]
+        [3, 2, 1, 1],
+        [3, 3, 1, 2]
       ]
     end
   end
@@ -164,8 +164,8 @@ describe LL::ConfigurationCompiler do
   describe '#generate_table' do
     it 'returns the table as an Array' do
       @compiler.generate_table(@grammar).should == [
-        [0, 0],
-        [2, 3]
+        [1, 0, 0],
+        [-1, 2, 3]
       ]
     end
   end

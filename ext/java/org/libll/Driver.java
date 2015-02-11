@@ -121,7 +121,7 @@ public class Driver extends RubyObject
 
                     Long stack_value = stack.pop();
                     Long stack_type  = stack.pop();
-                    Long token_id    = self.T_EOF;
+                    Long token_id    = 0;
 
                     if ( self.config.terminals.containsKey(type) )
                     {
@@ -131,11 +131,6 @@ public class Driver extends RubyObject
                     // Rule
                     if ( stack_type == self.T_RULE )
                     {
-                        if ( token_id == self.T_EOF )
-                        {
-                            continue;
-                        }
-
                         Long production_i = self.config.table
                             .get(stack_value.intValue())
                             .get(token_id.intValue());

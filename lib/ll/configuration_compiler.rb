@@ -56,11 +56,21 @@ module LL
     end
 
     ##
+    # Returns an Array containing all the terminal names as symbols. The first
+    # terminal is always `:$EOF` to ensure the array has the same amount of rows
+    # as there are columns in the `table` array.
+    #
     # @param [LL::CompiledGrammar] grammar
     # @return [Array]
     #
     def generate_terminals(grammar)
-      return grammar.terminals.map { |term| term.name.to_sym }
+      terminals = [:$EOF]
+
+      grammar.terminals.each do |term|
+        terminals << term.name.to_sym
+      end
+
+      return terminals
     end
 
     ##
@@ -124,7 +134,7 @@ module LL
           branch.steps.reverse_each do |step|
             if step.is_a?(LL::Terminal)
               row << TYPES[:terminal]
-              row << term_indices[step]
+              row << term_indices[step] + 1
 
             elsif step.is_a?(LL::Rule)
               row << TYPES[:rule]
@@ -144,15 +154,26 @@ module LL
     end
 
     ##
+    # Generates the table array for the parser. This array has the following
+    # structure:
+    #
+    #     [
+    #       [EOF, TERMINAL 1, TERMINAL 2, TERMINAL 3, ...]
+    #     ]
+    #
+    # EOF is always the first column and is used when running out of input while
+    # processing a rule.
+    #
     # @param [LL::CompiledGrammar] grammar
     # @return [Array]
     #
     def generate_table(grammar)
       branch_index = 0
       term_indices = grammar.terminal_indices
+      columns      = grammar.terminals.length + 1
 
       table = Array.new(grammar.rules.length) do
-        Array.new(grammar.terminals.length, -1)
+        Array.new(columns, -1)
       end
 
       grammar.rules.each_with_index do |rule, rule_index|
@@ -162,7 +183,7 @@ module LL
             if step.is_a?(Terminal)
               terminal_index = term_indices[step]
 
-              table[rule_index][terminal_index] = branch_index
+              table[rule_index][terminal_index + 1] = branch_index
 
             # For the rest (= epsilon) we'll update all columns that haven't
             # been updated yet.

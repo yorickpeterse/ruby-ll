@@ -96,7 +96,7 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
 
         stack_value = kv_pop(state->stack);
         stack_type  = kv_pop(state->stack);
-        token_id    = T_EOF;
+        token_id    = 0;
 
         if ( TYPE(type) == T_SYMBOL )
         {
@@ -111,11 +111,6 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
         /* Rule */
         if ( stack_type == T_RULE )
         {
-            if ( token_id == T_EOF )
-            {
-                continue;
-            }
-
             production_i = state->config->table[stack_value][token_id];
 
             if ( production_i == T_EOF )
