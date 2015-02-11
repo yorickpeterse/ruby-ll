@@ -170,6 +170,11 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
             action_args = rb_ary_new2(num_args);
             args_i      = num_args;
 
+            if ( args_i > (long) kv_size(state->value_stack) )
+            {
+                args_i = (long) kv_size(state->value_stack);
+            }
+
             while ( args_i-- )
             {
                 if ( kv_size(state->value_stack) > 0 )

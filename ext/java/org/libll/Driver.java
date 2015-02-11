@@ -95,10 +95,10 @@ public class Driver extends RubyObject
 
         // Start rule
         stack.push(this.T_ACTION);
-        stack.push(0);
+        stack.push((long) 0);
 
         stack.push(this.T_RULE);
-        stack.push(this.0);
+        stack.push((long) 0);
 
         BlockCallback callback = new BlockCallback()
         {
@@ -199,6 +199,11 @@ public class Driver extends RubyObject
                             .get(stack_value.intValue());
 
                         RubyArray action_args = self.runtime.newArray();
+
+                        if ( num_args > (long) value_stack.size() )
+                        {
+                            num_args = (long) value_stack.size();
+                        }
 
                         while ( (num_args--) > 0 )
                         {
