@@ -1,0 +1,26 @@
+---
+language: ruby
+
+script: bundle exec rake
+
+rvm:
+  - 1.9
+  - 2.0
+  - 2.1
+  - 2.2
+  - rbx-2
+  - jruby-1
+  - jruby-9
+
+notifications:
+  email:
+    recipients:
+      - yorickpeterse@gmail.com
+    on_success: change
+    on_failure: change
+
+cache: bundler
+
+branches:
+  only:
+    - master
