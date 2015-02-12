@@ -6,4 +6,7 @@ desc 'Generates the parsers'
 task :parser => ['lib/ll/parser.rb']
 
 desc 'Generates the benchmark parsers'
-task :bench_parser => ['benchmark/parsers/ll/json.rb']
+task :bench_parser => [
+  'benchmark/parsers/ll/json.rb',
+  'benchmark/parsers/racc/json.rb'
+]

@@ -1,4 +1,4 @@
-%name LL::BenchmarkParser::JSON;
+%name LL::BenchmarkParser::JSONLL;
 
 %terminals T_LCURLY T_RCURLY T_STRING T_COLON T_COMMA T_INT;
 
