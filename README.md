@@ -353,8 +353,8 @@ This benchmark was run on a Thinkpad T520 laptop so it's probably best to run
 the bencharmk yourself to see how it behaves on your platform.
 
 Depending on the complexity of your parser you might end up with different
-performance characteristics. The above metrics are simply an indication of the
-maximum performance gain of ruby-ll compared to Racc.
+different numbers. The above metrics are simply an indication of the maximum
+performance gain of ruby-ll compared to Racc.
 
 ## Thread Safety
 
