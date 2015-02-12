@@ -33,7 +33,7 @@ module LL
     # @return [String]
     #
     def to_s
-      location = ANSI.ansi("#{relative_path}:#{line}:#{column}", :white, :bold)
+      location = ANSI.ansi("#{determine_path}:#{line}:#{column}", :white, :bold)
 
       type_label = ANSI.ansi(type.to_s, COLORS[type], :bold)
       msg_line   = "#{location}:#{type_label}: #{message}"
@@ -46,23 +46,32 @@ module LL
     #
     def inspect
       return "Message(type: #{type.inspect}, message: #{message.inspect}, " \
-        "file: #{relative_path.inspect}, line: #{line}, column: #{column})"
+        "file: #{determine_path.inspect}, line: #{line}, column: #{column})"
     end
 
     ##
-    # Returns the path of the message relative to the current working directory.
+    # Returns the path to the source of the message. If the path resides in the
+    # current working directory (or a child directory) the path is relative,
+    # otherwise it's absolute.
     #
     # @return [String]
     #
-    def relative_path
+    def determine_path
       if source_line.file == SourceLine::DEFAULT_FILE
         return source_line.file
       end
 
-      from = Pathname.new(source_line.file)
-      to   = Pathname.new(Dir.pwd)
+      full_path = File.expand_path(source_line.file)
+      pwd       = Dir.pwd
 
-      return from.relative_path_from(to).to_s
+      if full_path.start_with?(pwd)
+        from = Pathname.new(full_path)
+        to   = Pathname.new(pwd)
+
+        return from.relative_path_from(to).to_s
+      else
+        return full_path
+      end
     end
 
     ##

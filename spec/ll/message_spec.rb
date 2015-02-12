@@ -47,19 +47,26 @@ foo = bar;
     end
   end
 
-  describe '#relative_path' do
+  describe '#determine_path' do
     it 'returns the raw path when it is a default path' do
       line    = source_line('')
       message = described_class.new(:error, 'foo', line)
 
-      message.relative_path.should == line.file
+      message.determine_path.should == line.file
     end
 
     it 'returns a path relative to the current working directory' do
       line    = source_line('', 1, 1, File.expand_path(__FILE__))
       message = described_class.new(:error, 'foo', line)
 
-      message.relative_path.should == 'spec/ll/message_spec.rb'
+      message.determine_path.should == 'spec/ll/message_spec.rb'
+    end
+
+    it 'returns an absolute path for paths outside of the working directory' do
+      line    = source_line('', 1, 1, '/tmp/foo.rb')
+      message = described_class.new(:error, 'foo', line)
+
+      message.determine_path.should == '/tmp/foo.rb'
     end
   end
 
