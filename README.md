@@ -237,6 +237,71 @@ name as a terminal, as such the following is invalid:
 
 It's also an error to re-define an existing rule.
 
+## Conflicts
+
+LL(1) grammars can have two kinds of conflicts in a rule:
+
+* first/first
+* first/follow
+
+### first/first
+
+A first/first conflict means that multiple branches of a rule start with the
+same terminal, resulting in the parser being unable to choose what branch to
+use. For example:
+
+    %terminals A B;
+
+    rule = A | A B;
+
+This would result in the following output:
+
+    example.rll:5:1:error: first/first conflict, multiple branches start with the same terminals
+    rule = A | A B;
+    ^
+    example.rll:5:8:error: branch starts with: A
+    rule = A | A B;
+           ^
+    example.rll:5:12:error: branch starts with: A
+    rule = A | A B;
+
+To solve a first/first conflict you'll have to factor out the common left
+factor. For example:
+
+    %name Example;
+
+    %terminals A B;
+
+    rule        = A rule_follow;
+    rule_follow = B | _;
+
+Here the `rule` rule starts with terminal `A` and can optionally be followed by
+`B`, without introducing any first/first conflicts.
+
+### first/follow
+
+A first/follow conflict occurs when a branch in a rule starts with an epsilon
+and is followed by one or more terminals and/or rules. An example of a
+first/follow conflict:
+
+    %name Example;
+
+    %terminals A B;
+
+    rule       = other_rule B;
+    other_rule = A | _;
+
+This produces the following errors:
+
+    example.rll:5:14:error: first/follow conflict, branch can start with epsilon and is followed by (non) terminals
+    rule       = other_rule B;
+                 ^
+    example.rll:6:18:error: epsilon originates from here
+    other_rule = A | _;
+
+There's no specific procedure to solving such a conflict other than simply
+removing the starting epsilon.
+
 ## Usage
 
 TODO
