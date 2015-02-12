@@ -17,7 +17,7 @@ Error: you must specify a grammar input file'
 EOF
       end
 
-      input = leftovers[0]
+      input = File.expand_path(leftovers[0])
 
       unless options[:output]
         options[:output] = output_from_input(input)
