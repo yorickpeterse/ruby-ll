@@ -44,6 +44,36 @@ When hacking on Oga you'll also need to have the following installed:
 * Ragel 6 for building the grammar lexer
 * javac for building the JRuby extension
 
+## Usage
+
+The CLI takes a grammar input file (see below for the exact syntax) with the
+extension `.rll` and turns it into a corresponding Ruby file. For example:
+
+    ruby-ll lib/my-gem/parser.rll
+
+This would result in the parser being written to `lib/my-gem/parser.rb`. If you
+want to customize the output path you can do so using the `-o` / `--output`
+options:
+
+    ruby-ll lib/my-gem/parser.rll -o lib/my-gem/my-parser.rb
+
+By default ruby-ll adds various `require` calls to ensure you can load the
+parser _without_ having to load all of ruby-ll (e.g. the compiler code). If you
+want to disable this behaviour you can use the `--no-requires` option when
+processing a grammar:
+
+    ruby-ll lib/my-gem/parser.rll --no-requires
+
+Once generated you can use the parser class like any other parser. To start
+parsing simply call the `parse` method:
+
+    parser = MyGem::Parser.new
+
+    parser.parse
+
+The return value of this method is whatever the root rule (= the first rule
+defined) returned.
+
 ## Grammar Syntax
 
 The syntax of a ruby-ll grammar file is fairly simple and consists out of
@@ -303,10 +333,6 @@ This produces the following errors:
 
 There's no specific procedure to solving such a conflict other than simply
 removing the starting epsilon.
-
-## Usage
-
-TODO
 
 ## Performance
 
