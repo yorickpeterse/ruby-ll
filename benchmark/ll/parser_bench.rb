@@ -1,6 +1,6 @@
 require_relative '../benchmark_helper'
 
-input = File.read(File.expand_path('../../lib/ll/parser.rll', __FILE__))
+input = File.read(File.expand_path('../../../lib/ll/parser.rll', __FILE__))
 
 Benchmark.ips do |bench|
   bench.report 'ruby-ll' do
