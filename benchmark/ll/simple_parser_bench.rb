@@ -1,9 +1,12 @@
-require 'benchmark/ips'
+require_relative '../benchmark_helper'
 
-require_relative '../lib/ll'
-require_relative '../lib/ll/bootstrap/parser'
+input = <<-EOF.strip
+%name A::B;
 
-input = File.read(File.expand_path('../../lib/ll/parser.rll', __FILE__))
+%terminals A B;
+
+root = A | B;
+EOF
 
 Benchmark.ips do |bench|
   bench.report 'ruby-ll' do
