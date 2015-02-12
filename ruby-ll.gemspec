@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.files = Dir.glob([
     'checkum/**/*',
     'doc/**/*',
-    'lib/**/*.rb',
+    'lib/**/*.{rb,erb}',
     'ext/**/*',
     'README.md',
     'LICENSE',
