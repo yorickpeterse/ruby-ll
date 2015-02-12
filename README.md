@@ -171,7 +171,71 @@ This would result in the following:
 
 ### Rules
 
-TODO
+Rules consist out of a name followed by an equals sign (`=`) followed by 1 or
+more branches. Each branch is separated using a pipe (`|`). A branch can consist
+out of 1 or many steps, or an epsilon. Branches can be followed by a code block
+starting with `{` and ending with `}`. A rule must be terminated using a
+semicolon.
+
+An epsilon is represented as a single underscore (`_`) and is used to denote a
+wildcard/nothingness.
+
+A simple example:
+
+    %terminals A;
+
+    numbers = A | B;
+
+Here the rule `numbers` is defined and has two branches. If we wanted a rule
+that would match terminal `A` or nothing we'd use the following:
+
+    %terminals A;
+
+    numbers = A | _;
+
+Code blocks can also be added:
+
+    numbers
+      = A { 'A' }
+      | B { 'B' }
+      ;
+
+When the terminal `A` would be processed the returned value would be "B", for
+terminal `B` the returned value would be "B".
+
+Code blocks have access to an array called `val` which contains the values of
+every step of a branch. For example:
+
+    numbers = A B { val };
+
+Here `val` would return `[A, B]`. Since `val` is just an Array you can also
+return specific elements from it:
+
+    numbers = A B { val[0] };
+
+Values returned by code blocks are passed to whatever other rule called it. This
+allows code blocks to be used for building ASTs and the likes. If no explicit
+code block is defined `val` is returned as is.
+
+ruby-ll parsers recurse into rules before unwinding, this means that the
+inner-most rule is processed first.
+
+Branches of a rule can also refer to other rules:
+
+    numbers    = A other_rule;
+    other_rule = B;
+
+The value for `other_rule` in the `numbers` rule would be whatever the
+`other_rule` below it returns.
+
+The grammar compiler adds errors whenever it encounters a rule with the same
+name as a terminal, as such the following is invalid:
+
+    %terminals A B;
+
+    A = B;
+
+It's also an error to re-define an existing rule.
 
 ## Usage
 
