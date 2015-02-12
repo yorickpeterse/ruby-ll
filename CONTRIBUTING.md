@@ -18,7 +18,7 @@ Whatever editor you use doesn't matter as long as it can do two things:
 * Use spaces for indentation.
 * Hard wrap lines at 80 characters per line.
 
-To make this process easier Oga comes with an [EditorConfig][editorconfig]
+To make this process easier ruby-ll comes with an [EditorConfig][editorconfig]
 configuration file. If your editor supports this it will automatically apply
 the required settings for you.
 
