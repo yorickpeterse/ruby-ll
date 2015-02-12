@@ -23,6 +23,8 @@ CLEAN.include(
   'yardoc',
   'lib/libll.*',
   'lib/ll/lexer.rb',
+  'benchmark/parser/racc/*.rb',
+  'benchmark/parser/ll/*.rb',
   'tmp'
 )
 
