@@ -336,7 +336,25 @@ removing the starting epsilon.
 
 ## Performance
 
-TODO
+One of the goals of ruby-ll is to be faster than existing parser generators,
+Racc in particular. How much faster ruby-ll will be depends on the use case. For
+example, for the benchmark
+[benchmark/ll/simple\_json\_bench.rb](benchmark/l/simple_json_bench.rb) the
+performance gains of ruby-ll over Racc are as following:
+
+| Ruby            | Speed |
+|:----------------|:------|
+| MRI 2.2         | 1.75x |
+| Rubinius 2.5.2  | 3.85x |
+| JRuby 1.7.18    | 6.44x |
+| JRuby 9000 pre1 | 7.50x |
+
+This benchmark was run on a Thinkpad T520 laptop so it's probably best to run
+the bencharmk yourself to see how it behaves on your platform.
+
+Depending on the complexity of your parser you might end up with different
+performance characteristics. The above metrics are simply an indication of the
+maximum performance gain of ruby-ll compared to Racc.
 
 ## Thread Safety
 
