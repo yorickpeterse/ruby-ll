@@ -7,6 +7,7 @@ SimpleCov.configure do
 
   add_filter 'spec'
   add_filter 'lib/ll/version'
+  add_filter 'lib/ll/cli'
 end
 
 SimpleCov.start
