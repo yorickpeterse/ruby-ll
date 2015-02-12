@@ -2,9 +2,7 @@
 # is not recommended as any changes will be lost the next time this parser is
 # re-generated.
 <%- if @add_requires -%>
-require 'll/driver'
-require 'll/driver_config'
-require 'll/parser_error'
+require 'll/setup'
 <%- end -%>
 
 <%- @config.namespace.each do |part| -%>
