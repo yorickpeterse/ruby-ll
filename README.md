@@ -44,6 +44,12 @@ When hacking on Oga you'll also need to have the following installed:
 * Ragel 6 for building the grammar lexer
 * javac for building the JRuby extension
 
+## Installation
+
+ruby-ll can be installed from RubyGems:
+
+    gem install ruby-ll
+
 ## Usage
 
 The CLI takes a grammar input file (see below for the exact syntax) with the
