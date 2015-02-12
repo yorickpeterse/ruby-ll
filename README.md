@@ -264,6 +264,7 @@ This would result in the following output:
            ^
     example.rll:5:12:error: branch starts with: A
     rule = A | A B;
+               ^
 
 To solve a first/first conflict you'll have to factor out the common left
 factor. For example:
@@ -298,6 +299,7 @@ This produces the following errors:
                  ^
     example.rll:6:18:error: epsilon originates from here
     other_rule = A | _;
+                     ^
 
 There's no specific procedure to solving such a conflict other than simply
 removing the starting epsilon.
