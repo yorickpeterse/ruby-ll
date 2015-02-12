@@ -209,11 +209,11 @@ VALUE ll_driver_parse(VALUE self)
 
     Data_Get_Struct(self, DriverState, state);
 
-    // EOF rule
+    /* EOF rule */
     kv_push(long, state->stack, T_EOF);
     kv_push(long, state->stack, T_EOF);
 
-    // Start rule
+    /* Start rule */
     kv_push(long, state->stack, T_ACTION);
     kv_push(long, state->stack, 0);
 
