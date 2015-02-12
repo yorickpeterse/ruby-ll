@@ -94,11 +94,12 @@ public class Driver extends RubyObject
         stack.push(this.T_EOF);
 
         // Start rule
-        stack.push(this.T_ACTION);
-        stack.push((long) 0);
+        ArrayList<Long> start_row = self.config.rules.get(0);
 
-        stack.push(this.T_RULE);
-        stack.push((long) 0);
+        for ( int index = 0; index < start_row.size(); index++ )
+        {
+            stack.push(start_row.get(index));
+        }
 
         BlockCallback callback = new BlockCallback()
         {

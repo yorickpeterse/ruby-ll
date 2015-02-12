@@ -2,9 +2,6 @@
 
 %terminals T_LCURLY T_RCURLY T_STRING T_COLON T_COMMA T_INT;
 
-# FIXME: this is currently required as `object` otherwise returns nil.
-root = object { val[0] };
-
 object = T_LCURLY pairs T_RCURLY { val[1] };
 
 pairs
