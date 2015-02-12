@@ -1,0 +1,57 @@
+%name LL::BenchmarkParser::JSON;
+
+%terminals T_LCURLY T_RCURLY T_STRING T_COLON T_COMMA T_INT;
+
+# FIXME: this is currently required as `object` otherwise returns nil.
+root = object { val[0] };
+
+object = T_LCURLY pairs T_RCURLY { val[1] };
+
+pairs
+  = pair pairs_follow
+    {
+      new_hash = val[0]
+
+      if val[1]
+        val[1].each do |key, value|
+          new_hash[key] = value
+        end
+      end
+
+      new_hash
+    }
+  ;
+
+pairs_follow
+  = T_COMMA pairs { val[1] }
+  | _             { nil }
+  ;
+
+pair
+  = string T_COLON value { {val[0] => val[2]} }
+  ;
+
+value
+  = string  { val[0] }
+  | integer { val[0] }
+  | object  { val[0] }
+  ;
+
+string  = T_STRING { val[0] };
+integer = T_INT    { val[0].to_i };
+
+%inner
+{
+  def each_token
+    yield [:T_LCURLY, '{']
+    yield [:T_STRING, 'name']
+    yield [:T_COLON, ':']
+    yield [:T_STRING, 'Alice']
+    yield [:T_COMMA, ',']
+    yield [:T_STRING, 'age']
+    yield [:T_COLON, ':']
+    yield [:T_INT, 28]
+    yield [:T_RCURLY, '}']
+    yield [-1, -1]
+  end
+}

@@ -6,5 +6,6 @@ Gemfile.lock
 lib/ll/lexer.rb
 lib/libll.*
 lib/ll/bootstrap/parser.rb
+benchmark/parsers/ll/json.rb
 
 tmp
