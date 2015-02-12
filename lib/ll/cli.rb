@@ -59,6 +59,8 @@ EOF
         File.open(options[:output], 'w') do |file|
           file.write(output)
         end
+      else
+        exit 1
       end
     end
 
