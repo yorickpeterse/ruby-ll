@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.executables = ['ruby-ll']
 
   if RUBY_PLATFORM == 'java'
-    s.files << 'lib/ll.jar'
+    s.files << 'lib/libll.jar'
 
     s.platform = 'java'
   else
