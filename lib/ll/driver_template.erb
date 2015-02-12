@@ -10,7 +10,10 @@ require 'll/parser_error'
 <%- @config.namespace.each do |part| -%>
 module <%= part %>
 <%- end -%>
-<%= @config.header.strip if @config.header %>
+<%- if @config.header -%>
+<%= @config.header.strip -%>
+
+<%- end -%>
 class <%= @config.name -%> < LL::Driver
   CONFIG = LL::DriverConfig.new
 
@@ -37,7 +40,7 @@ class <%= @config.name -%> < LL::Driver
     <%= row.inspect -%>, # <%= index %>
     <%- end -%>
   ].freeze
-<%= @config.inner.strip if @config.inner %>
+<%= @config.inner.rstrip if @config.inner %>
   <%- @config.action_bodies.each do |name, body| -%>
 
   def <%= name %>(val)

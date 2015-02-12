@@ -3,7 +3,6 @@
 # re-generated.
 
 module LL
-
 class Parser < LL::Driver
   CONFIG = LL::DriverConfig.new
 
@@ -109,7 +108,8 @@ class Parser < LL::Driver
     [:_rule_28, 0], # 28
     [:_rule_29, 4], # 29
   ].freeze
-##
+
+  ##
   # @see [LL::Lexer#initialize]
   #
   def initialize(*args)
