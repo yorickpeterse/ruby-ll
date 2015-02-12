@@ -87,6 +87,9 @@ parser (the header or its inner body).
 Directives and rules must be terminated using a semicolon, this is not needed
 for `%inner` / `%header` blocks.
 
+For a full example, see ruby-ll's own parser located at
+[lib/ll/parser.rll](lib/ll/parser.rll).
+
 ### Comments
 
 Comments start with a hash (`#`) sign and continue until the end of the line,
