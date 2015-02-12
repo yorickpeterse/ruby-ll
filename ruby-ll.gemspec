@@ -21,6 +21,8 @@ Gem::Specification.new do |s|
     '.yardopts'
   ]).select { |path| File.file?(path) }
 
+  s.executables = ['ruby-ll']
+
   if RUBY_PLATFORM == 'java'
     s.files << 'lib/ll.jar'
 
