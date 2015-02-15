@@ -3,6 +3,12 @@
 This document contains details of the various releases and their release dates.
 Dates are in the format `yyyy-mm-dd`.
 
+## 1.1.2 - 2015-02-16
+
+The file `ll/setup` now also loads `LL::ConfigurationCompiler` to ensure that
+the `TYPES` array (and thus `LL::Driver#id_to_type`) can be used outside of
+ruby-ll itself.
+
 ## 1.1.1 - 2015-02-16
 
 Parser errors produced by ruby-ll's own parser/grammar now include the line
