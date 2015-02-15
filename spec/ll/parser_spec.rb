@@ -12,7 +12,7 @@ describe LL::Parser do
 
         block.should raise_error(
           LL::ParserError,
-          /Unexpected rule \d+ for :T_SEMICOLON/
+          /Unexpected T_SEMICOLON for rule \d+/
         )
       end
     end
@@ -23,7 +23,7 @@ describe LL::Parser do
 
         block.should raise_error(
           LL::ParserError,
-          "Received token -1 but there's nothing left to parse"
+          "Received -1 but there's nothing left to parse"
         )
       end
     end
@@ -34,7 +34,7 @@ describe LL::Parser do
 
         block.should raise_error(
           LL::ParserError,
-          'Invalid terminal :T_IDENT, expected :T_COLON'
+          'Unexpected T_IDENT, expected T_COLON instead'
         )
       end
     end

@@ -113,11 +113,14 @@ public class Driver extends RubyObject
                 {
                     if ( stack.size() == 0 )
                     {
-                        self.callMethod(
-                            context,
-                            "unexpected_input_error",
-                            token
-                        );
+                        IRubyObject[] error_args = {
+                            RubyFixnum.newFixnum(self.runtime, -1),
+                            RubyFixnum.newFixnum(self.runtime, -1),
+                            type,
+                            value
+                        };
+
+                        self.callMethod(context, "parser_error", error_args);
                     }
 
                     Long stack_value = stack.pop();
@@ -138,16 +141,14 @@ public class Driver extends RubyObject
 
                         if ( production_i == self.T_EOF )
                         {
-                            IRubyObject[] stack_input_error_args = {
+                            IRubyObject[] error_args = {
+                                RubyFixnum.newFixnum(self.runtime, stack_type),
                                 RubyFixnum.newFixnum(self.runtime, stack_value),
-                                token
+                                type,
+                                value
                             };
 
-                            self.callMethod(
-                                context,
-                                "stack_input_error",
-                                stack_input_error_args
-                            );
+                            self.callMethod(context, "parser_error", error_args);
                         }
                         else
                         {
@@ -171,16 +172,14 @@ public class Driver extends RubyObject
                         }
                         else
                         {
-                            IRubyObject[] invalid_terminal_args = {
-                                RubyFixnum.newFixnum(self.runtime, token_id),
-                                RubyFixnum.newFixnum(self.runtime, stack_value)
+                            IRubyObject[] error_args = {
+                                RubyFixnum.newFixnum(self.runtime, stack_type),
+                                RubyFixnum.newFixnum(self.runtime, stack_value),
+                                type,
+                                value
                             };
 
-                            self.callMethod(
-                                context,
-                                "invalid_terminal_error",
-                                invalid_terminal_args
-                            );
+                            self.callMethod(context, "parser_error", error_args);
                         }
                     }
                     // Action

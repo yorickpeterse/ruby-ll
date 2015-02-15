@@ -4,43 +4,58 @@ module LL
   #
   class Driver
     ##
-    # Error method that is called when no rule was found for a table index.
-    #
+    # @param [Fixnum] stack_type
     # @param [Fixnum] stack_value
-    # @param [Array] token
+    # @param [Symbol] token_type
+    # @param [Mixed] token_value
     #
-    def stack_input_error(stack_value, token)
-      type = token[0].inspect
+    def parser_error(stack_type, stack_value, token_type, token_value)
+      message = parser_error_message(stack_type, stack_value, token_type)
 
-      raise ParserError, "Unexpected rule #{stack_value} for #{type}"
+      raise ParserError, message
     end
 
     ##
-    # Error method that is called when the stack has been consumed but there's
-    # still input being sent to the parser.
+    # @param [Fixnum] stack_type
+    # @param [Fixnum] stack_value
+    # @param [Symbol] token_type
+    # @return [String]
     #
-    # @param [Array] token
-    #
-    def unexpected_input_error(token)
-      raise(
-        ParserError,
-        "Received token #{token[0].inspect} but there's nothing left to parse"
-      )
+    def parser_error_message(stack_type, stack_value, token_type)
+      case id_to_type(stack_type)
+      when :rule
+        message = "Unexpected #{token_type} for rule #{stack_value}"
+      when :terminal
+        expected = id_to_terminal(stack_value)
+        message  = "Unexpected #{token_type}, expected #{expected} instead"
+      when :eof
+        message = "Received #{token_type} but there's nothing left to parse"
+      end
+
+      return message
     end
 
     ##
-    # Error method that is called when an invalid terminal was specified as the
-    # input.
+    # Returns the Symbol that belongs to the stack type number.
     #
-    # @param [Fixnum] got_id The ID of the received terminal.
-    # @param [Fixnum] expected_id The ID of the expected terminal.
+    # @example
+    #  id_to_type(1) # => :terminal
     #
-    def invalid_terminal_error(got_id, expected_id)
-      terminals = self.class::CONFIG.terminals
-      expected  = terminals[expected_id].inspect
-      got       = terminals[got_id].inspect
+    # @param [Fixnum] id
+    # @return [Symbol]
+    #
+    def id_to_type(id)
+      return ConfigurationCompiler::TYPES.invert[id]
+    end
 
-      raise ParserError, "Invalid terminal #{got}, expected #{expected}"
+    ##
+    # Returns the Symbol of the terminal index.
+    #
+    # @param [Fixnum] id
+    # @return [Symbol]
+    #
+    def id_to_terminal(id)
+      return self.class::CONFIG.terminals[id]
     end
   end # Driver
 end # LL

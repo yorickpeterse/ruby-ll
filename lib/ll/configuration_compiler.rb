@@ -8,6 +8,7 @@ module LL
     # @return [Hash]
     #
     TYPES = {
+      :eof      => -1,
       :rule     => 0,
       :terminal => 1,
       :epsilon  => 2,

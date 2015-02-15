@@ -9,10 +9,7 @@
 ID id_config_const;
 ID id_each_token;
 ID id_send;
-
-ID id_stack_input_error;
-ID id_unexpected_input_error;
-ID id_invalid_terminal_error;
+ID id_parser_error;
 
 /**
  * Releases the memory of the driver's internal state and associated objects.
@@ -91,7 +88,15 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
     {
         if ( kv_size(state->stack) == 0 )
         {
-            rb_funcall(self, id_unexpected_input_error, 1, token);
+            rb_funcall(
+                self,
+                id_parser_error,
+                4,
+                INT2NUM(-1),
+                INT2NUM(-1),
+                type,
+                value
+            );
         }
 
         stack_value = kv_pop(state->stack);
@@ -117,10 +122,12 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
             {
                 rb_funcall(
                     self,
-                    id_stack_input_error,
-                    2,
+                    id_parser_error,
+                    4,
+                    INT2NUM(stack_type),
                     INT2NUM(stack_value),
-                    token
+                    type,
+                    value
                 );
             }
             else
@@ -150,10 +157,12 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
             {
                 rb_funcall(
                     self,
-                    id_invalid_terminal_error,
-                    2,
-                    INT2NUM(token_id),
-                    INT2NUM(stack_value)
+                    id_parser_error,
+                    4,
+                    INT2NUM(stack_type),
+                    INT2NUM(stack_value),
+                    type,
+                    value
                 );
             }
         }
@@ -249,10 +258,8 @@ void Init_ll_driver()
 
     rb_define_alloc_func(cDriver, ll_driver_allocate);
 
-    id_send                   = rb_intern("send");
-    id_config_const           = rb_intern("CONFIG");
-    id_each_token             = rb_intern("each_token");
-    id_stack_input_error      = rb_intern("stack_input_error");
-    id_invalid_terminal_error = rb_intern("invalid_terminal_error");
-    id_unexpected_input_error = rb_intern("unexpected_input_error");
+    id_send         = rb_intern("send");
+    id_config_const = rb_intern("CONFIG");
+    id_each_token   = rb_intern("each_token");
+    id_parser_error = rb_intern("parser_error");
 }
