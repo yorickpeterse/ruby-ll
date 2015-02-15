@@ -34,7 +34,7 @@ describe LL::Parser do
 
         block.should raise_error(
           LL::ParserError,
-          'Unexpected T_IDENT, expected T_COLON instead'
+          'Unexpected T_IDENT, expected T_COLON instead (line 1, column 11)'
         )
       end
     end

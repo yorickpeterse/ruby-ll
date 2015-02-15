@@ -135,6 +135,20 @@ class Parser < LL::Driver
     return AST::Node.new(*args)
   end
 
+  ##
+  # @see [LL::Driver#parser_error]
+  #
+  def parser_error(stack_type, stack_value, token_type, token_value)
+    message = parser_error_message(stack_type, stack_value, token_type)
+
+    if token_value.is_a?(LL::Token)
+      sl       = token_value.source_line
+      message += " (line #{sl.line}, column #{sl.column})"
+    end
+
+    raise ParserError, message
+  end
+
   def _rule_0(val)
      s(:grammar, val[0]) 
   end
