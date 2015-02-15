@@ -80,6 +80,13 @@ parsing simply call the `parse` method:
 The return value of this method is whatever the root rule (= the first rule
 defined) returned.
 
+## Error Handling
+
+Parser errors are handled by `LL::Driver#parser_error`. By default this method
+raises an instance of `LL::ParserError` with a message depending on the current
+parser context and input. If you want to customize this behaviour simply
+overwrite the method (e.g. in an `%inner` block).
+
 ## Grammar Syntax
 
 The syntax of a ruby-ll grammar file is fairly simple and consists out of
