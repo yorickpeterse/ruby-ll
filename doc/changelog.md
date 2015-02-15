@@ -3,6 +3,11 @@
 This document contains details of the various releases and their release dates.
 Dates are in the format `yyyy-mm-dd`.
 
+## 1.1.1 - 2015-02-16
+
+Parser errors produced by ruby-ll's own parser/grammar now include the line
+number/column number whenever possible.
+
 ## 1.1.0 - 2015-02-16
 
 This release changes the way error handling is done. Instead of having multiple,
