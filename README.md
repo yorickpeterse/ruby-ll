@@ -80,6 +80,24 @@ parsing simply call the `parse` method:
 The return value of this method is whatever the root rule (= the first rule
 defined) returned.
 
+## Parser Input
+
+For a parser to work it must receive its input from a separate lexer. To pass
+input to the parser you must define the method `each_token` in an `%inner`
+block. This method should yield an Array containing two values:
+
+1. The token type as a Symbol (e.g. `:T_STRING`)
+2. The token value, this can be any type of value
+
+The last Array yielded by this method should be `[-1, -1]` to signal the end of
+the input. For example:
+
+    def each_token
+      yield [:T_STRING, 'foo']
+      yield [:T_STRING, 'bar']
+      yield [-1, -1]
+    end
+
 ## Error Handling
 
 Parser errors are handled by `LL::Driver#parser_error`. By default this method
