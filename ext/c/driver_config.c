@@ -29,20 +29,6 @@ void ll_driver_config_free(DriverConfig *config)
 }
 
 /**
- * Marks various members of the DriverConfig to ensure they are not garbage
- * collected until at least the next GC run.
- */
-void ll_driver_config_mark(DriverConfig *config)
-{
-    long index;
-
-    FOR(index, config->actions_count)
-    {
-        rb_gc_mark(config->action_names[index]);
-    }
-}
-
-/**
  * Allocates a new DriverConfig.
  */
 VALUE ll_driver_config_allocate(VALUE klass)
@@ -51,8 +37,9 @@ VALUE ll_driver_config_allocate(VALUE klass)
 
     return Data_Wrap_Struct(
         klass,
-        ll_driver_config_mark,
-        ll_driver_config_free, config
+        NULL,
+        ll_driver_config_free,
+        config
     );
 }
 
