@@ -30,7 +30,7 @@ typedef struct
     long **table;
 
     /* Array containing action names as Symbols */
-    ID *action_names;
+    VALUE *action_names;
 
     /* Array containing the arity for every action */
     long *action_arg_amounts;

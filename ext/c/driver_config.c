@@ -166,7 +166,7 @@ VALUE ll_driver_config_set_actions(VALUE self, VALUE array)
 
     Data_Get_Struct(self, DriverConfig, config);
 
-    config->action_names       = ALLOC_N(ID, row_count);
+    config->action_names       = ALLOC_N(VALUE, row_count);
     config->action_arg_amounts = ALLOC_N(long, row_count);
 
     FOR(rindex, row_count)
