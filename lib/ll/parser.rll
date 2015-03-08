@@ -34,7 +34,7 @@ name
   ;
 
 namespace_parts
-  = T_COLON T_COLON ident namespace_parts { [val[2]] + val[3] }
+  = T_COLON T_COLON ident namespace_parts { [val[2], *val[3]] }
   | _
   ;
 
@@ -68,7 +68,7 @@ header
 
 # Generic identifiers
 
-idents = ident idents_follow { [val[0]] + val[1] };
+idents = ident idents_follow { [val[0], *val[1]] };
 
 idents_follow
   = idents { val[0] }
@@ -144,7 +144,7 @@ ruby
   = T_RUBY { s(:ruby, [val[0].value], :source_line => val[0].source_line) }
   ;
 
-branches = branch branches_follow { [val[0]] + val[1] };
+branches = branch branches_follow { [val[0], *val[1]] };
 
 branches_follow
   = T_PIPE branches { val[1] }
