@@ -222,6 +222,9 @@ module LL
         ';' => { emit(:T_SEMICOLON, ts, te) };
         '|' => { emit(:T_PIPE, ts, te) };
         '_' => { emit(:T_EPSILON, ts, te) };
+        '+' => { emit(:T_PLUS, ts, te) };
+        '*' => { emit(:T_STAR, ts, te) };
+        '?' => { emit(:T_QUESTION, ts, te) };
 
         '{' => {
           mark        = ts + 1
