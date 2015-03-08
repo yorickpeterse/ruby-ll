@@ -25,7 +25,13 @@ module LL
     def first_set
       first = steps[0]
 
-      return first.is_a?(Rule) ? first.first_set : [first]
+      if first.is_a?(Rule)
+        return first.first_set
+      elsif first
+        return [first]
+      else
+        return []
+      end
     end
 
     ##

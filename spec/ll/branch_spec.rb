@@ -37,6 +37,10 @@ describe LL::Branch do
 
       described_class.new([rule], @source_line).first_set.should == [term]
     end
+
+    it 'returns an empty Array for a branch without any steps' do
+      described_class.new([], @source_line).first_set.should == []
+    end
   end
 
   describe '#inspect' do
