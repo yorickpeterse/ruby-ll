@@ -1,7 +1,7 @@
 %name LL::Parser;
 
 %terminals T_RUBY T_NAME T_TERMINALS T_INNER T_HEADER T_IDENT T_EQUALS T_COLON;
-%terminals T_PIPE T_EPSILON T_SEMICOLON;
+%terminals T_PIPE T_EPSILON T_SEMICOLON T_STAR T_PLUS T_QUESTION;
 
 grammar
   = elements { s(:grammar, val[0]) }
@@ -82,10 +82,35 @@ ident
     }
   ;
 
-# Identifiers
+idents_with_operator
+  = ident_with_operator idents_with_operator_follow { [val[0], *val[1]] }
+  ;
+
+idents_with_operator_follow
+  = idents_with_operator { val[0] }
+  | _
+  ;
+
+ident_with_operator
+  = ident ident_with_operator_follow
+    {
+      val[1] ? s(val[1][0], [val[0]], :source_line => val[1][1]) : val[0]
+    }
+  ;
+
+ident_with_operator_follow
+  = operator { val[0] }
+  | _        { nil }
+  ;
+
+operator
+  = T_PLUS     { [:plus, val[0].source_line] }
+  | T_STAR     { [:star, val[0].source_line] }
+  | T_QUESTION { [:question, val[0].source_line] }
+  ;
 
 idents_or_epsilon
-  = idents
+  = idents_with_operator
     {
       s(:steps, val[0], :source_line => val[0][0].source_line)
     }

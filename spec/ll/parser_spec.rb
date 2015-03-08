@@ -167,5 +167,37 @@ describe LL::Parser do
         parser.parse
       end
     end
+
+    describe 'using operators' do
+      it 'parses a rule using the + operator' do
+        described_class.new('A = B+;').parse.should == s(
+          :grammar,
+          s(
+            :rule,
+            s(:ident, 'A'), s(:branch, s(:steps, s(:plus, s(:ident, 'B'))))
+          )
+        )
+      end
+
+      it 'parses a rule using the * operator' do
+        described_class.new('A = B*;').parse.should == s(
+          :grammar,
+          s(
+            :rule,
+            s(:ident, 'A'), s(:branch, s(:steps, s(:star, s(:ident, 'B'))))
+          )
+        )
+      end
+
+      it 'parses a rule using the ? operator' do
+        described_class.new('A = B?;').parse.should == s(
+          :grammar,
+          s(
+            :rule,
+            s(:ident, 'A'), s(:branch, s(:steps, s(:question, s(:ident, 'B'))))
+          )
+        )
+      end
+    end
   end
 end
