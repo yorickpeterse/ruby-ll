@@ -225,6 +225,8 @@ module LL
         '+' => { emit(:T_PLUS, ts, te) };
         '*' => { emit(:T_STAR, ts, te) };
         '?' => { emit(:T_QUESTION, ts, te) };
+        '(' => { emit(:T_LPAREN, ts, te) };
+        ')' => { emit(:T_RPAREN, ts, te) };
 
         '{' => {
           mark        = ts + 1
