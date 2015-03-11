@@ -2,6 +2,7 @@
 
 %terminals T_RUBY T_NAME T_TERMINALS T_INNER T_HEADER T_IDENT T_EQUALS T_COLON;
 %terminals T_PIPE T_EPSILON T_SEMICOLON T_STAR T_PLUS T_QUESTION;
+%terminals T_LPAREN T_RPAREN;
 
 grammar
   = elements { s(:grammar, val[0]) }
@@ -83,7 +84,14 @@ ident
   ;
 
 idents_with_operator
+  # X and X+
   = ident_with_operator idents_with_operator_follow { [val[0], *val[1]] }
+
+  # (X Y Z)+
+  | T_LPAREN idents T_RPAREN operator
+    {
+      [s(val[3][0], val[1], :source_line => val[0].source_line)]
+    }
   ;
 
 idents_with_operator_follow

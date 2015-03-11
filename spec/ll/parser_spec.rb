@@ -174,7 +174,8 @@ describe LL::Parser do
           :grammar,
           s(
             :rule,
-            s(:ident, 'A'), s(:branch, s(:steps, s(:plus, s(:ident, 'B'))))
+            s(:ident, 'A'),
+            s(:branch, s(:steps, s(:plus, s(:ident, 'B'))))
           )
         )
       end
@@ -184,7 +185,8 @@ describe LL::Parser do
           :grammar,
           s(
             :rule,
-            s(:ident, 'A'), s(:branch, s(:steps, s(:star, s(:ident, 'B'))))
+            s(:ident, 'A'),
+            s(:branch, s(:steps, s(:star, s(:ident, 'B'))))
           )
         )
       end
@@ -194,7 +196,21 @@ describe LL::Parser do
           :grammar,
           s(
             :rule,
-            s(:ident, 'A'), s(:branch, s(:steps, s(:question, s(:ident, 'B'))))
+            s(:ident, 'A'),
+            s(:branch, s(:steps, s(:question, s(:ident, 'B'))))
+          )
+        )
+      end
+    end
+
+    describe 'using parenthesis' do
+      it 'parses a rule with an operator' do
+        described_class.new('A = (B C)+;').parse.should == s(
+          :grammar,
+          s(
+            :rule,
+            s(:ident, 'A'),
+            s(:branch, s(:steps, s(:plus, s(:ident, 'B'), s(:ident, 'C'))))
           )
         )
       end
