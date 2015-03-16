@@ -1,7 +1,7 @@
 %name LL::Parser;
 
 %terminals T_RUBY T_NAME T_TERMINALS T_INNER T_HEADER T_IDENT T_EQUALS T_COLON;
-%terminals T_PIPE T_EPSILON T_SEMICOLON T_STAR T_PLUS T_QUESTION;
+%terminals T_PIPE T_EPSILON T_SEMICOLON T_STAR T_PLUS;
 %terminals T_LPAREN T_RPAREN;
 
 grammar
@@ -112,9 +112,8 @@ ident_with_operator_follow
   ;
 
 operator
-  = T_PLUS     { [:plus, val[0].source_line] }
-  | T_STAR     { [:star, val[0].source_line] }
-  | T_QUESTION { [:question, val[0].source_line] }
+  = T_PLUS { [:plus, val[0].source_line] }
+  | T_STAR { [:star, val[0].source_line] }
   ;
 
 idents_or_epsilon

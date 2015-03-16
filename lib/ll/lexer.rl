@@ -224,7 +224,6 @@ module LL
         '_' => { emit(:T_EPSILON, ts, te) };
         '+' => { emit(:T_PLUS, ts, te) };
         '*' => { emit(:T_STAR, ts, te) };
-        '?' => { emit(:T_QUESTION, ts, te) };
         '(' => { emit(:T_LPAREN, ts, te) };
         ')' => { emit(:T_RPAREN, ts, te) };
 
