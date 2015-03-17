@@ -27,11 +27,15 @@ import org.jruby.runtime.builtin.IRubyObject;
 @JRubyClass(name="LL::Driver", parent="Object")
 public class Driver extends RubyObject
 {
-    private static long T_EOF      = -1;
-    private static long T_RULE     = 0;
-    private static long T_TERMINAL = 1;
-    private static long T_EPSILON  = 2;
-    private static long T_ACTION   = 3;
+    private static long T_EOF                = -1;
+    private static long T_RULE               = 0;
+    private static long T_TERMINAL           = 1;
+    private static long T_EPSILON            = 2;
+    private static long T_ACTION             = 3;
+    private static long T_STAR               = 4;
+    private static long T_PLUS               = 5;
+    private static long T_ADD_VALUE_STACK    = 6;
+    private static long T_APPEND_VALUE_STACK = 7;
 
     /**
      * The current Ruby runtime.
@@ -132,8 +136,8 @@ public class Driver extends RubyObject
                         token_id = self.config.terminals.get(type);
                     }
 
-                    // Rule
-                    if ( stack_type == self.T_RULE )
+                    // A rule or the "+" operator
+                    if ( stack_type == self.T_RULE || stack_type == self.T_PLUS )
                     {
                         Long production_i = self.config.table
                             .get(stack_value.intValue())
@@ -152,6 +156,17 @@ public class Driver extends RubyObject
                         }
                         else
                         {
+                            // Append a "*" operator for all following
+                            // occurrences as they are optional
+                            if ( stack_type == self.T_PLUS )
+                            {
+                                stack.push(self.T_STAR);
+                                stack.push(stack_value);
+
+                                stack.push(self.T_APPEND_VALUE_STACK);
+                                stack.push(Long.valueOf(0));
+                            }
+
                             ArrayList<Long> row = self.config.rules
                                 .get(production_i.intValue());
 
@@ -160,6 +175,47 @@ public class Driver extends RubyObject
                                 stack.push(row.get(index));
                             }
                         }
+                    }
+                    // "*" operator
+                    else if ( stack_type == self.T_STAR )
+                    {
+                        Long production_i = self.config.table
+                            .get(stack_value.intValue())
+                            .get(token_id.intValue());
+
+                        if ( production_i != self.T_EOF )
+                        {
+                            stack.push(self.T_STAR);
+                            stack.push(stack_value);
+
+                            stack.push(self.T_APPEND_VALUE_STACK);
+                            stack.push(Long.valueOf(0));
+
+                            ArrayList<Long> row = self.config.rules
+                                .get(production_i.intValue());
+
+                            for ( int index = 0; index < row.size(); index++ )
+                            {
+                                stack.push(row.get(index));
+                            }
+                        }
+                    }
+                    // Adds a new array to the value stack that can be used to
+                    // group operator values together
+                    else if ( stack_type == self.T_ADD_VALUE_STACK )
+                    {
+                        RubyArray operator_buffer = self.runtime.newArray();
+
+                        value_stack.push(operator_buffer);
+                    }
+                    // Appends the last value on the value stack to the operator
+                    // buffer that preceeds it.
+                    else if ( stack_type == self.T_APPEND_VALUE_STACK )
+                    {
+                        IRubyObject last_value    = value_stack.pop();
+                        RubyArray operator_buffer = (RubyArray) value_stack.peek();
+
+                        operator_buffer.append(last_value);
                     }
                     // Terminal
                     else if ( stack_type == self.T_TERMINAL )
