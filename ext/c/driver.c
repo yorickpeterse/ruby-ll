@@ -5,6 +5,10 @@
 #define T_TERMINAL 1
 #define T_EPSILON 2
 #define T_ACTION 3
+#define T_STAR 4
+#define T_PLUS 5
+#define T_ADD_VALUE_STACK 6
+#define T_APPEND_VALUE_STACK 7
 
 ID id_config_const;
 ID id_each_token;
@@ -66,6 +70,8 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
     VALUE method;
     VALUE action_args;
     VALUE action_retval;
+    VALUE operator_buffer;
+    VALUE last_value;
     long num_args;
     long args_i;
 
@@ -113,8 +119,8 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
             }
         }
 
-        /* Rule */
-        if ( stack_type == T_RULE )
+        /* A rule or the "+" operator */
+        if ( stack_type == T_RULE || stack_type == T_PLUS )
         {
             production_i = state->config->table[stack_value][token_id];
 
@@ -132,6 +138,19 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
             }
             else
             {
+                /*
+                Append a "*" operator for all following occurrences as they are
+                optional
+                */
+                if ( stack_type == T_PLUS )
+                {
+                    kv_push(long, state->stack, T_STAR);
+                    kv_push(long, state->stack, stack_value);
+
+                    kv_push(long, state->stack, T_APPEND_VALUE_STACK);
+                    kv_push(long, state->stack, 0);
+                }
+
                 FOR(rule_i, state->config->rule_lengths[production_i])
                 {
                     kv_push(
@@ -141,6 +160,56 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
                     );
                 }
             }
+        }
+        /* "*" operator */
+        else if ( stack_type == T_STAR )
+        {
+            production_i = state->config->table[stack_value][token_id];
+
+            if ( production_i != T_EOF )
+            {
+                kv_push(long, state->stack, T_STAR);
+                kv_push(long, state->stack, stack_value);
+
+                kv_push(long, state->stack, T_APPEND_VALUE_STACK);
+                kv_push(long, state->stack, 0);
+
+                FOR(rule_i, state->config->rule_lengths[production_i])
+                {
+                    kv_push(
+                        long,
+                        state->stack,
+                        state->config->rules[production_i][rule_i]
+                    );
+                }
+            }
+        }
+        /*
+        Adds a new array to the value stack that can be used to group operator
+        values together
+        */
+        else if ( stack_type == T_ADD_VALUE_STACK )
+        {
+            operator_buffer = rb_ary_new();
+
+            kv_push(VALUE, state->value_stack, operator_buffer);
+
+            RB_GC_GUARD(operator_buffer);
+        }
+        /*
+        Appends the last value on the value stack to the operator buffer that
+        preceeds it.
+        */
+        else if ( stack_type == T_APPEND_VALUE_STACK )
+        {
+            last_value = kv_pop(state->value_stack);
+
+            operator_buffer = kv_A(
+                state->value_stack,
+                kv_size(state->value_stack) - 1
+            );
+
+            rb_ary_push(operator_buffer, last_value);
         }
         /* Terminal */
         else if ( stack_type == T_TERMINAL )
