@@ -8,11 +8,15 @@ module LL
     # @return [Hash]
     #
     TYPES = {
-      :eof      => -1,
-      :rule     => 0,
-      :terminal => 1,
-      :epsilon  => 2,
-      :action   => 3
+      :eof                => -1,
+      :rule               => 0,
+      :terminal           => 1,
+      :epsilon            => 2,
+      :action             => 3,
+      :star               => 4,
+      :plus               => 5,
+      :add_value_stack    => 6,
+      :append_value_stack => 7
     }.freeze
 
     ##
@@ -133,16 +137,23 @@ module LL
           action_index += 1
 
           branch.steps.reverse_each do |step|
-            if step.is_a?(LL::Terminal)
+            if step.is_a?(Terminal)
               row << TYPES[:terminal]
               row << term_indices[step] + 1
 
-            elsif step.is_a?(LL::Rule)
+            elsif step.is_a?(Rule)
               row << TYPES[:rule]
               row << rule_indices[step]
 
-            elsif step.is_a?(LL::Epsilon)
+            elsif step.is_a?(Epsilon)
               row << TYPES[:epsilon]
+              row << 0
+
+            elsif step.is_a?(Operator)
+              row << TYPES[step.type]
+              row << rule_indices[step.receiver]
+
+              row << TYPES[:add_value_stack]
               row << 0
             end
           end

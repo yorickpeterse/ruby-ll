@@ -151,13 +151,39 @@ describe LL::ConfigurationCompiler do
   end
 
   describe '#generate_rules' do
-    it 'returns the rules as an Array' do
-      @compiler.generate_rules(@grammar).should == [
-        [3, 0, 0, 1],
-        [3, 1, 2, 0],
-        [3, 2, 1, 1],
-        [3, 3, 1, 2]
-      ]
+    describe 'without any operators' do
+      it 'returns the rules as an Array' do
+        @compiler.generate_rules(@grammar).should == [
+          [3, 0, 0, 1],
+          [3, 1, 2, 0],
+          [3, 2, 1, 1],
+          [3, 3, 1, 2]
+        ]
+      end
+    end
+
+    describe 'using the * operator' do
+      it 'returns the rules as an Array' do
+        grammar  = LL::CompiledGrammar.new
+        line     = source_line('A = B*;')
+        terminal = grammar.add_terminal('B', line)
+        rule     = LL::Rule.new('A', line)
+
+        op_rule = LL::Rule.new('_ll_star11', line)
+        op      = LL::Operator.new(:star, op_rule, line)
+
+        op_rule.add_branch([terminal], line)
+
+        rule.add_branch([op], line)
+
+        grammar.add_rule(rule)
+        grammar.add_rule(op_rule)
+
+        @compiler.generate_rules(grammar).should == [
+          [3, 0, 4, 1, 6, 0],
+          [3, 1, 1, 1]
+        ]
+      end
     end
   end
 
