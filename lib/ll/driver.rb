@@ -30,6 +30,10 @@ module LL
         message  = "Unexpected #{token_type}, expected #{expected} instead"
       when :eof
         message = "Received #{token_type} but there's nothing left to parse"
+      when :star
+        message = %Q{Unexpected #{token_type} for a "*" operator}
+      when :plus
+        message = %Q{Unexpected #{token_type} for a "+" operator}
       end
 
       return message
