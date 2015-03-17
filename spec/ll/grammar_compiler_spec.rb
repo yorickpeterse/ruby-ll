@@ -475,4 +475,90 @@ describe LL::GrammarCompiler do
       end
     end
   end
+
+  describe '#on_star' do
+    before do
+      @node     = s(:star, s(:ident, 'A'))
+      @terminal = @compiled.add_terminal('A', source_line('A'))
+    end
+
+    it 'returns an Operator' do
+      @compiler.on_star(@node, @compiled).should be_an_instance_of(LL::Operator)
+    end
+
+    it 'sets the type of the operator' do
+      @compiler.on_star(@node, @compiled).type.should == :star
+    end
+
+    it 'sets the receiver of the operator to a Rule' do
+      operator = @compiler.on_star(@node, @compiled)
+
+      operator.receiver.should be_an_instance_of(LL::Rule)
+    end
+
+    it 'sets the name of the receiver' do
+      operator = @compiler.on_star(@node, @compiled)
+
+      operator.receiver.name.should == '_ll_star11'
+    end
+
+    it 'sets the reference count of the receiver' do
+      @compiler.on_star(@node, @compiled).receiver.references.should == 1
+    end
+
+    it 'sets the steps of the first branch of the receiver' do
+      receiver = @compiler.on_star(@node, @compiled).receiver
+
+      receiver.branches[0].steps.should == [@terminal]
+    end
+
+    it 'adds the receiver to the list of rules' do
+      receiver = @compiler.on_star(@node, @compiled).receiver
+
+      @compiled.has_rule?(receiver.name).should == true
+    end
+  end
+
+  describe '#on_plus' do
+    before do
+      @node     = s(:plus, s(:ident, 'A'))
+      @terminal = @compiled.add_terminal('A', source_line('A'))
+    end
+
+    it 'returns an Operator' do
+      @compiler.on_plus(@node, @compiled).should be_an_instance_of(LL::Operator)
+    end
+
+    it 'sets the type of the operator' do
+      @compiler.on_plus(@node, @compiled).type.should == :plus
+    end
+
+    it 'sets the receiver of the operator to a Rule' do
+      operator = @compiler.on_plus(@node, @compiled)
+
+      operator.receiver.should be_an_instance_of(LL::Rule)
+    end
+
+    it 'sets the name of the receiver' do
+      operator = @compiler.on_plus(@node, @compiled)
+
+      operator.receiver.name.should == '_ll_plus11'
+    end
+
+    it 'sets the reference count of the receiver' do
+      @compiler.on_plus(@node, @compiled).receiver.references.should == 1
+    end
+
+    it 'sets the steps of the first branch of the receiver' do
+      receiver = @compiler.on_plus(@node, @compiled).receiver
+
+      receiver.branches[0].steps.should == [@terminal]
+    end
+
+    it 'adds the receiver to the list of rules' do
+      receiver = @compiler.on_plus(@node, @compiled).receiver
+
+      @compiled.has_rule?(receiver.name).should == true
+    end
+  end
 end

@@ -179,7 +179,7 @@ module LL
     ##
     # Processes the assignment of terminals.
     #
-    # @see #process
+    # @see [#process]
     #
     def on_terminals(node, compiled_grammar)
       node.children.each do |child|
@@ -199,7 +199,7 @@ module LL
     ##
     # Processes an %inner directive.
     #
-    # @see #process
+    # @see [#process]
     #
     def on_inner(node, compiled_grammar)
       compiled_grammar.inner = process(node.children[0], compiled_grammar)
@@ -208,7 +208,7 @@ module LL
     ##
     # Processes a %header directive.
     #
-    # @see #process
+    # @see [#process]
     #
     def on_header(node, compiled_grammar)
       compiled_grammar.header = process(node.children[0], compiled_grammar)
@@ -217,7 +217,7 @@ module LL
     ##
     # Processes a node containing Ruby source code.
     #
-    # @see #process
+    # @see [#process]
     # @return [String]
     #
     def on_ruby(node, compiled_grammar)
@@ -227,7 +227,7 @@ module LL
     ##
     # Extracts the name from an identifier.
     #
-    # @see #process
+    # @see [#process]
     # @return [String]
     #
     def on_ident(node, compiled_grammar)
@@ -237,7 +237,7 @@ module LL
     ##
     # Processes an epsilon.
     #
-    # @see #process
+    # @see [#process]
     # @return [LL::Epsilon]
     #
     def on_epsilon(node, compiled_grammar)
@@ -247,7 +247,7 @@ module LL
     ##
     # Processes the assignment of a rule.
     #
-    # @see #process
+    # @see [#process]
     #
     def on_rule(node, compiled_grammar)
       name = process(node.children[0], compiled_grammar)
@@ -280,7 +280,7 @@ module LL
     ##
     # Creates a basic prototype for a rule.
     #
-    # @see #process
+    # @see [#process]
     #
     def on_rule_prototype(node, compiled_grammar)
       name = process(node.children[0], compiled_grammar)
@@ -295,7 +295,7 @@ module LL
     ##
     # Processes a single rule branch.
     #
-    # @see #process
+    # @see [#process]
     # @return [LL::Branch]
     #
     def on_branch(node, compiled_grammar)
@@ -313,33 +313,53 @@ module LL
     ##
     # Processes the steps of a branch.
     #
-    # @see #process
+    # @see [#process]
     # @return [Array]
     #
     def on_steps(node, compiled_grammar)
-      steps = []
+      return lookup_identifiers(node, compiled_grammar)
+    end
 
-      node.children.each do |step_node|
-        retval = process(step_node, compiled_grammar)
+    ##
+    # Processes the "*" operator.
+    #
+    # @param [LL::AST::Node] node
+    # @param [LL::CompiledGrammar] compiled_grammar
+    # @return [LL::Operator]
+    #
+    def on_star(node, compiled_grammar)
+      steps = lookup_identifiers(node, compiled_grammar)
+      name  = "_ll_star#{node.source_line.line}#{node.source_line.column}"
+      rule  = Rule.new(name, node.source_line)
 
-        # Literal rule/terminal names.
-        if retval.is_a?(String)
-          step = compiled_grammar.lookup_identifier(retval)
+      rule.add_branch(steps, node.source_line)
 
-          undefined_identifier!(retval, step_node, compiled_grammar) unless step
-        # Epsilon
-        else
-          step = retval
-        end
+      rule.increment_references
 
-        if step
-          step.increment_references if step.respond_to?(:increment_references)
+      compiled_grammar.add_rule(rule)
 
-          steps << step
-        end
-      end
+      return Operator.new(:star, rule, node.source_line)
+    end
 
-      return steps
+    ##
+    # Processes the "+" operator.
+    #
+    # @param [LL::AST::Node] node
+    # @param [LL::CompiledGrammar] compiled_grammar
+    # @return [LL::Operator]
+    #
+    def on_plus(node, compiled_grammar)
+      steps = lookup_identifiers(node, compiled_grammar)
+      name  = "_ll_plus#{node.source_line.line}#{node.source_line.column}"
+      rule  = Rule.new(name, node.source_line)
+
+      rule.add_branch(steps, node.source_line)
+
+      rule.increment_references
+
+      compiled_grammar.add_rule(rule)
+
+      return Operator.new(:plus, rule, node.source_line)
     end
 
     private
@@ -354,6 +374,36 @@ module LL
         "Undefined terminal or rule #{name.inspect}",
         node.source_line
       )
+    end
+
+    ##
+    # @see [#process]
+    # @return [Array]
+    #
+    def lookup_identifiers(node, compiled_grammar)
+      idents = []
+
+      node.children.each do |ident_node|
+        retval = process(ident_node, compiled_grammar)
+
+        # Literal rule/terminal names.
+        if retval.is_a?(String)
+          ident = compiled_grammar.lookup_identifier(retval)
+
+          undefined_identifier!(retval, ident_node, compiled_grammar) if !ident
+        # Epsilon
+        else
+          ident = retval
+        end
+
+        if ident
+          ident.increment_references if ident.respond_to?(:increment_references)
+
+          idents << ident
+        end
+      end
+
+      return idents
     end
   end # Compiler
 end # LL
