@@ -9,4 +9,6 @@ lib/ll/bootstrap/parser.rb
 benchmark/parsers/ll/json.rb
 benchmark/parsers/racc/json.rb
 
+examples/math.rb
+
 tmp

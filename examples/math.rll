@@ -1,0 +1,101 @@
+# This grammar shows how to build a parser for simple arithmetic expressions
+# while taking operator precedence into account. Using this grammar you'd be
+# able to parse this:
+#
+#     10 + 20 + 30 and 40 / 50 * 2
+#
+# Into this AST:
+#
+#     (and
+#       (plus
+#         (plus
+#           (number 10)
+#           (number 20))
+#         (number 30))
+#       (mul
+#         (div
+#           (number 40)
+#           (number 50))
+#         (number 2)))
+#
+# To try out this grammar, run the following commands (from the root directory
+# of this repository):
+#
+#     ./bin/ruby-ll examples/math.rll
+#     ruby -Ilib -r ./examples/math.rb -e 'p MathParser.new.parse'
+#
+
+%header
+{
+require 'ast'
+}
+
+%name MathParser;
+
+%terminals T_NUMBER T_ADD T_DIV T_MUL T_SUB T_AND T_OR;
+
+expression
+  # Here "expression_follow" is an Array containing the operator type and its
+  # right-hand operand. For the input "10 + 10" the "expression_follow" Array
+  # would be [:+, s(number, 10)].
+  = number expression_follow*
+    {
+      ret = val[0]
+
+      # Combines all the operators together in a left-associative manner.
+      if val[1]
+        val[1].each do |pair|
+          ret = s(pair[0], [ret, pair[1]])
+        end
+      end
+
+      ret
+    }
+  ;
+
+expression_follow
+  # These operators don't recurse into anything, making them left-associative.
+  = numeric_operator number
+
+  # These operators should recurse into their right-hand operand first before
+  # unwinding. This makes them right-associative.
+  | logical_operator expression
+  ;
+
+numeric_operator
+  = T_ADD  { :plus }
+  | T_DIV  { :div }
+  | T_MUL  { :mul }
+  | T_SUB  { :sub }
+  ;
+
+logical_operator
+  = T_AND { :and }
+  | T_OR  { :or }
+  ;
+
+number
+  = T_NUMBER { s(:number, [val[0]]) }
+  ;
+
+%inner
+{
+  def each_token
+    yield [:T_NUMBER, 10]
+    yield [:T_ADD, '+']
+    yield [:T_NUMBER, 20]
+    yield [:T_ADD, '+']
+    yield [:T_NUMBER, 30]
+    yield [:T_AND, 'and']
+    yield [:T_NUMBER, 40]
+    yield [:T_DIV, '+']
+    yield [:T_NUMBER, 50]
+    yield [:T_MUL, '*']
+    yield [:T_NUMBER, 2]
+    yield [-1, -1]
+  end
+
+  def s(type, children)
+    return AST::Node.new(type, children)
+  end
+}
