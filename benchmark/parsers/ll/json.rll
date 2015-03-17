@@ -5,12 +5,12 @@
 object = T_LCURLY pairs T_RCURLY { val[1] };
 
 pairs
-  = pair pairs_follow
+  = pair pair_comma*
     {
       new_hash = val[0]
 
-      if val[1]
-        val[1].each do |key, value|
+      val[1].each do |pair|
+        pair.each do |key, value|
           new_hash[key] = value
         end
       end
@@ -19,9 +19,8 @@ pairs
     }
   ;
 
-pairs_follow
-  = T_COMMA pairs { val[1] }
-  | _             { nil }
+pair_comma
+  = T_COMMA pair { val[1] }
   ;
 
 pair
