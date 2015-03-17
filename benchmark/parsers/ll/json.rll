@@ -29,9 +29,9 @@ pair
   ;
 
 value
-  = string  { val[0] }
-  | integer { val[0] }
-  | object  { val[0] }
+  = string
+  | integer
+  | object
   ;
 
 string  = T_STRING { val[0] };
