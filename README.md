@@ -278,8 +278,30 @@ return specific elements from it:
     numbers = A B { val[0] };
 
 Values returned by code blocks are passed to whatever other rule called it. This
-allows code blocks to be used for building ASTs and the likes. If no explicit
-code block is defined `val` is returned as is.
+allows code blocks to be used for building ASTs and the likes.
+
+If no explicit code block is defined then ruby-ll will generate one for you. If
+a branch consists out of only a single step (e.g. `A = B;`) then only the first
+value is returned, otherwise all values are returned.
+
+This means that in the following example the output will be whatever value "C"
+contains:
+
+    A = B { p val[0] };
+    B = C;
+
+However, here the output would be `[C, D]` as the `B` rule's branch contains
+multiple steps:
+
+    A = B { p val[0] };
+    B = C D;
+
+To summarize (`# =>` denotes the return value):
+
+    A = B;   # => B
+    A = B C; # => [B, C]
+
+You can override this behaviour simply by defining your own code block.
 
 ruby-ll parsers recurse into rules before unwinding, this means that the
 inner-most rule is processed first.
@@ -300,6 +322,50 @@ name as a terminal, as such the following is invalid:
     A = B;
 
 It's also an error to re-define an existing rule.
+
+### Operators
+
+Grammars can use two operators to define a sequence of terminals/non-terminals:
+the star (`*`) and plus (`+`) operators.
+
+The star operator indicates that something should occur 0 or more times. Here
+the "B" identifier could occur 0 times, once, twice or many more times:
+
+    A = B*;
+
+The plus operator indicates that something should occur at least once followed
+by any number of more occurrences. For example, this grammar states that "B"
+should occur at least once but can also occur, say, 10 times:
+
+    A = B+;
+
+Operators can be applied either to a single terminal/rule or a series of
+terminals/rules grouped together using parenthesis. For example, both are
+perfectly valid:
+
+    A = B+;
+    A = (B C)+;
+
+When calling an operator on a single terminal/rule the corresponding entry in
+the `val` array is simply set to the terminal/rule value. For example:
+
+    A = B+ { p val[0] };
+
+For input `B B B` this would output `[B, B, B]`.
+
+However, when grouping multiple terminals/rules using parenthesis every
+occurrence is wrapped in an Array. For example:
+
+    A = (B C)+ { p val[0] };
+
+For input `B C B C` this would output `[[B, C], [B, C]]`. To work around this
+you can simply move the group of identifiers to its own rule and only return
+whatever you need:
+
+    A  = A1+ { p val[0] };
+    A1 = B C { val[0] }; # only return "B"
+
+For input `B C B C` this would output `[B, B]`.
 
 ## Conflicts
 
