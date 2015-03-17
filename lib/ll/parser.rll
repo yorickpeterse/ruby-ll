@@ -10,7 +10,7 @@ grammar
   ;
 
 elements
-  = element elements { val[0] + val[1] }
+  = element elements { [val[0], *val[1]] }
   | _
   ;
 

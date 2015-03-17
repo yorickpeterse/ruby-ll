@@ -155,12 +155,12 @@ describe LL::Parser do
         parser = described_class.new('%inner {} %header {}')
 
         parser.should_receive(:_rule_2)
-          .with([[s(:header, s(:ruby, ''))], []])
+          .with([s(:header, s(:ruby, '')), []])
           .ordered
           .and_call_original
 
         parser.should_receive(:_rule_2)
-          .with([[s(:inner, s(:ruby, ''))], [s(:header, s(:ruby, ''))]])
+          .with([s(:inner, s(:ruby, '')), [s(:header, s(:ruby, ''))]])
           .ordered
           .and_call_original
 

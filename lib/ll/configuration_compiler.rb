@@ -109,7 +109,21 @@ module LL
 
       grammar.rules.each do |rule|
         rule.branches.each do |branch|
-          bodies[:"_rule_#{index}"] = branch.ruby_code || DEFAULT_RUBY_CODE
+          if branch.ruby_code
+            code = branch.ruby_code
+
+          # If a branch only contains a single, non-epsilon step we can just
+          # return that value as-is. This makes parsing code a little bit
+          # easier.
+          elsif !branch.ruby_code and branch.steps.length == 1 \
+          and !branch.steps[0].is_a?(Epsilon)
+            code = 'val[0]'
+
+          else
+            code = DEFAULT_RUBY_CODE
+          end
+
+          bodies[:"_rule_#{index}"] = code
 
           index += 1
         end

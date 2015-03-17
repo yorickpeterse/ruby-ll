@@ -185,7 +185,7 @@ class Parser < LL::Driver
   end
 
   def _rule_2(val)
-     val[0] + val[1] 
+     [val[0], *val[1]] 
   end
 
   def _rule_3(val)
@@ -193,23 +193,23 @@ class Parser < LL::Driver
   end
 
   def _rule_4(val)
-    val
+    val[0]
   end
 
   def _rule_5(val)
-    val
+    val[0]
   end
 
   def _rule_6(val)
-    val
+    val[0]
   end
 
   def _rule_7(val)
-    val
+    val[0]
   end
 
   def _rule_8(val)
-    val
+    val[0]
   end
 
   def _rule_9(val)

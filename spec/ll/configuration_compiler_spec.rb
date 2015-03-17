@@ -102,7 +102,7 @@ describe LL::ConfigurationCompiler do
       config = @compiler.generate(@grammar)
 
       config.action_bodies.should == {
-        :_rule_0 => 'val',
+        :_rule_0 => 'val[0]',
         :_rule_1 => 'val',
         :_rule_2 => " 'A' ",
         :_rule_3 => " 'B' "
@@ -142,7 +142,7 @@ describe LL::ConfigurationCompiler do
   describe '#generate_action_bodies' do
     it 'returns the action bodies as a Hash' do
       @compiler.generate_action_bodies(@grammar).should == {
-        :_rule_0 => 'val',
+        :_rule_0 => 'val[0]',
         :_rule_1 => 'val',
         :_rule_2 => " 'A' ",
         :_rule_3 => " 'B' "
