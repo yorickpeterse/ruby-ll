@@ -20,9 +20,10 @@ For more information on LL parsing, see
 
 ## Features
 
-* Support for detecting first/first and first/follow conflicts
-* clang-like error/warning messages to ease debugging parsers
-* High performance and a low memory footprint
+* Support for detecting first/first and first/follow conflicts.
+* clang-like error/warning messages to ease debugging parsers.
+* High performance and a low memory footprint.
+* Support for the `*`, `+` and `?` operators.
 
 ## Requirements
 
@@ -326,7 +327,8 @@ It's also an error to re-define an existing rule.
 ### Operators
 
 Grammars can use two operators to define a sequence of terminals/non-terminals:
-the star (`*`) and plus (`+`) operators.
+the star (`*`) and plus (`+`) operators. There's also the `?` (question)
+operator which can be used to indicate something as being optional.
 
 The star operator indicates that something should occur 0 or more times. Here
 the "B" identifier could occur 0 times, once, twice or many more times:
@@ -338,6 +340,17 @@ by any number of more occurrences. For example, this grammar states that "B"
 should occur at least once but can also occur, say, 10 times:
 
     A = B+;
+
+The question operator can be used as an alternative to the following pattern:
+
+    # "A" or "A C"
+    A = B A_follow;
+
+    A_follow = C | _;
+
+Using this operator you can simply write the following:
+
+    A = B C?;
 
 Operators can be applied either to a single terminal/rule or a series of
 terminals/rules grouped together using parenthesis. For example, both are

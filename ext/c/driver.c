@@ -9,6 +9,7 @@
 #define T_PLUS 5
 #define T_ADD_VALUE_STACK 6
 #define T_APPEND_VALUE_STACK 7
+#define T_QUESTION 8
 
 ID id_config_const;
 ID id_each_token;
@@ -174,6 +175,27 @@ VALUE ll_driver_each_token(VALUE token, VALUE self)
                 kv_push(long, state->stack, T_APPEND_VALUE_STACK);
                 kv_push(long, state->stack, 0);
 
+                FOR(rule_i, state->config->rule_lengths[production_i])
+                {
+                    kv_push(
+                        long,
+                        state->stack,
+                        state->config->rules[production_i][rule_i]
+                    );
+                }
+            }
+        }
+        /* "?" operator */
+        else if ( stack_type == T_QUESTION )
+        {
+            production_i = state->config->table[stack_value][token_id];
+
+            if ( production_i == T_EOF )
+            {
+                kv_push(VALUE, state->value_stack, Qnil);
+            }
+            else
+            {
                 FOR(rule_i, state->config->rule_lengths[production_i])
                 {
                     kv_push(

@@ -16,8 +16,16 @@ module LL
       :star               => 4,
       :plus               => 5,
       :add_value_stack    => 6,
-      :append_value_stack => 7
+      :append_value_stack => 7,
+      :question           => 8
     }.freeze
+
+    ##
+    # Operators which don't require a value stack.
+    #
+    # @return [Array]
+    #
+    SKIP_VALUE_STACK = [:question]
 
     ##
     # @return [String]
@@ -167,8 +175,10 @@ module LL
               row << TYPES[step.type]
               row << rule_indices[step.receiver]
 
-              row << TYPES[:add_value_stack]
-              row << 0
+              unless SKIP_VALUE_STACK.include?(step.type)
+                row << TYPES[:add_value_stack]
+                row << 0
+              end
             end
           end
 

@@ -36,6 +36,7 @@ public class Driver extends RubyObject
     private static long T_PLUS               = 5;
     private static long T_ADD_VALUE_STACK    = 6;
     private static long T_APPEND_VALUE_STACK = 7;
+    private static long T_QUESTION           = 8;
 
     /**
      * The current Ruby runtime.
@@ -191,6 +192,28 @@ public class Driver extends RubyObject
                             stack.push(self.T_APPEND_VALUE_STACK);
                             stack.push(Long.valueOf(0));
 
+                            ArrayList<Long> row = self.config.rules
+                                .get(production_i.intValue());
+
+                            for ( int index = 0; index < row.size(); index++ )
+                            {
+                                stack.push(row.get(index));
+                            }
+                        }
+                    }
+                    // "?" operator
+                    else if ( stack_type == self.T_QUESTION )
+                    {
+                        Long production_i = self.config.table
+                            .get(stack_value.intValue())
+                            .get(token_id.intValue());
+
+                        if ( production_i == self.T_EOF )
+                        {
+                            value_stack.push(context.nil);
+                        }
+                        else
+                        {
                             ArrayList<Long> row = self.config.rules
                                 .get(production_i.intValue());
 

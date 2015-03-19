@@ -362,6 +362,27 @@ module LL
       return Operator.new(:plus, rule, node.source_line)
     end
 
+    ##
+    # Processes the "?" operator.
+    #
+    # @param [LL::AST::Node] node
+    # @param [LL::CompiledGrammar] compiled_grammar
+    # @return [LL::Operator]
+    #
+    def on_question(node, compiled_grammar)
+      steps = lookup_identifiers(node, compiled_grammar)
+      name  = "_ll_question#{node.source_line.line}#{node.source_line.column}"
+      rule  = Rule.new(name, node.source_line)
+
+      rule.add_branch(steps, node.source_line)
+
+      rule.increment_references
+
+      compiled_grammar.add_rule(rule)
+
+      return Operator.new(:question, rule, node.source_line)
+    end
+
     private
 
     ##

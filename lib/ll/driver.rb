@@ -34,6 +34,8 @@ module LL
         message = %Q{Unexpected #{token_type} for a "*" operator}
       when :plus
         message = %Q{Unexpected #{token_type} for a "+" operator}
+      when :question
+        message = %Q{Unexpected #{token_type} for a "?" operator}
       end
 
       return message

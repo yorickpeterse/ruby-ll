@@ -185,6 +185,30 @@ describe LL::ConfigurationCompiler do
         ]
       end
     end
+
+    describe 'using the ? operator' do
+      it 'returns the rules as an Array' do
+        grammar  = LL::CompiledGrammar.new
+        line     = source_line('A = B?;')
+        terminal = grammar.add_terminal('B', line)
+        rule     = LL::Rule.new('A', line)
+
+        op_rule = LL::Rule.new('_ll_question11', line)
+        op      = LL::Operator.new(:question, op_rule, line)
+
+        op_rule.add_branch([terminal], line)
+
+        rule.add_branch([op], line)
+
+        grammar.add_rule(rule)
+        grammar.add_rule(op_rule)
+
+        @compiler.generate_rules(grammar).should == [
+          [3, 0, 8, 1],
+          [3, 1, 1, 1]
+        ]
+      end
+    end
   end
 
   describe '#generate_table' do

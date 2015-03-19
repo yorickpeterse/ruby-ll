@@ -190,6 +190,17 @@ describe LL::Parser do
           )
         )
       end
+
+      it 'parses a rule using the ? operator' do
+        described_class.new('A = B?;').parse.should == s(
+          :grammar,
+          s(
+            :rule,
+            s(:ident, 'A'),
+            s(:branch, s(:steps, s(:question, s(:ident, 'B'))))
+          )
+        )
+      end
     end
 
     describe 'using parenthesis' do
