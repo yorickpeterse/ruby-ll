@@ -6,12 +6,10 @@
 
 grammar
   = elements { s(:grammar, val[0]) }
-  | _        { s(:grammar) }
   ;
 
 elements
-  = element elements { [val[0], *val[1]] }
-  | _
+  = element*
   ;
 
 element
@@ -28,15 +26,14 @@ element
 # single name (e.g. "Foo") or a Ruby namespace (e.g. "Foo::Bar").
 
 name
-  = T_NAME ident namespace_parts T_SEMICOLON
+  = T_NAME ident namespace_part* T_SEMICOLON
     {
       s(:name, [val[1], *val[2]], :source_line => val[0].source_line)
     }
   ;
 
-namespace_parts
-  = T_COLON T_COLON ident namespace_parts { [val[2], *val[3]] }
-  | _
+namespace_part
+  = T_COLON T_COLON ident { val[2] }
   ;
 
 # Generic Directives
@@ -69,11 +66,8 @@ header
 
 # Generic identifiers
 
-idents = ident idents_follow { [val[0], *val[1]] };
-
-idents_follow
-  = idents { val[0] }
-  | _
+idents
+  = ident+
   ;
 
 ident
@@ -83,32 +77,18 @@ ident
     }
   ;
 
-idents_with_operator
-  # X and X+
-  = ident_with_operator idents_with_operator_follow { [val[0], *val[1]] }
-
-  # (X Y Z)+
-  | T_LPAREN idents T_RPAREN operator idents_with_operator_follow
-    {
-      [s(val[3][0], val[1], :source_line => val[0].source_line), *val[4]]
-    }
-  ;
-
-idents_with_operator_follow
-  = idents_with_operator { val[0] }
-  | _
-  ;
-
 ident_with_operator
-  = ident ident_with_operator_follow
+  # X and X+
+  = ident operator?
     {
       val[1] ? s(val[1][0], [val[0]], :source_line => val[1][1]) : val[0]
     }
-  ;
 
-ident_with_operator_follow
-  = operator { val[0] }
-  | _        { nil }
+  # (X Y Z)+
+  | T_LPAREN idents T_RPAREN operator
+    {
+      s(val[3][0], val[1], :source_line => val[0].source_line)
+    }
   ;
 
 operator
@@ -118,7 +98,7 @@ operator
   ;
 
 idents_or_epsilon
-  = idents_with_operator
+  = ident_with_operator+
     {
       s(:steps, val[0], :source_line => val[0][0].source_line)
     }
@@ -128,12 +108,14 @@ idents_or_epsilon
     }
   ;
 
-epsilon = T_EPSILON { s(:epsilon, [], :source_line => val[0].source_line) };
+epsilon
+  = T_EPSILON { s(:epsilon, [], :source_line => val[0].source_line) }
+  ;
 
 # Rules
 
 branch
-  = idents_or_epsilon optional_ruby
+  = idents_or_epsilon ruby?
     {
       steps = [val[0]]
 
@@ -143,20 +125,16 @@ branch
     }
   ;
 
-optional_ruby
-  = ruby { val[0] }
-  | _    { nil }
-  ;
-
 ruby
   = T_RUBY { s(:ruby, [val[0].value], :source_line => val[0].source_line) }
   ;
 
-branches = branch branches_follow { [val[0], *val[1]] };
+branches
+  = branch another_branch* { [val[0], *val[1]] }
+  ;
 
-branches_follow
-  = T_PIPE branches { val[1] }
-  | _
+another_branch
+  = T_PIPE branch { val[1] }
   ;
 
 rule
