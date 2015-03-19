@@ -3,19 +3,35 @@
 This document contains details of the various releases and their release dates.
 Dates are in the format `yyyy-mm-dd`.
 
+## 2.1.0 - 2015-03-20
+
+### Question/Optional Operator Support
+
+Support was added for the `?` operator. This operator can be used to indicate a
+certain rule/terminal is optional.
+
+### Bugfix when parsing parenthesis with an operator
+
+This release fixes a bug in the parser that would occur when parsing input such
+as the following:
+
+    A = B (C D)? E;
+
+This would previously throw a syntax error.
+
 ## 2.0.0 - 2015-03-18
 
 This release contains some changes that are not backwards compatible, hence the
 major version increase.
 
-## Operator Support
+### Operator Support
 
 Grammars can now use two new operators: `*` and `+`. The star operator (`*`)
 defines that a set of terminals/rules can occur 0 or more times while the plus
 operator (`+`) indicates that something occurs 1 or more times. These operators
 don't rely on recursion and thus are left-associative.
 
-## Branch Action Optimization
+### Branch Action Optimization
 
 Branches containing only a single step without any custom actions now _only_
 return the first step's value instead of an Array containing the value. In other
@@ -32,7 +48,7 @@ This means you no longer have to do this:
 
     A = B { val[0] };
 
-## CAPI Cleanups
+### CAPI Cleanups
 
 Some of the C code used for the driver has been cleaned up to use correct CAPI
 datatypes.
