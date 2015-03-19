@@ -201,6 +201,20 @@ describe LL::Parser do
           )
         )
       end
+
+      it 'parses a rule containing two operators' do
+        described_class.new('A = B* C+;').parse.should == s(
+          :grammar,
+          s(
+            :rule,
+            s(:ident, 'A'),
+            s(
+              :branch,
+              s(:steps, s(:star, s(:ident, 'B')), s(:plus, s(:ident, 'C')))
+            )
+          )
+        )
+      end
     end
 
     describe 'using parenthesis' do
@@ -211,6 +225,20 @@ describe LL::Parser do
             :rule,
             s(:ident, 'A'),
             s(:branch, s(:steps, s(:plus, s(:ident, 'B'), s(:ident, 'C'))))
+          )
+        )
+      end
+
+      it 'parses grouped identifiers with an operator followed by another identifier' do
+        described_class.new('A = (B C)+ D;').parse.should == s(
+          :grammar,
+          s(
+            :rule,
+            s(:ident, 'A'),
+            s(
+              :branch,
+              s(:steps, s(:plus, s(:ident, 'B'), s(:ident, 'C')), s(:ident, 'D'))
+            )
           )
         )
       end

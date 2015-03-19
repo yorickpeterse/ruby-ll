@@ -88,9 +88,9 @@ idents_with_operator
   = ident_with_operator idents_with_operator_follow { [val[0], *val[1]] }
 
   # (X Y Z)+
-  | T_LPAREN idents T_RPAREN operator
+  | T_LPAREN idents T_RPAREN operator idents_with_operator_follow
     {
-      [s(val[3][0], val[1], :source_line => val[0].source_line)]
+      [s(val[3][0], val[1], :source_line => val[0].source_line), *val[4]]
     }
   ;
 
