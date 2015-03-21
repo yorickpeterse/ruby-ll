@@ -63,10 +63,11 @@ foo = bar;
     end
 
     it 'returns an absolute path for paths outside of the working directory' do
-      line    = source_line('', 1, 1, '/tmp/foo.rb')
+      path    = File.join(Dir.tmpdir, 'foo.rb')
+      line    = source_line('', 1, 1, path)
       message = described_class.new(:error, 'foo', line)
 
-      message.determine_path.should == '/tmp/foo.rb'
+      message.determine_path.should == path
     end
   end
 
