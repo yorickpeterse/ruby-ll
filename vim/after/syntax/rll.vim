@@ -10,8 +10,11 @@ syn include @rubyTop syntax/ruby.vim
 syn match rllKeyword "%[a-zA-Z]\+"
 syn match rllComment "#.*$"
 syn match rllOperator "?|+|\*"
+syn match rllDelimiter '[=|]'
 
-syn region rllRuby start="{" end="}" contains=@rubyTop
+syn region rllRuby transparent matchgroup=rllDelimiter
+                   \ start="{" end="}"
+                   \ contains=@rubyTop
 
 hi link rllKeyword  Keyword
 hi link rllComment  Comment
