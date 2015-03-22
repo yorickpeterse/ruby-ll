@@ -3,6 +3,13 @@
 This document contains details of the various releases and their release dates.
 Dates are in the format `yyyy-mm-dd`.
 
+## 2.1.1 - 2015-03-22
+
+This release adds Windows support for ruby-ll by tweaking the compilation
+process of the native extensions. Tests are run on AppVeyor
+(<https://ci.appveyor.com/project/YorickPeterse/ruby-ll>) to ensure they always
+pass.
+
 ## 2.1.0 - 2015-03-20
 
 ### Question/Optional Operator Support
