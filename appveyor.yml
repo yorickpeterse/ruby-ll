@@ -28,3 +28,10 @@ environment:
     - ruby_version: "22-x64"
 
 skip_tags: true
+
+notifications:
+  -
+    provider: Email
+    on_build_success: false
+    on_build_failure: false
+    on_build_status_changed: true
