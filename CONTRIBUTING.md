@@ -35,6 +35,17 @@ Next up, compile the required files and run the tests:
 
 For more information about the available tasks, run `rake -T`.
 
+## Continuous Integration
+
+Two continuous integration services are used to ensure the tests of ruby-ll pass
+at all times:
+
+* Travis CI: <https://travis-ci.org/YorickPeterse/ruby-ll>
+* AppVeyor (Windows): <https://ci.appveyor.com/project/YorickPeterse/ruby-ll>
+
+Please note that I will not accept patches that break any tests unless stated
+otherwise.
+
 ## Contact
 
 In case you have any further questions or would like to receive feedback before
