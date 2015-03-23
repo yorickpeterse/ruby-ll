@@ -10,7 +10,8 @@ install:
   - SET PATH=C:\ragel;%PATH%
   - ruby --version
   - gem --version
-  - gem install --local C:\Ruby%ruby_version%\lib\ruby\gems\%abi_version%\cache\bundler-1.9.0.gem --quiet --no-ri --no-rdoc
+  - appveyor DownloadFile https://rubygems.org/downloads/bundler-1.9.0.gem -FileName bundler-1.9.0.gem
+  - gem install bundler-1.9.0.gem --local --quiet --no-ri --no-rdoc
   - bundle install --retry 3
 
 build: off
@@ -20,24 +21,12 @@ test_script:
 
 environment:
   matrix:
-    -
-      ruby_version: "193"
-      abi_version: "1.9.1"
-    -
-      ruby_version: "200"
-      abi_version: "2.0.0"
-    -
-      ruby_version: "21"
-      abi_version: "2.1.0"
-    -
-      ruby_version: "21-x64"
-      abi_version: "2.1.0"
-    -
-      ruby_version: "22"
-      abi_version: "2.2.0"
-    -
-      ruby_version: "22-x64"
-      abi_version: "2.2.0"
+    - ruby_version: "193"
+    - ruby_version: "200"
+    - ruby_version: "21"
+    - ruby_version: "21-x64"
+    - ruby_version: "22"
+    - ruby_version: "22-x64"
 
 skip_tags: true
 
