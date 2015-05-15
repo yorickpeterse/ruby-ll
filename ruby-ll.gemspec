@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.summary     = 'An LL(1) parser generator for Ruby.'
   s.homepage    = 'https://github.com/yorickpeterse/ruby-ll'
   s.description = s.summary
-  s.license     = 'MIT'
+  s.license     = 'MPL-2.0'
 
   s.files = Dir.glob([
     'checkum/**/*',
