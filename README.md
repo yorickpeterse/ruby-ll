@@ -265,8 +265,8 @@ Code blocks can also be added:
       | B { 'B' }
       ;
 
-When the terminal `A` would be processed the returned value would be "B", for
-terminal `B` the returned value would be "B".
+When the terminal `A` would be processed the returned value would be `'A'`, for
+terminal `B` the returned value would be `'B'`.
 
 Code blocks have access to an array called `val` which contains the values of
 every step of a branch. For example:
@@ -285,7 +285,7 @@ If no explicit code block is defined then ruby-ll will generate one for you. If
 a branch consists out of only a single step (e.g. `A = B;`) then only the first
 value is returned, otherwise all values are returned.
 
-This means that in the following example the output will be whatever value "C"
+This means that in the following example the output will be whatever value `C`
 contains:
 
     A = B { p val[0] };
