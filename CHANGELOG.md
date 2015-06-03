@@ -3,6 +3,25 @@
 This document contains details of the various releases and their release dates.
 Dates are in the format `yyyy-mm-dd`.
 
+## 2.1.2 - 2015-06-03
+
+### Fix for requiring extension on certain platforms
+
+Certain platforms apparently no longer move compiled extensions into the lib/
+directory. The code has been updated to use "require" instead to work around
+this problem.
+
+See commit b27fe7cc109a39184ac984405a1e452868f3fac9 for more information.
+
+### License changed to MPL 2.0
+
+Similar to Oga (and my other projects) the license of ruby-ll has been changed
+to MPL 2.0.
+
+See ruby-ll commit 59928ade94b9b849ffa827cb482662323066d041 and Oga commit
+https://github.com/YorickPeterse/oga/commit/0a7242aed44fcd7ef18327cc5b10263fd9807a35
+for more information.
+
 ## 2.1.1 - 2015-03-22
 
 This release adds Windows support for ruby-ll by tweaking the compilation
