@@ -1,5 +1,5 @@
 rule '.rb' => '.rll' do |task|
-  sh "./bin/ruby-ll #{task.source} -o #{task.name} --no-requires"
+  sh "ruby -Ilib ./bin/ruby-ll #{task.source} -o #{task.name} --no-requires"
 end
 
 desc 'Generates the parsers'
