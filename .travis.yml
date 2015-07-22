@@ -3,6 +3,8 @@ language: ruby
 
 script: bundle exec rake
 
+sudo: false
+
 rvm:
   - 1.9
   - 2.0
