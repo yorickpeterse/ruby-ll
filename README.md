@@ -40,7 +40,7 @@ For MRI/Rubinius you'll need a C90 compatible compiler such as clang or gcc. For
 JRuby you don't need any compilers to be installed as the .jar is packaged with
 the Gem itself.
 
-When hacking on Oga you'll also need to have the following installed:
+When hacking on ruby-ll you'll also need to have the following installed:
 
 * Ragel 6 for building the grammar lexer
 * javac for building the JRuby extension
