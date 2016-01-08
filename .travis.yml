@@ -10,9 +10,15 @@ rvm:
   - 2.0
   - 2.1
   - 2.2
-  - rbx-2
-  - jruby-1
+  - rbx
   - jruby-9
+
+matrix:
+  exclude:
+    - rvm: 2.2
+      os: osx
+    - rvm: jruby-9
+      os: osx
 
 notifications:
   email:
@@ -26,3 +32,7 @@ cache: bundler
 branches:
   only:
     - master
+
+os:
+  - linux
+  - osx
