@@ -48,7 +48,7 @@ For more information about the available tasks, run `rake -T`.
 Two continuous integration services are used to ensure the tests of ruby-ll pass
 at all times:
 
-* Travis CI: <https://travis-ci.org/YorickPeterse/ruby-ll>
+* GitLab CI: <https://gitlab.com/yorickpeterse/ruby-ll/pipelines>
 * AppVeyor (Windows): <https://ci.appveyor.com/project/YorickPeterse/ruby-ll>
 
 Please note that I will not accept patches that break any tests unless stated

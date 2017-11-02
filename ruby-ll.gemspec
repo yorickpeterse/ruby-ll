@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.authors     = ['Yorick Peterse']
   s.email       = 'yorickpeterse@gmail.com'
   s.summary     = 'An LL(1) parser generator for Ruby.'
-  s.homepage    = 'https://github.com/yorickpeterse/ruby-ll'
+  s.homepage    = 'https://gitlab.com/yorickpeterse/ruby-ll'
   s.description = s.summary
   s.license     = 'MPL-2.0'
 

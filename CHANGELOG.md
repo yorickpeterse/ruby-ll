@@ -19,14 +19,14 @@ Similar to Oga (and my other projects) the license of ruby-ll has been changed
 to MPL 2.0.
 
 See ruby-ll commit 59928ade94b9b849ffa827cb482662323066d041 and Oga commit
-https://github.com/YorickPeterse/oga/commit/0a7242aed44fcd7ef18327cc5b10263fd9807a35
+https://gitlab.com/yorickpeterse/oga/commit/0a7242aed44fcd7ef18327cc5b10263fd9807a35
 for more information.
 
 ## 2.1.1 - 2015-03-22
 
 This release adds Windows support for ruby-ll by tweaking the compilation
 process of the native extensions. Tests are run on AppVeyor
-(<https://ci.appveyor.com/project/YorickPeterse/ruby-ll>) to ensure they always
+(<https://ci.appveyor.com/project/yorickpeterse/ruby-ll>) to ensure they always
 pass.
 
 ## 2.1.0 - 2015-03-20
