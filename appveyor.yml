@@ -10,7 +10,7 @@ install:
 build: off
 
 before_test:
-	- ragel --version
+  - ragel --version
   - ruby --version
   - gem --version
   - bundle --version
