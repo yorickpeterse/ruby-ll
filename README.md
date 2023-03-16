@@ -492,4 +492,4 @@ The following files are licensed under a different license:
 * ext/c/kvec.h: MIT license (see source code)
 
 [racc]: https://github.com/tenderlove/racc
-[oga]: https://gitlab.com/yorickpeterse/oga
+[oga]: https://github.com/yorickpeterse/oga
