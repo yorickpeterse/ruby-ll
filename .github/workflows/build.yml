@@ -22,4 +22,6 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
 
+      - run: sudo apt-get install -y ragel
+
       - run: bundle exec rake
