@@ -13,7 +13,7 @@ jobs:
           - '2.2'
           - '2.3'
           - '2.4'
-          - jruby
+          - jruby-9.1.17.0
     steps:
       - uses: actions/checkout@v3
 
