@@ -30,13 +30,15 @@ describe LL::CodeGenerator do
       @generator.generate(@config).should be_an_instance_of(String)
     end
 
-    it 'returns valid Ruby code' do
-      @tempfile.write(@generator.generate(@config))
-      @tempfile.rewind
+    unless RUBY_PLATFORM == 'opal'
+      it 'returns valid Ruby code' do
+        @tempfile.write(@generator.generate(@config))
+        @tempfile.rewind
 
-      output = `ruby -c #{@tempfile.path} 2>&1`
+        output = `ruby -c #{@tempfile.path} 2>&1`
 
-      output.should =~ /Syntax OK/
+        output.should =~ /Syntax OK/
+      end
     end
 
     it 'returns Ruby code including the inner block' do

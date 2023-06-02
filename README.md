@@ -32,6 +32,7 @@ For more information on LL parsing, see
 | MRI      | >= 1.9.3      | >= 2.1.0    |
 | Rubinius | >= 2.2        | >= 2.5.0    |
 | JRuby    | >= 1.7        | >= 1.7.0    |
+| Opal     | >= 1.7        | >= 1.7.3    |
 | Maglev   | Not supported |             |
 | Topaz    | Not supported |             |
 | mruby    | Not supported |             |

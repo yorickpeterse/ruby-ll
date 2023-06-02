@@ -6,7 +6,7 @@ if ENV['COVERAGE']
   require_relative 'support/simplecov'
 end
 
-require_relative '../lib/ll'
+require 'll'
 require_relative 'support/parsing'
 
 RSpec.configure do |config|
