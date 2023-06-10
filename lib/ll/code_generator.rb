@@ -24,7 +24,7 @@ module LL
       )
 
       template = File.read(TEMPLATE)
-      erb      = ERB.new(template, nil, '-').result(context.get_binding)
+      erb      = ERB.new(template, trim_mode: '-').result(context.get_binding)
 
       return erb
     end
