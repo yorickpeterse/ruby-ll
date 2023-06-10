@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.name        = 'ruby-ll'
   s.version     = LL::VERSION
   s.authors     = ['Yorick Peterse']
-  s.email       = 'yorickpeterse@gmail.com'
+  s.email       = 'yorick@yorickpeterse.com'
   s.summary     = 'An LL(1) parser generator for Ruby.'
   s.homepage    = 'https://github.com/yorickpeterse/ruby-ll'
   s.description = s.summary
@@ -30,9 +30,6 @@ Gem::Specification.new do |s|
   else
     s.extensions = ['ext/c/extconf.rb']
   end
-
-  s.has_rdoc              = 'yard'
-  s.required_ruby_version = '>= 1.9.3'
 
   s.add_dependency 'ast'
   s.add_dependency 'ansi'
