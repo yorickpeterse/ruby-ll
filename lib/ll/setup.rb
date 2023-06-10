@@ -7,6 +7,8 @@ require 'libll'
 
 #:nocov:
 if RUBY_PLATFORM == 'java'
+  require 'jruby'
+
   org.libll.Libll.load(JRuby.runtime)
 end
 #:nocov:
