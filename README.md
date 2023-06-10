@@ -27,18 +27,18 @@ For more information on LL parsing, see
 
 ## Requirements
 
-| Ruby     | Required      | Recommended |
-|:---------|:--------------|:------------|
-| MRI      | >= 1.9.3      | >= 2.1.0    |
-| Rubinius | >= 2.2        | >= 2.5.0    |
-| JRuby    | >= 1.7        | >= 1.7.0    |
-| Maglev   | Not supported |             |
-| Topaz    | Not supported |             |
-| mruby    | Not supported |             |
+| Ruby     | Required
+|:---------|:--------------
+| MRI      | >= 2.6.0
+| JRuby    | >= 9.0
+| Rubinius | Not supported
+| Maglev   | Not supported
+| Topaz    | Not supported
+| mruby    | Not supported
 
-For MRI/Rubinius you'll need a C90 compatible compiler such as clang or gcc. For
-JRuby you don't need any compilers to be installed as the .jar is packaged with
-the Gem itself.
+For MRI you'll need a C90 compatible compiler such as clang or gcc. For JRuby
+you don't need any compilers to be installed as the .jar is packaged with the
+Gem itself.
 
 When hacking on ruby-ll you'll also need to have the following installed:
 
