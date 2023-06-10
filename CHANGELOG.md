@@ -3,6 +3,13 @@
 This document contains details of the various releases and their release dates.
 Dates are in the format `yyyy-mm-dd`.
 
+## 2.1.3 - 2023-06-10
+
+Loading the Gem on JRuby works again, as newer versions of JRuby require a
+`require 'jruby'` call for the `JRuby` module to become available.
+
+In addition, building the JRuby extension now requires Java 1.8 or newer.
+
 ## 2.1.2 - 2015-06-03
 
 ### Fix for requiring extension on certain platforms
