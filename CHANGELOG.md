@@ -3,6 +3,12 @@
 This document contains details of the various releases and their release dates.
 Dates are in the format `yyyy-mm-dd`.
 
+## 2.1.4 - 2025-09-05
+
+Compiling with GCC 15 [was
+broken](https://github.com/yorickpeterse/ruby-ll/issues/19). This has been fixed
+by [pull request 20](https://github.com/yorickpeterse/ruby-ll/pull/20).
+
 ## 2.1.3 - 2023-06-10
 
 Loading the Gem on JRuby works again, as newer versions of JRuby require a
