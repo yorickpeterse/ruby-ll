@@ -60,11 +60,16 @@ VALUE ll_driver_allocate(VALUE klass)
 }
 
 /**
- * Callback function for iterating over every input token and actually parsing
- * said input.
+ * Callback function for iterating over every input token and parsing it.
+ *
+ * This function is intended to be used as a block callback for Ruby's
+ * `rb_block_call`, and processes a single token per invocation.
  *
  * @param token An Array containing the token type as a Symbol and its value.
  * @param self The Driver instance currently in use.
+ * @param argc The number of additional arguments passed to the block.
+ * @param argv The array of additional arguments passed to the block.
+ * @param block_arg The block argument passed from Ruby (if any).
  */
 VALUE ll_driver_each_token(
     VALUE token,
