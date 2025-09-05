@@ -66,7 +66,13 @@ VALUE ll_driver_allocate(VALUE klass)
  * @param token An Array containing the token type as a Symbol and its value.
  * @param self The Driver instance currently in use.
  */
-VALUE ll_driver_each_token(VALUE token, VALUE self)
+VALUE ll_driver_each_token(
+    VALUE token,
+    VALUE self,
+    int argc,
+    const VALUE *argv,
+    VALUE block_arg
+)
 {
     VALUE method;
     VALUE action_args;
@@ -326,7 +332,7 @@ VALUE ll_driver_parse(VALUE self)
         id_each_token,
         0,
         NULL,
-        RUBY_METHOD_FUNC(ll_driver_each_token),
+        ll_driver_each_token,
         self
     );
 
