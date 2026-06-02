@@ -21,8 +21,10 @@ ID id_parser_error;
  * This function is called automatically when a Driver instance is garbage
  * collected.
  */
-void ll_driver_free(DriverState *state)
+void ll_driver_free(void *data)
 {
+    DriverState *state = data;
+
     kv_destroy(state->stack);
     kv_destroy(state->value_stack);
 
@@ -33,15 +35,28 @@ void ll_driver_free(DriverState *state)
  * Marks the objects stored in the driver's internal state, preventing them from
  * being garbage collected until the next GC run.
  */
-void ll_driver_mark(DriverState *state)
+void ll_driver_mark(void *data)
 {
     size_t index;
+    DriverState *state = data;
 
     FOR(index, kv_size(state->value_stack))
     {
         rb_gc_mark(kv_A(state->value_stack, index));
     }
 }
+
+static const rb_data_type_t ll_driver_type = {
+    "LL::Driver",
+    {
+        ll_driver_mark,
+        ll_driver_free,
+        NULL,
+    },
+    NULL,
+    NULL,
+    RUBY_TYPED_FREE_IMMEDIATELY,
+};
 
 /**
  * Allocates a new instance of the Driver class and prepares its internal state.
@@ -50,18 +65,16 @@ VALUE ll_driver_allocate(VALUE klass)
 {
     DriverState *state;
     VALUE config;
-    VALUE obj = Data_Make_Struct(
+    VALUE obj = TypedData_Make_Struct(
         klass,
         DriverState,
-        ll_driver_mark,
-        ll_driver_free,
+        &ll_driver_type,
         state
     );
-    MEMZERO(state, DriverState, 1);
 
     config = rb_const_get(klass, id_config_const);
 
-    Data_Get_Struct(config, DriverConfig, state->config);
+    TypedData_Get_Struct(config, DriverConfig, &ll_driver_config_type, state->config);
 
     kv_init(state->stack);
     kv_init(state->value_stack);
@@ -110,7 +123,7 @@ VALUE ll_driver_each_token(
     VALUE type  = rb_ary_entry(token, 0);
     VALUE value = rb_ary_entry(token, 1);
 
-    Data_Get_Struct(self, DriverState, state);
+    TypedData_Get_Struct(self, DriverState, &ll_driver_type, state);
 
     while ( 1 )
     {
@@ -152,8 +165,8 @@ VALUE ll_driver_each_token(
                     self,
                     id_parser_error,
                     4,
-                    INT2NUM(stack_type),
-                    INT2NUM(stack_value),
+                    LONG2NUM(stack_type),
+                    LONG2NUM(stack_value),
                     type,
                     value
                 );
@@ -271,8 +284,8 @@ VALUE ll_driver_each_token(
                     self,
                     id_parser_error,
                     4,
-                    INT2NUM(stack_type),
-                    INT2NUM(stack_value),
+                    LONG2NUM(stack_type),
+                    LONG2NUM(stack_value),
                     type,
                     value
                 );
@@ -330,7 +343,7 @@ VALUE ll_driver_parse(VALUE self)
 
     DriverState *state;
 
-    Data_Get_Struct(self, DriverState, state);
+    TypedData_Get_Struct(self, DriverState, &ll_driver_type, state);
 
     /* EOF rule */
     kv_push(long, state->stack, T_EOF);

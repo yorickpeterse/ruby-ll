@@ -50,4 +50,6 @@ typedef struct
 
 extern void Init_ll_driver_config();
 
+extern const rb_data_type_t ll_driver_config_type;
+
 #endif

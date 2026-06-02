@@ -1,7 +1,9 @@
 #include "driver_config.h"
 
-void ll_driver_config_mark(DriverConfig *config)
+void ll_driver_config_mark(void *data)
 {
+    DriverConfig *config = data;
+
     if ( config->terminals != NULL )
     {
         khint_t key;
@@ -31,9 +33,10 @@ void ll_driver_config_mark(DriverConfig *config)
 /**
  * Releases memory of the DriverConfig struct and its members.
  */
-void ll_driver_config_free(DriverConfig *config)
+void ll_driver_config_free(void *data)
 {
     long rindex;
+    DriverConfig *config = data;
 
     FOR(rindex, config->rules_count)
     {
@@ -59,23 +62,30 @@ void ll_driver_config_free(DriverConfig *config)
     free(config);
 }
 
+const rb_data_type_t ll_driver_config_type = {
+    "LL::DriverConfig",
+    {
+        ll_driver_config_mark,
+        ll_driver_config_free,
+        NULL,
+    },
+    NULL,
+    NULL,
+    RUBY_TYPED_FREE_IMMEDIATELY,
+};
+
 /**
  * Allocates a new DriverConfig.
  */
 VALUE ll_driver_config_allocate(VALUE klass)
 {
     DriverConfig *config;
-    VALUE obj = Data_Make_Struct(
+    return TypedData_Make_Struct(
         klass,
         DriverConfig,
-        ll_driver_config_mark,
-        ll_driver_config_free,
+        &ll_driver_config_type,
         config
     );
-
-    MEMZERO(config, DriverConfig, 1);
-
-    return obj;
 }
 
 /**
@@ -94,7 +104,7 @@ VALUE ll_driver_config_set_terminals(VALUE self, VALUE array)
     DriverConfig *config;
     long count = RARRAY_LEN(array);
 
-    Data_Get_Struct(self, DriverConfig, config);
+    TypedData_Get_Struct(self, DriverConfig, &ll_driver_config_type, config);
 
     config->terminals = kh_init(int64_map);
 
@@ -124,7 +134,7 @@ VALUE ll_driver_config_set_rules(VALUE self, VALUE array)
     VALUE row;
     long row_count = RARRAY_LEN(array);
 
-    Data_Get_Struct(self, DriverConfig, config);
+    TypedData_Get_Struct(self, DriverConfig, &ll_driver_config_type, config);
 
     config->rules        = ALLOC_N(long*, row_count);
     config->rule_lengths = ALLOC_N(long, row_count);
@@ -164,7 +174,7 @@ VALUE ll_driver_config_set_table(VALUE self, VALUE array)
     DriverConfig *config;
     long row_count = RARRAY_LEN(array);
 
-    Data_Get_Struct(self, DriverConfig, config);
+    TypedData_Get_Struct(self, DriverConfig, &ll_driver_config_type, config);
 
     config->table = ALLOC_N(long*, row_count);
 
@@ -199,7 +209,7 @@ VALUE ll_driver_config_set_actions(VALUE self, VALUE array)
     DriverConfig *config;
     long row_count = RARRAY_LEN(array);
 
-    Data_Get_Struct(self, DriverConfig, config);
+    TypedData_Get_Struct(self, DriverConfig, &ll_driver_config_type, config);
 
     config->action_names       = ALLOC_N(VALUE, row_count);
     config->action_arg_amounts = ALLOC_N(long, row_count);
