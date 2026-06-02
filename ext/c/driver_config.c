@@ -64,16 +64,18 @@ void ll_driver_config_free(DriverConfig *config)
  */
 VALUE ll_driver_config_allocate(VALUE klass)
 {
-    DriverConfig *config = ALLOC(DriverConfig);
-
-    MEMZERO(config, DriverConfig, 1);
-
-    return Data_Wrap_Struct(
+    DriverConfig *config;
+    VALUE obj = Data_Make_Struct(
         klass,
+        DriverConfig,
         ll_driver_config_mark,
         ll_driver_config_free,
         config
     );
+
+    MEMZERO(config, DriverConfig, 1);
+
+    return obj;
 }
 
 /**
