@@ -1,5 +1,33 @@
 #include "driver_config.h"
 
+void ll_driver_config_mark(DriverConfig *config)
+{
+    if ( config->terminals != NULL )
+    {
+        khint_t key;
+
+        for (
+            key = kh_begin(config->terminals);
+            key != kh_end(config->terminals);
+            key++
+        )
+        {
+            if ( kh_exist(config->terminals, key) )
+            {
+                rb_gc_mark((VALUE) kh_key(config->terminals, key));
+            }
+        }
+    }
+
+    if ( config->action_names != NULL )
+    {
+        rb_gc_mark_locations(
+            config->action_names,
+            config->action_names + config->actions_count
+        );
+    }
+}
+
 /**
  * Releases memory of the DriverConfig struct and its members.
  */
@@ -23,7 +51,10 @@ void ll_driver_config_free(DriverConfig *config)
     free(config->action_names);
     free(config->action_arg_amounts);
 
-    kh_destroy(int64_map, config->terminals);
+    if ( config->terminals != NULL )
+    {
+        kh_destroy(int64_map, config->terminals);
+    }
 
     free(config);
 }
@@ -35,9 +66,11 @@ VALUE ll_driver_config_allocate(VALUE klass)
 {
     DriverConfig *config = ALLOC(DriverConfig);
 
+    MEMZERO(config, DriverConfig, 1);
+
     return Data_Wrap_Struct(
         klass,
-        NULL,
+        ll_driver_config_mark,
         ll_driver_config_free,
         config
     );
