@@ -48,15 +48,25 @@ void ll_driver_mark(DriverState *state)
  */
 VALUE ll_driver_allocate(VALUE klass)
 {
-    DriverState *state = ALLOC(DriverState);
-    VALUE config       = rb_const_get(klass, id_config_const);
+    DriverState *state;
+    VALUE config;
+    VALUE obj = Data_Make_Struct(
+        klass,
+        DriverState,
+        ll_driver_mark,
+        ll_driver_free,
+        state
+    );
+    MEMZERO(state, DriverState, 1);
+
+    config = rb_const_get(klass, id_config_const);
 
     Data_Get_Struct(config, DriverConfig, state->config);
 
     kv_init(state->stack);
     kv_init(state->value_stack);
 
-    return Data_Wrap_Struct(klass, ll_driver_mark, ll_driver_free, state);
+    return obj;
 }
 
 /**
