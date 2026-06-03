@@ -15,7 +15,7 @@ import org.jruby.RubyFixnum;
 
 import org.jruby.anno.JRubyClass;
 import org.jruby.anno.JRubyMethod;
-import org.jruby.runtime.Arity;
+import org.jruby.runtime.Signature;
 import org.jruby.runtime.Helpers;
 import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.ObjectAllocator;
@@ -307,7 +307,7 @@ public class Driver extends RubyObject
             CallBlock19.newCallClosure(
                 this,
                 this.metaClass,
-                Arity.NO_ARGUMENTS,
+                Signature.NO_ARGUMENTS,
                 callback,
                 context
             )
