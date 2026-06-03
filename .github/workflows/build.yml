@@ -10,18 +10,14 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - '2.6'
-          - '2.7'
-          - '3.2'
+          - '3'
+          - '4'
           - jruby
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+      - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-
       - run: sudo apt-get install -y ragel
-
       - run: bundle exec rake
