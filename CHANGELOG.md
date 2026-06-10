@@ -3,6 +3,14 @@
 This document contains details of the various releases and their release dates.
 Dates are in the format `yyyy-mm-dd`.
 
+## 2.2.0 - 2026-06-10
+
+This release includes various changes to deprecated APIs to make ruby-ll
+compatible with newer versions of Ruby:
+
+- https://github.com/yorickpeterse/ruby-ll/pull/24
+- https://github.com/yorickpeterse/ruby-ll/pull/25
+
 ## 2.1.4 - 2025-09-05
 
 Compiling with GCC 15 [was
